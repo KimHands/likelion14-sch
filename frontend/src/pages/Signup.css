@@ -1,0 +1,260 @@
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: #ffffff;
+}
+
+.signup-card {
+  width: 820px;
+  border: 1px solid #111;
+  border-radius: 18px;
+  padding: 44px 54px 42px;
+  background: #fff;
+}
+
+.signup-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 34px;
+}
+
+/* ✅ 로고 이미지: 조금 더 키움 */
+.signup-logo-img {
+  height: 100px; /* 기존 36px -> 48px */
+  width: auto;
+  display: block;
+}
+
+.signup-form {
+  width: 560px;
+  margin: 0 auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.row.center {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  margin-top: 24px;
+}
+
+.label {
+  color: #555;
+  font-size: 16px;
+  text-align: left;
+  padding-left: 8px;
+}
+
+.input {
+  height: 36px;
+  border: 1px solid #BDBDBD;
+  border-radius: 4px;
+  padding: 0 10px;
+  outline: none;
+  font-size: 14px;
+}
+
+.input:focus {
+  border-color: #17538D;
+}
+
+.phone-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input.phone {
+  width: 64px;
+  text-align: center;
+}
+
+.dash {
+  color: #666;
+}
+
+.email-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn {
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.verify-btn {
+  width: 112px;
+  background: #17538D;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.code-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ✅ 타이머는 공간 차지 유지 + 보이고/숨김만 opacity로 */
+.timer {
+  width: 110px;
+  font-size: 14px;
+  color: #d01818;
+  font-weight: 700;
+  text-align: left;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.timer.on {
+  opacity: 1;
+}
+
+/* ✅ 인증 확인 버튼이 인증번호 줄 안으로 들어오도록 */
+.sub-btn {
+  width: 112px;
+  background: #eee;
+  border: 1px solid #bbb;
+  height: 34px;
+}
+
+.sub-btn.inline {
+  height: 36px; /* input 높이 맞춤 */
+}
+
+.ok {
+  margin-left: 6px;
+  color: #1a7f37;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hint {
+  margin-left: 136px;
+  margin-top: -6px;
+  font-size: 12px;
+  color: #666;
+}
+
+.error {
+  margin-left: 136px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #d01818;
+  font-weight: 700;
+}
+
+.join-btn {
+  width: 140px;
+  height: 44px;
+  background: #17538D;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+}
+
+.join-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.msg {
+  margin-top: 14px;
+  text-align: center;
+  color: #d01818;
+  font-weight: 700;
+}
+
+/* 약관동의 */
+.terms-section {
+  margin-top: 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.terms-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #17538D;
+  margin-bottom: 12px;
+}
+
+.terms-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.terms-content p {
+  margin: 0 0 12px 0;
+}
+
+.terms-content h4 {
+  margin: 16px 0 8px 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #17538D;
+}
+
+.terms-content h4:first-child {
+  margin-top: 0;
+}
+
+.terms-content ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.terms-content li {
+  margin-bottom: 6px;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.terms-checkbox span {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}

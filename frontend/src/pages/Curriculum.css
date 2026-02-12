@@ -1,0 +1,260 @@
+/* Curriculum.css */
+
+/* 전체 배경 */
+.curri-root{
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.curri-container{
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  padding: 70px 0 50px;
+}
+
+/* 헤더 */
+.curri-head{
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.curri-title{
+  margin: 0;
+  font-size: 54px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: #000;
+}
+
+.curri-sub{
+  margin: 10px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.78);
+}
+
+/* 탭 */
+.curri-tabs{
+  margin: 28px auto 0;
+  width: min(720px, 92vw);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.18);
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+}
+
+.curri-tab{
+  height: 52px;
+  border: none;
+  background: #fff;
+  color: rgba(0,0,0,0.80);
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.curri-tab.active{
+  background: #1f539d;
+  color: #fff;
+}
+
+/* 3컬럼 레이아웃 */
+.curri-grid{
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr 20px 1fr;
+  align-items: start;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.curri-col{
+  min-height: 520px;
+}
+
+.curri-pill{
+  width: 320px;
+  max-width: 92%;
+  height: 62px;
+  border-radius: 999px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #fff;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+}
+
+.curri-pill.what{ background: #f3c719; }
+.curri-pill.weekly{ background: #75ca3f; }
+.curri-pill.goal{ background: #dd3f3f; }
+
+/* 가운데 세로 라인 */
+.curri-vline{
+  width: 2px;
+  height: 520px;
+  margin: 90px auto 0;
+  opacity: 0.85;
+}
+
+.curri-vline.yellow{ background: #f3c719; }
+.curri-vline.green{ background: #75ca3f; }
+
+/* WHAT WE LEARN */
+.curri-list{
+  margin: 0 auto;
+  width: min(420px, 92%);
+  padding: 10px 0;
+}
+
+.curri-bullet{
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 12px;
+  padding: 22px 0;
+}
+
+.curri-dot{
+  font-size: 26px;
+  line-height: 1;
+  color: rgba(0,0,0,0.65);
+  margin-top: 4px;
+}
+
+.curri-bullet-title{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  font-size: 20px;
+  color: #404040;
+}
+
+.curri-emoji{
+  font-size: 20px;
+}
+
+.curri-bullet-desc{
+  margin-top: 8px;
+  font-weight: 800;
+  font-size: 16px;
+  color: rgba(0,0,0,0.70);
+  line-height: 1.6;
+}
+
+/* ✅ WEEKLY SCHEDULE - 내부 스크롤 (레일/노드 정렬 수정 완료본) */
+.weekly-scroll{
+  width: min(420px, 92%);
+  margin: 0 auto;
+  height: 420px;
+  overflow-y: auto;
+  position: relative;
+  padding: 12px 10px 12px 26px;
+}
+
+/* 스크롤바 */
+.weekly-scroll::-webkit-scrollbar{ width: 10px; }
+.weekly-scroll::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.18);
+  border-radius: 999px;
+}
+.weekly-scroll::-webkit-scrollbar-track{
+  background: rgba(0,0,0,0.05);
+  border-radius: 999px;
+}
+
+/* ✅ 레일을 컨텐츠 높이에 맞춰 자동으로 늘어나게 */
+.weekly-items{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 6px 0 18px;
+}
+
+/* ✅ 레일: 스크롤 내려도 끊기지 않음 + 동그라미 중앙 정렬 */
+.weekly-items::before{
+  content: "";
+  position: absolute;
+  left: 9px;      /* ✅ 노드(18px) 가운데 */
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  background: #75ca3f;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.weekly-item{
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: start;
+  gap: 14px;
+  position: relative;
+}
+
+.weekly-node{
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 3px solid #75ca3f;
+  background: #fff;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+.weekly-text{
+  font-size: 20px;
+  font-weight: 900;
+  color: #404040;
+  line-height: 1.35;
+}
+
+/* GOAL */
+.goal-card{
+  width: min(340px, 92%);
+  height: 260px;
+  margin: 0 auto;
+  border-radius: 18px;
+  border: 3px solid #dd3f3f;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.goal-text{
+  text-align: center;
+  white-space: pre-line;
+  font-weight: 900;
+  font-size: 22px;
+  color: #404040;
+  line-height: 1.45;
+}
+
+/* 하단 여백 */
+.curri-bottom-space{
+  height: 30px;
+}
+
+/* 반응형 */
+@media (max-width: 980px){
+  .curri-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .curri-vline{
+    display: none;
+  }
+
+  .curri-col{
+    min-height: auto;
+    padding-bottom: 22px;
+  }
+
+  .weekly-scroll{
+    height: 360px;
+  }
+}

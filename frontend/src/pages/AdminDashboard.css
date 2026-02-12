@@ -1,0 +1,205 @@
+.adminDash-root{
+  min-height: calc(100vh - 74px);
+  background: #fff;
+  padding: 110px 0 90px;
+}
+
+.adminDash-inner{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.adminDash-title{
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+
+.adminDash-sub{
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.62);
+}
+
+.adminDash-grid{
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.adminDash-card{
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  padding: 26px 22px;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.adminDash-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+.card-title{
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.card-desc{
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.62);
+}
+
+@media (max-width: 900px){
+  .adminDash-grid{ grid-template-columns: 1fr; }
+}
+
+/* ✅ 합격 알림 설정 섹션 */
+.notification-settings-section {
+  margin-top: 60px;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 18px;
+  text-align: left;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.settings-header h2 {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.edit-btn {
+  padding: 10px 24px;
+  background: #FF7710;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.edit-btn:hover {
+  background: #E66A0A;
+}
+
+.error-message {
+  padding: 12px 18px;
+  background: #fee;
+  color: #c33;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: border-color 140ms ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #FF7710;
+}
+
+.form-group .value {
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.save-btn {
+  background: #FF7710;
+  color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #E66A0A;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #e0e0e0;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #d0d0d0;
+}
+
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.last-updated {
+  margin-top: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: right;
+}

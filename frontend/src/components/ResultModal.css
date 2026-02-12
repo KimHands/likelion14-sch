@@ -1,0 +1,161 @@
+.rm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: grid;
+  place-items: center;
+  z-index: 99999;
+  padding: 18px;
+}
+
+.rm-modal {
+  width: min(820px, 96vw);
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+.rm-header {
+  background: #2d55a0;
+  padding: 18px 22px;
+}
+
+.rm-header-title {
+  color: #fff;
+  font-weight: 900;
+  font-size: 22px;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+.rm-table {
+  padding: 0;
+}
+
+.rm-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  border-top: 1px solid rgba(0,0,0,0.18);
+}
+
+.rm-row:first-child {
+  border-top: none;
+}
+
+.rm-cell {
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.rm-cell.label {
+  background: #f4f4f4;
+  font-weight: 900;
+  border-right: 1px solid rgba(0,0,0,0.18);
+}
+
+.rm-cell.value {
+  font-weight: 700;
+  color: #111;
+}
+
+.rm-decision {
+  font-weight: 900;
+}
+
+.rm-decision.pass {
+  color: #1f56b2;
+}
+
+.rm-decision.fail {
+  color: #d01818;
+}
+
+/* 아래 메시지 영역 */
+.rm-footer {
+  padding: 14px 18px 18px;
+  border-top: 1px solid rgba(0,0,0,0.18);
+}
+
+.rm-message {
+  text-align: center;
+  font-weight: 900;
+  padding: 10px 8px 2px;
+  font-size: 14px;
+}
+
+.rm-message.pass {
+  color: #1f56b2;
+}
+
+/* 불합격 안내 박스 */
+.rm-reject-box {
+  padding: 12px 10px 6px;
+  text-align: center;
+}
+
+.rm-reject-title {
+  font-weight: 900;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.rm-reject-text {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.65;
+  color: #111;
+}
+
+/* 최종합격 안내 박스 */
+.rm-final-pass-box {
+  padding: 12px 10px 6px;
+  text-align: center;
+}
+
+.rm-final-pass-title {
+  font-weight: 900;
+  margin-bottom: 10px;
+  color: #1f56b2;
+}
+
+.rm-final-pass-text {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.65;
+  color: #111;
+}
+
+.rm-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.rm-close {
+  width: 140px;
+  height: 42px;
+  border-radius: 8px;
+  border: none;
+  background: #2d55a0;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.rm-close:hover {
+  filter: brightness(1.02);
+}
+
+@media (max-width: 620px) {
+  .rm-row {
+    grid-template-columns: 140px 1fr;
+  }
+  .rm-header-title {
+    font-size: 18px;
+  }
+  .rm-cell {
+    font-size: 14px;
+  }
+}

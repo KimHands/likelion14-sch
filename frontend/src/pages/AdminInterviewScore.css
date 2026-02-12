@@ -1,0 +1,237 @@
+.iv-page {
+  min-height: 100vh;
+  background: #d9d9d9;
+  padding: 26px 28px 60px;
+}
+
+.iv-note {
+  color: #d01818;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.iv-title {
+  font-size: 44px;
+  font-weight: 900;
+  margin: 0 0 18px;
+  letter-spacing: -0.5px;
+}
+
+.iv-card {
+  background: #efefef;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.iv-topbar {
+  background: #d6d6d6;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  justify-content: space-between;
+}
+
+.iv-top-left {
+  font-size: 22px;
+  font-weight: 900;
+  color: #111;
+}
+
+.iv-back-btn {
+  width: 290px;
+  height: 44px;
+  border-radius: 6px;
+  border: none;
+  background: #17538D;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.iv-body {
+  display: grid;
+  grid-template-columns: 1.6fr 1px 0.9fr;
+  gap: 18px;
+  align-items: stretch;
+  padding: 22px 22px 26px;
+}
+
+.iv-divider {
+  width: 1px;
+  background: rgba(0,0,0,0.25);
+  margin: 0px;
+  align-self: stretch;
+}
+
+/* LEFT */
+.iv-left {
+  padding: 10px 10px 0;
+}
+
+.iv-left-title {
+  font-size: 30px;
+  font-weight: 900;
+  color: #111;
+  padding-left: 10px;
+}
+
+.iv-left-content {
+  background: #e9e9e9;
+  border-radius: 8px;
+  margin-top: 18px;
+  min-height: 520px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.iv-qbox {
+  height: 52px;
+  background: #d6d6d6;
+  border-radius: 6px;
+}
+
+/* RIGHT */
+.iv-right {
+  padding: 10px 0 0;
+}
+
+.iv-user-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 16px 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  margin-bottom: 14px;
+}
+
+.iv-user-name {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.iv-user-meta {
+  color: #666;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.iv-score-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.iv-score-row {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.iv-score-text {
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.iv-score-input {
+  height: 30px;
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 4px;
+  padding: 0 10px;
+  text-align: right;
+  font-weight: 900;
+}
+
+.iv-hr {
+  height: 1px;
+  background: rgba(0,0,0,0.25);
+  margin: 16px 0;
+}
+
+.iv-comment-title {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.iv-comment-box {
+  width: 100%;
+  height: 90px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.25);
+  padding: 10px;
+  resize: none;
+}
+
+.iv-total-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.iv-total-title {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.iv-total-note {
+  color: #d01818;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.iv-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.iv-fail-btn {
+  height: 48px;
+  border-radius: 8px;
+  border: none;
+  background: #e24b4b;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.iv-pass-btn {
+  height: 48px;
+  border-radius: 8px;
+  border: none;
+  background: #17538D;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.iv-save-btn {
+  height: 48px;
+  border-radius: 8px;
+  border: none;
+  background: #d6d6d6;
+  color: #111;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.iv-msg {
+  margin-top: 14px;
+  text-align: center;
+  color: #d01818;
+  font-weight: 900;
+  clear: both;
+}

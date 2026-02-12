@@ -1,0 +1,152 @@
+.ap-root{
+  min-height: 100vh;
+  background: #fff;
+  padding: 110px 0 90px;
+}
+
+.ap-inner{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.ap-back{
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.55);
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.ap-back:hover{ color: #000; }
+
+.ap-title{
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  text-align: center;
+}
+
+.ap-sub{
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.62);
+  text-align: center;
+}
+
+.ap-card{
+  margin-top: 36px;
+  padding: 28px 26px;
+  background: #f8f9fa;
+  border-radius: 18px;
+}
+
+.ap-card h3{
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0 0 20px;
+}
+
+.ap-form{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ap-form input,
+.ap-form textarea{
+  padding: 12px 16px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.ap-form input:focus,
+.ap-form textarea:focus{
+  outline: none;
+  border-color: #5769A7;
+}
+
+.ap-row{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ap-file-label{
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ap-btn{
+  align-self: flex-end;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  background: #5769A7;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+.ap-btn:hover:not(:disabled){ background: #46578e; }
+.ap-btn:disabled{ opacity: 0.6; cursor: not-allowed; }
+
+.ap-table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ap-table th,
+.ap-table td{
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.ap-table th{
+  font-weight: 800;
+  color: rgba(0,0,0,0.6);
+}
+
+.ap-toggle{
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ap-toggle.on{ background: #d4edda; color: #155724; }
+.ap-toggle.off{ background: #f8d7da; color: #721c24; }
+
+.ap-del{
+  border: none;
+  background: #dc3545;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ap-del:hover{ background: #c82333; }
+
+.ap-empty{
+  text-align: center;
+  color: rgba(0,0,0,0.45);
+  padding: 24px !important;
+}
+
+@media (max-width: 900px){
+  .ap-row{ flex-direction: column; }
+}

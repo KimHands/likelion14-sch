@@ -1,0 +1,71 @@
+.done-page {
+  min-height: 100vh;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.done-wrap {
+  width: min(920px, 92vw);
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.done-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 26px;
+}
+
+.done-icon img {
+  width: 140px;
+  height: auto;
+}
+
+.done-title {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.done-desc {
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 34px;
+}
+
+.done-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.done-btn {
+  width: 240px;
+  height: 56px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.done-btn.primary {
+  border: none;
+  background: #1F539D;
+  color: #fff;
+}
+
+.done-btn.ghost {
+  border: 1px solid #1F539D;
+  background: #ffffff;
+  color: #1F539D;
+}
+
+.done-btn:hover {
+  filter: brightness(0.98);
+}

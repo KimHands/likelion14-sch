@@ -1,0 +1,99 @@
+import { Link } from "react-router-dom";
+import "./HomeHeader.css";
+import type { MeResponse } from "../auth/types";
+import { apiLogout } from "../api/auth";
+import logo from "../assets/likelion_sch_logo.png";
+
+type HomeHeaderProps = {
+  scrolled: boolean;
+  onClickIntro: () => void;
+  onClickProjects: () => void;
+  onClickSessions: () => void;
+  onClickLogin: () => void;
+
+  // ✅ 바뀜: 버튼 1개를 “지원하기 or 관리자”로 재활용
+  onClickPrimary: () => void;
+
+  // ✅ 추가: 로그인 사용자 정보
+  me: MeResponse | null;
+};
+
+export default function HomeHeader({
+  scrolled,
+  onClickIntro,
+  onClickProjects,
+  onClickSessions,
+  onClickLogin,
+  onClickPrimary,
+  me,
+}: HomeHeaderProps) {
+  const isInstructor = me?.role === "INSTRUCTOR";
+
+
+  const handleLogout = async () => {
+    console.log('로그아웃 시작...');
+    try {
+      const result = await apiLogout();
+      console.log('로그아웃 API 성공:', result);
+    } catch (error) {
+      console.error('로그아웃 API 실패:', error);
+    } finally {
+      // API 성공/실패 여부와 관계없이 클라이언트 측 로그아웃 처리
+      console.log('localStorage 정리 및 페이지 리로드');
+      localStorage.clear(); // 모든 localStorage 정리
+      sessionStorage.clear(); // 모든 sessionStorage 정리
+      
+      // 쿠키도 정리 (csrftoken, sessionid 등)
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      
+      // 강제 리로드
+      window.location.href = '/';
+    }
+  };
+
+  return (
+    <header className={`home-header ${scrolled ? "scrolled" : ""}`}>
+      <div className="home-header-inner">
+        <div className="home-header-left">
+          <Link to="/">
+            <img src={logo} alt="멋쟁이사자처럼 SCH" className="home-header-logo" style={{ cursor: 'pointer' }} />
+          </Link>
+        </div>
+
+        <div className="home-header-line" />
+
+        <nav className="home-header-nav">
+          <button className="home-nav-link" onClick={onClickIntro}>
+            소개
+          </button>
+          <button className="home-nav-link" onClick={onClickProjects}>
+            프로젝트
+          </button>
+          <button className="home-nav-link" onClick={onClickSessions}>
+            교육세션
+          </button>
+
+          {/* ✅ 로그인/로그아웃 분기 */}
+          {!me ? (
+            <Link className="home-nav-link" to="/login" onClick={onClickLogin}>
+              로그인
+            </Link>
+          ) : (
+            <button className="home-nav-link" onClick={handleLogout}>
+              로그아웃
+            </button>
+          )}
+
+          {/* ✅ INSTRUCTOR면 관리자 페이지, 아니면 지원하기 */}
+          <button className="home-nav-btn" onClick={onClickPrimary}>
+            {isInstructor ? "관리자 페이지" : "14기 지원하기"}
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
+}

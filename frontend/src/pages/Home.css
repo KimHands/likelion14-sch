@@ -1,0 +1,1222 @@
+/* ✅ (2) 양옆 흰 여백/가로스크롤 원천 봉쇄 */
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body.page-home {
+  overflow-x: hidden;
+  background: #000;
+}
+
+* { box-sizing: border-box; }
+
+.home-root {
+  width: 100%;
+  overflow-x: hidden;
+  background: #fff;
+}
+
+/* ✅ 사이드까지 배경 꽉 채우기(핵심) */
+.full-bleed{
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+/* -----------------------------
+   섹션 연결용 페이드 유틸
+   ----------------------------- */
+
+/* wave/어두운 배경 → 흰색으로 자연스러운 끝처리 */
+.section-fade-to-white{
+  pointer-events: none;
+  height: 140px;
+  margin-top: -140px;
+  background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1));
+}
+
+/* 더 강하게 흰색으로 빠지게 */
+.section-fade-to-white.strong{
+  height: 180px;
+  margin-top: -180px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+}
+
+/* 흰 배경에서 다음(그라데이션/컬러)로 연결할 때 */
+.section-fade-from-white{
+  pointer-events: none;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+/* Projects → CTA(파도 배경 느낌으로 다시 들어가기) */
+.section-fade-to-wave{
+  pointer-events: none;
+  height: 120px;
+  margin-top: 40px;
+  background: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.10), rgba(0,0,0,0));
+}
+
+/* -----------------------------
+   HERO
+   ----------------------------- */
+
+.home-hero {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-top: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.home-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.05), rgba(0,0,0,0.15));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 40% 35%, rgba(0,0,0,0.02), rgba(0,0,0,0.15));
+}
+
+.home-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 130px 56px 90px;
+}
+
+.home-hero-copy {
+  max-width: 900px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-hero-title {
+  color: rgba(255,255,255,0.92);
+  font-weight: 900;
+  text-align: center;
+  font-size: 54px;
+  letter-spacing: -0.8px;
+  line-height: 1.12;
+  text-shadow: 0 6px 22px rgba(0,0,0,0.28);
+  white-space: pre-wrap;
+}
+
+.home-hero-sub {
+  text-align: center;
+  margin-top: 16px;
+  color: rgba(255,255,255,0.88);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.2px;
+  text-shadow: 0 6px 22px rgba(0,0,0,0.24);
+  white-space: pre-wrap;
+}
+
+.home-hero-cta {
+  margin-top:26px;
+  width: 240px;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+
+  font-weight: 900;
+  font-size: 17px;
+  color: #fff;
+
+  background: linear-gradient(90deg, #404040, #5769A7);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.28);
+  transition: background 160ms ease, transform 160ms ease, filter 160ms ease;
+}
+
+.home-hero-cta:hover {
+  background: #1F539D;
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+/* ✅ 요구사항: Hero → About은 “페이드 적용 안됨”
+   => Hero에 bottom fade를 일부러 만들지 않음 */
+
+/* -----------------------------
+   ABOUT
+   ----------------------------- */
+
+.home-about {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+.home-about::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.05), rgba(0,0,0,0));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-about::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.7));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-about-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 12%, rgba(0,0,0,0.05), rgba(0,0,0,0.20));
+}
+
+.home-about-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 90px 56px 160px;
+}
+
+.home-about-head {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.home-about-title {
+  font-size: 54px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: rgba(255,255,255,0.95);
+}
+
+.home-about-sub {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.86);
+}
+
+/* ✅ 박스 감싸기 제거: 세로 스택 */
+.home-about-stack{
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 46px;
+}
+
+.home-about-item{
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 18px;
+  padding: 32px 36px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.home-about-item-title{
+  font-size: 26px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.94);
+  margin-bottom: 16px;
+}
+
+.home-about-item-body{
+  font-size: 15px;
+  line-height: 1.9;
+  font-weight: 700;
+  color: rgba(255,255,255,0.78);
+  max-width: 980px;
+}
+
+/* ✅ “순천향대학교” 파트 줄간격 이상한 것 안정화 */
+.home-about-item-body.about-sch{
+  line-height: 1.95;
+  letter-spacing: -0.1px;
+}
+
+/* ✅ MEMBERS 버튼 위치/색상 요구 반영 */
+.home-about-members-row{
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.home-about-members-btn{
+  width: 240px;
+  height: 54px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: #000000;   /* 기본 000000 */
+  color: #ffffff;        /* 기본 글자색은 흰색 유지 */
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: background 160ms ease, color 160ms ease, filter 160ms ease;
+}
+
+.home-about-members-btn:hover{
+  background: #ffffff;   /* hover FFFFFF */
+  color: #000000;        /* hover에선 검정 글자 */
+  filter: brightness(1.02);
+}
+
+.home-about-members-btn .arrow{ font-size: 18px; }
+
+/* -----------------------------
+   ROADMAP
+   ----------------------------- */
+
+.home-roadmap{
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.home-roadmap-inner{
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 56px;
+  width: 100%;
+}
+
+.home-roadmap-bar{
+  height: 64px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+
+  /* ✅ 물결 배경 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  margin-bottom: 22px;
+}
+
+/* ✅ 타임라인 영역(박스 배경이 “사라졌던 문제” 복구) */
+.home-roadmap-card{
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 6px 6px;
+}
+
+/* ✅ 월 행: 점/라벨/선을 같은 좌표로 정렬하기 위해 relative */
+.road-row{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 0 16px;
+  margin-bottom: 10px;
+  height: 70px;
+}
+
+.road-row.bottom{
+  margin-top: 24px;
+}
+
+.road-month{
+  position: relative;
+  text-align: center;
+  z-index: 2; /* line 위로 */
+}
+
+.road-month-label{
+  font-weight: 900;
+  color: rgba(0,0,0,0.78);
+  margin-bottom: 10px;
+}
+
+/* ✅ 점 */
+.road-dot{
+  position: relative;
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgb(20, 35, 85);
+  margin: 0 auto;
+}
+
+.road-line{
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 34px;
+  height: 3px;
+  background: rgb(20, 35, 85);
+  z-index: 1;
+}
+
+/* ✅ “각 월을 잇는 선” 위치 정렬(두번째 사진처럼) */
+.road-line{
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 34px;            /* 라벨 아래/점 중앙에 맞춘 y */
+  height: 3px;
+  background: rgb(20, 35, 85);
+  z-index: 1;
+}
+
+/* ✅ 요구사항: 맨 윗줄/맨 아래줄 삭제
+   => 기존 outer line(상단/하단 border)을 아예 만들지 않음 */
+
+.road-items{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+  padding: 8px 16px 0;
+}
+
+.road-items.bottom{
+  padding-bottom: 18px;
+}
+
+.road-items-detail{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+  padding: 8px 16px 0;
+  margin-top: 8px;
+}
+
+.road-items-detail.bottom{
+  padding-bottom: 18px;
+}
+
+.road-item{
+  height: 54px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: rgba(248, 248, 252, 1); /* ✅ 박스 배경 복구 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: rgba(0,0,0,0.74);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+}
+
+.road-item.study{
+  background: rgba(231, 244, 235, 0.78);
+  border-color: rgba(30, 60, 40, 0.18);
+}
+
+.road-item.small{
+  height: 48px;
+  font-weight: 900;
+}
+
+/* ✅ 오른쪽 라인 정렬(“2학기 스터디”와 아래 박스 우측 라인 일치)
+   gridColumn을 둘 다 3/span4로 맞췄고,
+   box 자체 padding/box-sizing 통일 */
+.road-item.align-right{
+  justify-self: stretch;
+}
+
+/* -----------------------------
+   TRACKS
+   ----------------------------- */
+
+/* ✅ 섹션 크기 “약간 크게” */
+.home-tracks{
+  position: relative;
+  background: linear-gradient(180deg, #dbe3ee, #b5c3d8);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 0;
+}
+
+.home-tracks::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.4), rgba(255,255,255,0.1), rgba(255,255,255,0));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-tracks::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(181,195,216,0), rgba(0,0,0,0.05), rgba(0,0,0,0.1), rgba(0,0,0,0.2));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-tracks-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 56px;
+  text-align: center;
+}
+
+.home-tracks-title{
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+_toggle: none;
+}
+
+.home-tracks-sub{
+  margin-top: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.home-tracks-grid{
+  margin-top: 54px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 60px;
+  align-items: start;
+}
+
+/* ✅ 카드 + hover 버튼이 “아래쪽”으로 나오도록 wrap에 공간 확보 */
+.track-wrap{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 52px;
+}
+
+/* 카드 기본: 파란 테두리는 “hover일 때만” */
+.track-card{
+  width: 100%;
+  max-width: 360px;
+
+  border-radius: 18px;
+  background: #ffffff;
+  border: 2px solid rgba(0,0,0,0.10);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.16);
+
+  padding: 34px 22px 26px;
+  text-align: center;
+
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 0ms;
+}
+
+.track-wrap:hover .track-card{
+  border-color: #3091FF; /* ✅ hover일 때만 파란 테두리 */
+  box-shadow: 0 22px 40px rgba(0,0,0,0.20);
+  transform: translateY(-2px);
+}
+
+.track-icon{
+  height: 78px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+}
+
+.track-icon img{
+  height: 64px;
+  width: auto;
+  display: block;
+}
+
+.track-icon-fallback{ font-size: 44px; }
+
+.track-title{
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.track-desc{
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.72);
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.track-divider{
+  width: 64px;
+  height: 2px;
+  margin: 18px auto 16px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 99px;
+  opacity: 0.55;
+}
+
+.track-tags{
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.45);
+}
+
+/* ✅ hover 문구: 카드 “아래쪽”, 겹침 X, 페이드 효과 X */
+.track-action{
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+
+  width: 220px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #3091FF;
+  font-weight: 900;
+  cursor: pointer;
+
+  /* 기본 숨김(페이드 X) */
+  display: none;
+}
+
+.track-wrap:hover .track-action{
+  display: inline-flex; /* ✅ 즉시 등장(페이드 없음) */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* -----------------------------
+   MEMBERS
+   ----------------------------- */
+
+.home-members {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+.home-members::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.1), rgba(0,0,0,0.05), rgba(0,0,0,0));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-members::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.7));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-members-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      circle at 20% 15%,
+      rgba(0, 0, 0, 0.08),
+      rgba(0, 0, 0, 0.25)
+    ),
+    rgba(0, 0, 0, 0.05);
+}
+
+.home-members-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 56px;
+  width: 100%;
+}
+
+.home-members-title {
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  text-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
+}
+
+.home-members-sub {
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.86);
+  text-align: center;
+}
+
+.home-members-grid {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 34px 36px;
+}
+
+.member-card {
+  border-radius: 18px;
+  padding: 28px 26px 22px;
+  background: rgba(87, 105, 167, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.member-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.33);
+  background: rgba(87, 105, 167, 0.36);
+}
+
+.member-photo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.member-photo-frame {
+  width: 300px;
+  height: 160px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
+}
+
+.member-photo-frame.halo::before {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 28px;
+  border-radius: 999px;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+  border: 6px solid rgba(40, 210, 255, 0.92);
+  box-shadow: 0 0 22px rgba(40, 210, 255, 0.55);
+  background: transparent;
+  z-index: 2;
+}
+
+.member-photo-frame img {
+  width: 160px;
+  height: auto;
+  display: block;
+  transform: translateY(-10px);
+}
+
+.member-name {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 6px;
+}
+
+.member-role {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 10px;
+}
+
+.member-tags {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* -----------------------------
+   PROJECTS (현재는 UI 자리 + 애니메이션 기반만)
+   ----------------------------- */
+
+.home-projects{
+  position: relative;
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 0;
+}
+
+.home-projects::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.4), rgba(255,255,255,0.1), rgba(255,255,255,0));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-projects::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(0,0,0,0.05), rgba(0,0,0,0.1));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-projects-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 56px;
+  text-align: center;
+}
+
+.home-projects-title{
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+
+.home-projects-sub{
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.70);
+}
+
+/* ✅ 3D 느낌: transform-style + perspective */
+.projects-stage{
+  margin-top: 36px;
+  position: relative;
+}
+
+.projects-carousel{
+  height: 320px;
+  position: relative;
+  margin: 0 auto;
+  max-width: 980px;
+
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* 좌우 네비게이션 버튼 */
+.proj-nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.7);
+  font-size: 28px;
+  font-weight: 900;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 160ms ease;
+}
+.proj-nav:hover{ background: rgba(0,0,0,0.22); }
+.proj-nav-left{ left: 0; }
+.proj-nav-right{ right: 0; }
+
+/* 카드 공통 */
+.proj-card{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 520px;
+  height: 240px;
+  border-radius: 26px;
+  transform-style: preserve-3d;
+  box-shadow: 0 22px 46px rgba(0,0,0,0.18);
+  transform: translate(-50%, -50%);
+  background: #cfcfcf;
+  transition: transform 400ms ease, opacity 400ms ease;
+  overflow: hidden;
+}
+
+/* 배치(임시) */
+.proj-card.main{
+  width: 560px;
+  height: 260px;
+  background: #ffffff;
+  z-index: 5;
+}
+
+.proj-card.left2{
+  transform: translate(-50%, -50%) translateX(-220px) scale(0.92);
+  background: #cfcfcf;
+  z-index: 4;
+}
+
+.proj-card.right2{
+  transform: translate(-50%, -50%) translateX(220px) scale(0.92);
+  background: #cfcfcf;
+  z-index: 4;
+}
+
+.proj-card.side.left{
+  transform: translate(-50%, -50%) translateX(-420px) scale(0.86);
+  background: #9b9b9b;
+  z-index: 3;
+}
+
+.proj-card.side.right{
+  transform: translate(-50%, -50%) translateX(420px) scale(0.86);
+  background: #9b9b9b;
+  z-index: 3;
+}
+
+/* PDF 버튼 */
+.proj-pdf-btn{
+  position: absolute;
+  right: 24px;
+  bottom: 18px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.18);
+  color: rgba(0,0,0,0.82);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.projects-name{
+  margin-top: 12px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.70);
+}
+
+.projects-desc{
+  margin-top: 26px;
+  font-size: 22px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.78);
+}
+
+/* 아래 메타 영역(왼쪽 pill + 오른쪽 내용) */
+.projects-meta{
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+  align-items: start;
+  justify-items: center;
+}
+
+.projects-pill-col{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pill-btn{
+  width: 210px;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: #3b3b3b;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.pill-btn:hover{ filter: brightness(1.05); }
+
+.projects-right{
+  width: 100%;
+  max-width: 620px;
+}
+
+.tech-dots{
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.tech-dot{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.16);
+}
+
+.hash-row{
+  margin-top: 18px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.60);
+  text-align: left;
+}
+
+.pill-btn.active{
+  background: #5769A7;
+}
+
+.detail-text{
+  margin-top: 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.65);
+  text-align: left;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.projects-empty{
+  margin-top: 60px;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.45);
+}
+
+/* PDF 모달 */
+.pdf-modal-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-modal{
+  position: relative;
+  width: 90vw;
+  max-width: 960px;
+  height: 85vh;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+
+.pdf-modal-close{
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.15);
+  color: #000;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.pdf-modal-close:hover{ background: rgba(0,0,0,0.25); }
+
+.pdf-modal-iframe{
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* -----------------------------
+   CTA
+   ----------------------------- */
+
+.home-cta{
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+.home-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.05), rgba(0,0,0,0.02), rgba(0,0,0,0));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-cta-overlay{
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 45% 35%, rgba(0,0,0,0.03), rgba(0,0,0,0.20));
+}
+
+.home-cta-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 150px 56px 140px;
+  text-align: center;
+}
+
+.home-cta-title{
+  font-size: 44px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  text-shadow: 0 10px 26px rgba(0,0,0,0.28);
+}
+
+.home-cta-btn{
+  margin-top: 26px;
+  width: 280px;
+  height: 60px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(90deg, #404040, #5769A7);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.28);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.home-cta-btn:hover{
+  background: #1F539D;
+  transform: translateY(-1px);
+}
+
+/* -----------------------------
+   반응형
+   ----------------------------- */
+
+@media (max-width: 980px) {
+  .home-hero-inner,
+  .home-about-inner,
+  .home-roadmap-inner,
+  .home-tracks-inner,
+  .home-projects-inner,
+  .home-cta-inner {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .home-hero-title { font-size: 40px; }
+  .home-about-title { font-size: 40px; }
+
+  .projects-meta{
+    grid-template-columns: 1fr;
+  }
+
+  .home-tracks-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .track-card{
+    max-width: 420px;
+  }
+
+  .proj-card{
+    width: min(520px, 90vw);
+  }
+  .proj-card.main{
+    width: min(560px, 92vw);
+  }
+
+  .home-hero-cta { width: min(240px, 92vw); }
+  .home-cta-btn { width: min(280px, 92vw); }
+
+  .home-members-inner {
+    padding: 60px 22px;
+  }
+  
+  .home-members-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .member-photo-frame {
+    width: min(360px, 92vw);
+  }
+
+  .proj-nav-left{ left: 4px; }
+  .proj-nav-right{ right: 4px; }
+
+  .pdf-modal{
+    width: 96vw;
+    height: 80vh;
+  }
+}

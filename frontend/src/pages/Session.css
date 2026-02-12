@@ -1,0 +1,1056 @@
+/* Session Page Container */
+.session-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 40px 20px;
+}
+
+.session-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.session-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 900;
+  margin: 30px 0 40px;
+  letter-spacing: -0.5px;
+}
+
+/* Main Tabs */
+.session-main-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 30px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 700px;
+}
+
+.session-tab {
+  flex: 1;
+  padding: 14px 32px;
+  border: none;
+  background: #ffffff;
+  color: #333;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+.session-tab:last-child {
+  border-right: none;
+}
+
+.session-tab.active {
+  background: #1F539D;
+  color: #ffffff;
+}
+
+.session-tab:hover:not(.active):not(.disabled) {
+  background: #f8f9fa;
+}
+
+.session-tab.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Session Description */
+.session-desc {
+  text-align: center;
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 30px;
+}
+
+/* Panel Header */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.small-btn {
+  padding: 8px 16px;
+  background: #1F539D;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.small-btn:hover {
+  background: #164178;
+}
+
+.small-btn.secondary {
+  background: #555;
+}
+
+.small-btn.secondary:hover {
+  background: #333;
+}
+
+.empty-text {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+/* ========================================
+   AI 탭 스타일
+   ======================================== */
+
+.ai-tab {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 이번주 과제 공지 */
+.assignment-notice {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.assignment-title {
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.assignment-info {
+  margin-top: 16px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.info-label {
+  font-weight: 700;
+  min-width: 100px;
+}
+
+.info-value {
+  color: #666;
+}
+
+/* 제출 폼 */
+.assignment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.form-row label {
+  font-weight: 700;
+  min-width: 80px;
+  font-size: 14px;
+}
+
+.form-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-input.short {
+  max-width: 200px;
+}
+
+.submit-btn {
+  align-self: flex-end;
+  padding: 12px 32px;
+  background: #1F539D;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submit-btn:hover {
+  background: #164178;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 제출 상태 */
+.submission-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  flex-wrap: wrap;
+}
+
+.submitted-badge {
+  background: #39A666;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.submitted-link {
+  color: #1F539D;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.read-badge {
+  background: #6c63ff;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 제출된 과제 리스트 */
+.submitted-list {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.submitted-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.list-note {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.submitted-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.submitted-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #ddd;
+}
+
+.submitted-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.submitted-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.submitted-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.link-btn {
+  padding: 6px 14px;
+  background: transparent;
+  color: #1F539D;
+  border: 1px solid #1F539D;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  background: #1F539D;
+  color: #fff;
+}
+
+.link-text {
+  color: #1F539D;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.link-text:hover {
+  text-decoration: underline;
+}
+
+/* Announcement */
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.announcement-item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.announcement-meta {
+  font-size: 13px;
+  color: #888;
+}
+
+.announcement-body {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ========================================
+   풀스택 탭 스타일
+   ======================================== */
+
+.fullstack-tab {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.fullstack-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 30px;
+}
+
+/* 세션 리스트 */
+.session-list-panel {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.session-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.session-label {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.session-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.quiz-btn {
+  padding: 8px 20px;
+  background: #1F539D;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.quiz-btn:hover {
+  background: #164178;
+}
+
+.quiz-badge {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.quiz-badge.correct {
+  background: #d4edda;
+  color: #155724;
+}
+
+.quiz-badge.wrong {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Q&A 패널 */
+.qna-panel {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.qna-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.qna-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.qna-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #ddd;
+}
+
+.qna-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.qna-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.qna-table tbody tr:hover {
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+/* ========================================
+   모달 스타일
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-question {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  white-space: pre-wrap;
+}
+
+.modal-author {
+  color: #888;
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.modal-content-body {
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Quiz Options */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 15px;
+}
+
+.quiz-option:hover {
+  border-color: #1F539D;
+  background: #f0f4ff;
+}
+
+.quiz-option.selected {
+  border-color: #1F539D;
+  background: #e8eeff;
+}
+
+.quiz-option.correct-answer {
+  border-color: #39A666;
+  background: #d4edda;
+}
+
+.quiz-option.wrong-answer {
+  border-color: #DD3F3F;
+  background: #f8d7da;
+}
+
+.quiz-option input[type="radio"] {
+  accent-color: #1F539D;
+}
+
+.answer-result {
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+}
+
+.answer-result.correct {
+  background: #d4edda;
+  color: #155724;
+}
+
+.answer-result.wrong {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Comments Section */
+.comments-section h3 {
+  font-size: 16px;
+  font-weight: 900;
+  margin: 0 0 16px;
+}
+
+.comment-item {
+  padding: 14px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.comment-item.instructor {
+  border-color: #1F539D;
+  background: #f0f4ff;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.comment-author {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.instructor-badge {
+  background: #1F539D;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.comment-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.comment-form {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* Create Form (모달 내부) */
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.create-form label {
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.create-form input,
+.create-form textarea,
+.create-form select {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.create-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.create-form select {
+  cursor: pointer;
+}
+
+/* ========================================
+   기획/디자인 탭 스타일
+   ======================================== */
+
+.planning-tab {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.planning-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Rotation Schedule */
+.rotation-schedule {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  background: #ffffff;
+}
+
+.rotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.rotation-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.rotation-legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 13px;
+  color: #555;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.complete {
+  background: #39A666;
+}
+
+.legend-dot.progress {
+  background: #DD3F3F;
+}
+
+/* Calendar */
+.calendar {
+  width: 100%;
+}
+
+.cal-header-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 4px;
+}
+
+.cal-week {
+  margin-bottom: 2px;
+}
+
+.cal-day-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.cal-day {
+  padding: 4px;
+  color: #333;
+}
+
+.cal-day.empty {
+  visibility: hidden;
+}
+
+.cal-day.weekend {
+  color: #DD3F3F;
+}
+
+.cal-event-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 0 6px;
+  gap: 2px;
+}
+
+.cal-event {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-event.complete {
+  background: #39A666;
+}
+
+.cal-event.progress {
+  background: #DD3F3F;
+}
+
+/* Gallery */
+.gallery-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  background: #ffffff;
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gallery-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.gallery-submit-btn {
+  padding: 10px 24px;
+  background: #1F539D;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gallery-submit-btn:hover {
+  background: #164178;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.gallery-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.gallery-card:hover {
+  transform: translateY(-2px);
+}
+
+.gallery-thumbnail {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #d9d9d9;
+  border-radius: 8px;
+}
+
+.gallery-caption {
+  text-align: center;
+  font-size: 13px;
+  color: #555;
+  margin: 8px 0 0;
+}
+
+/* Feedback Section */
+.feedback-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  background: #ffffff;
+}
+
+.feedback-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.feedback-textarea::placeholder {
+  color: #999;
+}
+
+.feedback-submit {
+  margin-top: 16px;
+  float: right;
+}
+
+/* Submission Detail */
+.submission-detail p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+/* ========================================
+   반응형
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .fullstack-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .planning-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .session-main-tabs {
+    flex-direction: row;
+    width: 100%;
+    min-width: auto;
+    overflow-x: auto;
+  }
+
+  .session-tab {
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .session-container {
+    padding: 20px;
+  }
+
+  .session-title {
+    font-size: 32px;
+  }
+
+  .session-main-tabs {
+    min-width: auto;
+  }
+
+  .session-tab {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-row label {
+    min-width: auto;
+  }
+
+  .form-input.short {
+    max-width: none;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .modal-box {
+    max-width: 100%;
+    max-height: 90vh;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - db_data:/app/db
+      - media_data:/app/media
+    env_file: .env
+    environment:
+      - DB_PATH=/app/db/db.sqlite3
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  media_data:
