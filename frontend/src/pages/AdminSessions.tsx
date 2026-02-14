@@ -31,7 +31,7 @@ export default function AdminSessions() {
               className={`admin-tab ${tab === t ? "active" : ""}`}
               onClick={() => setTab(t)}
             >
-              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI/서버", planning: "기획/디자인" }[t]}
+              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI", planning: "기획/디자인" }[t]}
             </button>
           ))}
         </div>

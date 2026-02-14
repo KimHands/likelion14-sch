@@ -4,6 +4,8 @@ import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../api/client";
 import { fetchProjects } from "../api/projects";
 import type { Project } from "../api/projects";
+import { fetchRoadmapItems } from "../api/roadmap";
+import type { RoadmapItem } from "../api/roadmap";
 import HomeHeader from "../components/HomeHeader";
 import HomeFooter from "../components/HomeFooter";
 import ResultModal from "../components/ResultModal";
@@ -21,7 +23,8 @@ import ctaBg from "../assets/home/wave_cta.png";
 import roadmapBarBg from "../assets/home/wave_roadmap_bar.png";
 
 import iconPlanning from "../assets/home/icon_plannig.png";
-import iconFullstack from "../assets/home/icon_fullstack.png";
+import iconFrontend from "../assets/home/frontend.png";
+import iconBackend from "../assets/home/backend.png";
 import iconAI from "../assets/home/icon_ai.png";
 
 // Members 섹션용 import
@@ -57,11 +60,18 @@ const TRACKS: TrackCard[] = [
     icon: iconPlanning,
   },
   {
-    key: "fullstack",
-    title: "풀스택 (FE/BE)",
-    desc: "보이지 않는 생각,\n코드로 구현하다",
-    tags: "#React #FastAPI #웹개발",
-    icon: iconFullstack,
+    key: "frontend",
+    title: "프론트엔드",
+    desc: "사용자가 만나는 첫 화면,\n코드로 그려내다",
+    tags: "#React #JavaScript #UI개발",
+    icon: iconFrontend,
+  },
+  {
+    key: "backend",
+    title: "백엔드",
+    desc: "보이지 않는 곳에서\n서비스를 움직이다",
+    tags: "#Django #Python #API설계",
+    icon: iconBackend,
   },
   {
     key: "ai",
@@ -84,15 +94,15 @@ const MEMBERS: MemberCard[] = [
   {
     key: "vp",
     name: "VP 김도현",
-    roleLine: "부대표 / 풀스택",
-    tags: "#올라운더 #중앙운영단",
+    roleLine: "부대표",
+    tags: "#올라운더",
     img: vpKimdohyun,
   },
   {
     key: "pm",
     name: "PM 유정희",
     roleLine: "기획 / 디자인",
-    tags: "#창의적이고_문제해결을_좋아하는",
+    tags: "#창의적이고_문제해결을_좋아하는 #중앙운영단",
     img: pmYujeonghee,
   },
   {
@@ -190,6 +200,13 @@ export default function Home() {
 
   // ✅ 결과 모달 상태
   const [resultModal, setResultModal] = useState<ResultModalData | null>(null);
+
+  // ✅ Roadmap 상태
+  const [roadmapItems, setRoadmapItems] = useState<RoadmapItem[]>([]);
+
+  useEffect(() => {
+    fetchRoadmapItems().then(setRoadmapItems).catch(() => {});
+  }, []);
 
   // ✅ Projects 섹션 상태
   const [projects, setProjects] = useState<Project[]>([]);
@@ -340,69 +357,58 @@ export default function Home() {
           </div>
 
           <div className="home-roadmap-card">
-            <div className="road-row">
-              {["1월", "2월", "3월", "4월", "5월", "6월"].map((m) => (
-                <div key={m} className="road-month">
-                  <div className="road-month-label">{m}</div>
-                  <div className="road-dot" />
+            {(["TOP", "BOTTOM"] as const).map((half) => {
+              const halfItems = roadmapItems.filter((i) => i.half === half);
+              const months =
+                half === "TOP"
+                  ? ["1월", "2월", "3월", "4월", "5월", "6월"]
+                  : ["7월", "8월", "9월", "10월", "11월", "12월"];
+              const rows = [...new Set(halfItems.map((i) => i.row))].sort(
+                (a, b) => a - b
+              );
+
+              return (
+                <div key={half}>
+                  <div className={`road-row${half === "BOTTOM" ? " bottom" : ""}`}>
+                    {months.map((m) => (
+                      <div key={m} className="road-month">
+                        <div className="road-month-label">{m}</div>
+                        <div className="road-dot" />
+                      </div>
+                    ))}
+                    <div className="road-line" />
+                  </div>
+
+                  {rows.map((row) => {
+                    const rowItems = halfItems.filter((i) => i.row === row);
+                    const isMain = row === 0;
+                    const cls = isMain
+                      ? `road-items${half === "BOTTOM" ? " bottom" : " top"}`
+                      : `road-items-detail${half === "BOTTOM" ? " bottom" : " top"}`;
+
+                    return (
+                      <div key={row} className={cls}>
+                        {rowItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className={`road-item${!isMain ? " small" : ""}`}
+                            style={{
+                              gridColumn: `${item.col_start} / span ${item.col_span}`,
+                              background: item.bg_color,
+                              color: item.text_color,
+                            }}
+                          >
+                            {item.label}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-              <div className="road-line" />
-            </div>
-
-            <div className="road-items top">
-              <div className="road-item" style={{ gridColumn: "1 / span 2" }}>
-                아기사자 모집
-              </div>
-              <div className="road-item study" style={{ gridColumn: "3 / span 4" }}>
-                1학기 스터디
-              </div>
-            </div>
-            
-            <div className="road-items-detail top">
-              <div className="road-item small" style={{ gridColumn: "3 / span 2" }}>
-                아기사자 가입 마감
-              </div>
-              <div className="road-item small" style={{ gridColumn: "5 / span 2" }}>
-                중앙 아이디어톤
-              </div>
-            </div>
-            
-            <div className="road-items-detail top">
-              <div className="road-item small" style={{ gridColumn: "3 / span 2" }}>
-                아기사자 전체 OT
-              </div>
-            </div>
-
-            <div className="road-row bottom">
-              {["7월", "8월", "9월", "10월", "11월", "12월"].map((m) => (
-                <div key={m} className="road-month">
-                  <div className="road-month-label">{m}</div>
-                  <div className="road-dot" />
-                </div>
-              ))}
-              <div className="road-line" />
-            </div>
-
-            <div className="road-items bottom">
-              <div className="road-item" style={{ gridColumn: "1 / span 2" }}>
-                중앙 해커톤
-              </div>
-
-              <div className="road-item study align-right" style={{ gridColumn: "3 / span 4" }}>
-                2학기 스터디
-              </div>
-            </div>
-            
-            <div className="road-items-detail bottom">
-              <div className="road-item align-right" style={{ gridColumn: "3 / span 4" }}>
-                권역별 연합 해커톤 & 기업 연계 해커톤
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
-
-        <div className="section-fade-from-white" />
       </section>
 
       {/* TRACKS */}

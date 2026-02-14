@@ -90,6 +90,15 @@ export default function AdminDashboard() {
             <div className="card-title">프로젝트 관리</div>
             <div className="card-desc">프로젝트 등록 / 썸네일·PDF 업로드 / 공개 여부 관리</div>
           </button>
+
+          <button
+            className="adminDash-card"
+            type="button"
+            onClick={() => nav("/admin/roadmap")}
+          >
+            <div className="card-title">로드맵 관리</div>
+            <div className="card-desc">메인 페이지 ANNUAL ROADMAP 항목 추가 / 수정 / 삭제</div>
+          </button>
         </div>
 
         {/* ✅ 합격 알림 설정 */}

@@ -66,7 +66,7 @@ export default function Session() {
               onClick={() => handleTabClick(tab)}
               disabled={!canAccessTab(tab)}
             >
-              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI/서버", planning: "기획/디자인" }[tab]}
+              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI", planning: "기획/디자인" }[tab]}
             </button>
           ))}
         </div>

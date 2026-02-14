@@ -15,7 +15,7 @@ class Application(models.Model):
         ("PLANNING_DESIGN", "기획/디자인"),
         ("FRONTEND", "프론트엔드"),
         ("BACKEND", "백엔드"),
-        ("AI_SERVER", "AI/서버"),
+        ("AI_SERVER", "AI"),
     ]
 
     # ✅ 서류/최종 확정 분리

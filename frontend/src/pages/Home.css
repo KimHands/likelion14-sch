@@ -13,10 +13,26 @@ body.page-home {
 
 * { box-sizing: border-box; }
 
+/* 섹션 스냅 스크롤 */
+html:has(body.page-home) {
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 45px;
+}
+
 .home-root {
   width: 100%;
   overflow-x: hidden;
   background: #fff;
+}
+
+.home-hero,
+.home-about,
+.home-roadmap,
+.home-tracks,
+.home-members,
+.home-projects,
+.home-cta {
+  scroll-snap-align: start;
 }
 
 /* ✅ 사이드까지 배경 꽉 채우기(핵심) */
@@ -81,8 +97,13 @@ body.page-home {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 300px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.05), rgba(0,0,0,0.15));
+  height: 420px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(10, 14, 32, 0.35) 45%,
+    rgba(10, 14, 32, 0.75) 80%,
+    rgba(10, 14, 32, 0.92) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -179,8 +200,13 @@ body.page-home {
   top: 0;
   left: 0;
   right: 0;
-  height: 300px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.05), rgba(0,0,0,0));
+  height: 420px;
+  background: linear-gradient(to bottom,
+    rgba(10, 14, 32, 0.92) 0%,
+    rgba(10, 14, 32, 0.65) 25%,
+    rgba(10, 14, 32, 0.3) 55%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -191,8 +217,14 @@ body.page-home {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.7));
+  height: 550px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.8) 75%,
+    rgba(255, 255, 255, 1) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -260,6 +292,8 @@ body.page-home {
   font-weight: 700;
   color: rgba(255,255,255,0.78);
   max-width: 980px;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* ✅ “순천향대학교” 파트 줄간격 이상한 것 안정화 */
@@ -478,8 +512,13 @@ body.page-home {
   top: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.4), rgba(255,255,255,0.1), rgba(255,255,255,0));
+  height: 500px;
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.7) 30%,
+    rgba(255, 255, 255, 0.3) 60%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -490,8 +529,14 @@ body.page-home {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(181,195,216,0), rgba(0,0,0,0.05), rgba(0,0,0,0.1), rgba(0,0,0,0.2));
+  height: 550px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(12, 17, 38, 0.12) 25%,
+    rgba(12, 17, 38, 0.4) 55%,
+    rgba(12, 17, 38, 0.75) 80%,
+    rgba(12, 17, 38, 1) 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -522,8 +567,8 @@ _toggle: none;
 .home-tracks-grid{
   margin-top: 54px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(260px, 1fr));
-  gap: 60px;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 36px;
   align-items: start;
 }
 
@@ -649,8 +694,14 @@ _toggle: none;
   top: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.1), rgba(0,0,0,0.05), rgba(0,0,0,0));
+  height: 450px;
+  background: linear-gradient(to bottom,
+    rgba(12, 17, 38, 1) 0%,
+    rgba(12, 17, 38, 0.7) 25%,
+    rgba(12, 17, 38, 0.35) 55%,
+    rgba(12, 17, 38, 0.1) 80%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -661,8 +712,14 @@ _toggle: none;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.7));
+  height: 550px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.8) 75%,
+    rgba(255, 255, 255, 1) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -705,18 +762,18 @@ _toggle: none;
 }
 
 .home-members-grid {
-  margin-top: 50px;
+  margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(320px, 1fr));
-  gap: 34px 36px;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 24px 28px;
 }
 
 .member-card {
-  border-radius: 18px;
-  padding: 28px 26px 22px;
+  border-radius: 16px;
+  padding: 20px 22px 18px;
   background: rgba(87, 105, 167, 0.30);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
@@ -731,13 +788,13 @@ _toggle: none;
 .member-photo {
   display: flex;
   justify-content: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .member-photo-frame {
-  width: 300px;
-  height: 160px;
-  border-radius: 14px;
+  width: 260px;
+  height: 140px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.82);
   display: grid;
   place-items: center;
@@ -762,32 +819,32 @@ _toggle: none;
 }
 
 .member-photo-frame img {
-  width: 160px;
+  width: 140px;
   height: auto;
   display: block;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
 }
 
 .member-name {
   text-align: center;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 900;
   color: rgba(255, 255, 255, 0.92);
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .member-role {
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.78);
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .member-tags {
   text-align: center;
-  margin-top: 16px;
-  font-size: 16px;
+  margin-top: 12px;
+  font-size: 15px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.86);
 }
@@ -811,8 +868,12 @@ _toggle: none;
   top: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.4), rgba(255,255,255,0.1), rgba(255,255,255,0));
+  height: 200px;
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -823,8 +884,14 @@ _toggle: none;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 400px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(0,0,0,0.05), rgba(0,0,0,0.1));
+  height: 550px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(12, 17, 38, 0.1) 25%,
+    rgba(12, 17, 38, 0.35) 50%,
+    rgba(12, 17, 38, 0.7) 78%,
+    rgba(12, 17, 38, 1) 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -1110,8 +1177,13 @@ _toggle: none;
   top: 0;
   left: 0;
   right: 0;
-  height: 400px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.05), rgba(0,0,0,0.02), rgba(0,0,0,0));
+  height: 450px;
+  background: linear-gradient(to bottom,
+    rgba(12, 17, 38, 1) 0%,
+    rgba(12, 17, 38, 0.65) 30%,
+    rgba(12, 17, 38, 0.25) 60%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -1183,7 +1255,8 @@ _toggle: none;
   }
 
   .home-tracks-grid{
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
   }
 
   .track-card{

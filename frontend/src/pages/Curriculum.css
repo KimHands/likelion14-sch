@@ -3,7 +3,7 @@
 /* 전체 배경 */
 .curri-root{
   min-height: 100vh;
-  background: #ffffff;
+  background: linear-gradient(180deg, #f0f3f8 0%, #e4e9f2 40%, #dbe1ed 100%);
 }
 
 .curri-container{
@@ -23,36 +23,44 @@
   font-size: 54px;
   font-weight: 900;
   letter-spacing: -0.8px;
-  color: #000;
+  color: #1a1a2e;
 }
 
 .curri-sub{
   margin: 10px 0 0;
   font-size: 20px;
   font-weight: 800;
-  color: rgba(0,0,0,0.78);
+  color: rgba(26, 26, 46, 0.65);
 }
 
 /* 탭 */
 .curri-tabs{
   margin: 28px auto 0;
-  width: min(720px, 92vw);
+  width: min(760px, 92vw);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.18);
+  border: 1px solid rgba(0,0,0,0.12);
   overflow: hidden;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  background: #fff;
 }
 
 .curri-tab{
   height: 52px;
   border: none;
-  background: #fff;
-  color: rgba(0,0,0,0.80);
+  background: transparent;
+  color: rgba(0,0,0,0.65);
   font-weight: 900;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 17px;
+  transition: background 180ms ease, color 180ms ease;
+  position: relative;
+}
+
+.curri-tab:hover:not(.active){
+  background: rgba(31, 83, 157, 0.06);
+  color: rgba(0,0,0,0.85);
 }
 
 .curri-tab.active{
@@ -63,20 +71,27 @@
 /* 3컬럼 레이아웃 */
 .curri-grid{
   display: grid;
-  grid-template-columns: 1fr 20px 1fr 20px 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: start;
-  gap: 20px;
+  gap: 28px;
   margin-top: 40px;
 }
 
 .curri-col{
   min-height: 520px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 28px 16px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .curri-pill{
-  width: 320px;
+  width: 280px;
   max-width: 92%;
-  height: 62px;
+  height: 56px;
   border-radius: 999px;
   margin: 0 auto 24px;
   display: flex;
@@ -84,29 +99,19 @@
   justify-content: center;
   font-weight: 900;
   color: #fff;
-  font-size: 22px;
-  letter-spacing: 0.2px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
-.curri-pill.what{ background: #f3c719; }
-.curri-pill.weekly{ background: #75ca3f; }
-.curri-pill.goal{ background: #dd3f3f; }
-
-/* 가운데 세로 라인 */
-.curri-vline{
-  width: 2px;
-  height: 520px;
-  margin: 90px auto 0;
-  opacity: 0.85;
-}
-
-.curri-vline.yellow{ background: #f3c719; }
-.curri-vline.green{ background: #75ca3f; }
+.curri-pill.what{ background: linear-gradient(135deg, #f3c719, #e6b800); }
+.curri-pill.weekly{ background: linear-gradient(135deg, #75ca3f, #5fb832); }
+.curri-pill.goal{ background: linear-gradient(135deg, #dd3f3f, #c43232); }
 
 /* WHAT WE LEARN */
 .curri-list{
   margin: 0 auto;
-  width: min(420px, 92%);
+  width: min(380px, 92%);
   padding: 10px 0;
 }
 
@@ -114,13 +119,18 @@
   display: grid;
   grid-template-columns: 20px 1fr;
   gap: 12px;
-  padding: 22px 0;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.curri-bullet:last-child{
+  border-bottom: none;
 }
 
 .curri-dot{
   font-size: 26px;
   line-height: 1;
-  color: rgba(0,0,0,0.65);
+  color: rgba(0,0,0,0.5);
   margin-top: 4px;
 }
 
@@ -129,8 +139,8 @@
   align-items: center;
   gap: 10px;
   font-weight: 900;
-  font-size: 20px;
-  color: #404040;
+  font-size: 19px;
+  color: #2a2a3e;
 }
 
 .curri-emoji{
@@ -138,54 +148,53 @@
 }
 
 .curri-bullet-desc{
-  margin-top: 8px;
-  font-weight: 800;
-  font-size: 16px;
-  color: rgba(0,0,0,0.70);
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 15px;
+  color: rgba(0,0,0,0.55);
   line-height: 1.6;
 }
 
-/* ✅ WEEKLY SCHEDULE - 내부 스크롤 (레일/노드 정렬 수정 완료본) */
+/* WEEKLY SCHEDULE */
 .weekly-scroll{
-  width: min(420px, 92%);
+  width: min(380px, 92%);
   margin: 0 auto;
-  height: 420px;
+  max-height: 420px;
   overflow-y: auto;
   position: relative;
   padding: 12px 10px 12px 26px;
 }
 
 /* 스크롤바 */
-.weekly-scroll::-webkit-scrollbar{ width: 10px; }
+.weekly-scroll::-webkit-scrollbar{ width: 8px; }
 .weekly-scroll::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.14);
   border-radius: 999px;
 }
 .weekly-scroll::-webkit-scrollbar-track{
-  background: rgba(0,0,0,0.05);
+  background: rgba(0,0,0,0.03);
   border-radius: 999px;
 }
 
-/* ✅ 레일을 컨텐츠 높이에 맞춰 자동으로 늘어나게 */
 .weekly-items{
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 22px;
   padding: 6px 0 18px;
 }
 
-/* ✅ 레일: 스크롤 내려도 끊기지 않음 + 동그라미 중앙 정렬 */
+/* 레일 */
 .weekly-items::before{
   content: "";
   position: absolute;
-  left: 9px;      /* ✅ 노드(18px) 가운데 */
+  left: 7.5px;
   top: 10px;
   bottom: 10px;
   width: 3px;
-  background: #75ca3f;
+  background: linear-gradient(to bottom, #75ca3f, #5fb832);
   border-radius: 999px;
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
 .weekly-item{
@@ -202,36 +211,48 @@
   border-radius: 999px;
   border: 3px solid #75ca3f;
   background: #fff;
-  margin-top: 4px;
+  margin-top: 3px;
   box-sizing: border-box;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.weekly-item:first-child .weekly-node{
+  background: #75ca3f;
+  border-color: #75ca3f;
+}
+
+.weekly-item:last-child .weekly-node{
+  border-color: #5fb832;
 }
 
 .weekly-text{
-  font-size: 20px;
-  font-weight: 900;
-  color: #404040;
-  line-height: 1.35;
+  font-size: 18px;
+  font-weight: 800;
+  color: #3a3a4e;
+  line-height: 1.4;
 }
 
 /* GOAL */
 .goal-card{
   width: min(340px, 92%);
-  height: 260px;
   margin: 0 auto;
   border-radius: 18px;
   border: 3px solid #dd3f3f;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 40px 28px;
+  background: linear-gradient(135deg, rgba(221, 63, 63, 0.03), rgba(221, 63, 63, 0.08));
 }
 
 .goal-text{
   text-align: center;
   white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   font-weight: 900;
   font-size: 22px;
-  color: #404040;
-  line-height: 1.45;
+  color: #2a2a3e;
+  line-height: 1.5;
 }
 
 /* 하단 여백 */
@@ -243,18 +264,27 @@
 @media (max-width: 980px){
   .curri-grid{
     grid-template-columns: 1fr;
-  }
-
-  .curri-vline{
-    display: none;
+    gap: 20px;
   }
 
   .curri-col{
     min-height: auto;
-    padding-bottom: 22px;
+    padding-bottom: 28px;
   }
 
   .weekly-scroll{
-    height: 360px;
+    max-height: 360px;
+  }
+
+  .curri-tabs{
+    width: min(720px, 96vw);
+  }
+
+  .curri-tab{
+    font-size: 15px;
+  }
+
+  .curri-title{
+    font-size: 42px;
   }
 }

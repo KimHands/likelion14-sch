@@ -86,7 +86,7 @@ const TRACK_LABEL: Record<Track, string> = {
   PLANNING_DESIGN: "기획/디자인",
   FRONTEND: "프론트엔드",
   BACKEND: "백엔드",
-  AI_SERVER: "AI/서버",
+  AI_SERVER: "AI",
 };
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -317,7 +317,7 @@ export default function AdminApplicants() {
               <option value="PLANNING_DESIGN">기획/디자인</option>
               <option value="FRONTEND">프론트엔드</option>
               <option value="BACKEND">백엔드</option>
-              <option value="AI_SERVER">AI/서버</option>
+              <option value="AI_SERVER">AI</option>
             </select>
           </div>
 
