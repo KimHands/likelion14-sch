@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 TRACK_FB = [("FRONTEND", "프론트엔드"), ("BACKEND", "백엔드")]
-TRACK_AP = [("AI_SERVER", "AI/서버"), ("PLANNING_DESIGN", "기획/디자인")]
+TRACK_AP = [("AI_SERVER", "AI"), ("PLANNING_DESIGN", "기획/디자인")]
 TRACK_ALL = TRACK_FB + TRACK_AP
 
 

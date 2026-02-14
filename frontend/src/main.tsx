@@ -19,6 +19,7 @@ import Curriculum from "./pages/Curriculum";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminSessions from "./pages/AdminSessions";
 import AdminProjects from "./pages/AdminProjects";
+import AdminRoadmap from "./pages/AdminRoadmap";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
     element: (
       <RequireAuth allow={["INSTRUCTOR"]}>
         <AdminProjects />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "/admin/roadmap",
+    element: (
+      <RequireAuth allow={["INSTRUCTOR"]}>
+        <AdminRoadmap />
       </RequireAuth>
     ),
   },
