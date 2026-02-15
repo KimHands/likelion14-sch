@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./HomeHeader.css";
 import type { MeResponse } from "../auth/types";
 import { apiLogout } from "../api/auth";
-import logo from "../assets/likelion_sch_logo.png";
+import logo from "../assets/likelion_white_logo.png";
 
 type HomeHeaderProps = {
   scrolled: boolean;
