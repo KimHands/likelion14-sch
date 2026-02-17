@@ -1,19 +1,16 @@
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include
-from django.http import JsonResponse
-
-def health(request):
-    return JsonResponse({"ok": True})
+from django.urls import path
+from .views import login_view, logout_view, me_view, email_send_code, email_verify, signup_view
 
 urlpatterns = [
-    path("django-admin/", admin.site.urls),
-    path("api/health", health),
-    path("api/auth/", include("users.urls")),
-    path("api/applications/", include("applications.urls")),
-    path("api/sessions/", include("sessionsapp.urls")),
-    path("api/projects/", include("projects.urls")),
-]
+    # 안전장치: 슬래시가 있든 없든 다 받아줍니다!
+    path("login", login_view),
+    path("login/", login_view),
+    
+    path("logout", logout_view),
+    path("me", me_view),
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("email/send-code", email_send_code),
+    path("email/verify", email_verify),
+
+    path("signup", signup_view),
+]
