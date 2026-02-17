@@ -90,12 +90,12 @@ export default function AdminInterviewScore() {
         apiFetch<{ ok: boolean; doc: Score[]; interview: Score[] }>(`/api/applications/admin/${appId}/scores`),
       ]);
 
-      if ((meRes as any)?.ok !== false) {
+      if (meRes.ok !== false) {
         setMe({
-          id: (meRes as any).id,
-          email: (meRes as any).email,
-          name: (meRes as any).name,
-          role: (meRes as any).role,
+          id: meRes.id,
+          email: meRes.email,
+          name: meRes.name,
+          role: meRes.role,
         });
       }
 
@@ -106,7 +106,7 @@ export default function AdminInterviewScore() {
       }
       setApp(appRes.application);
 
-      const myId = (meRes as any)?.id;
+      const myId = meRes.id;
       if (scoreRes.ok && myId) {
         const mine = (scoreRes.interview || []).find((x) => x.reviewer?.id === myId);
         if (mine) {
@@ -133,7 +133,7 @@ export default function AdminInterviewScore() {
     if (!appId) return;
     setMsg(null);
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${appId}/scores`, {
+      const res = await apiFetch<{ ok?: boolean; errors?: unknown }>(`/api/applications/admin/${appId}/scores`, {
         method: "POST",
         body: JSON.stringify({
           kind: "INTERVIEW",
@@ -159,7 +159,7 @@ export default function AdminInterviewScore() {
     setMsg(null);
 
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${appId}/status`, {
+      const res = await apiFetch<{ ok?: boolean }>(`/api/applications/admin/${appId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });

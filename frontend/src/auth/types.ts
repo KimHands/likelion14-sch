@@ -6,6 +6,6 @@ export interface MeResponse {
   email: string;
   role: Role;
   email_verified: boolean;
-  name: String;
+  name: string;
   track?: Track; // STUDENT인 경우에만 존재
 }

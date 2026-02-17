@@ -73,7 +73,7 @@ export default function AdminProjects() {
       const inputs = document.querySelectorAll<HTMLInputElement>('.ap-form input[type="file"]');
       inputs.forEach((el) => { el.value = ""; });
       await load();
-    } catch (err) {
+    } catch {
       alert("등록 실패");
     } finally {
       setLoading(false);
