@@ -6,6 +6,7 @@ import { fetchProjects } from "../api/projects";
 import type { Project } from "../api/projects";
 import { fetchRoadmapItems } from "../api/roadmap";
 import type { RoadmapItem } from "../api/roadmap";
+import { sanitizeUrl } from "../utils/sanitizeUrl";
 import HomeHeader from "../components/HomeHeader";
 import HomeFooter from "../components/HomeFooter";
 import ResultModal from "../components/ResultModal";
@@ -121,6 +122,7 @@ function useTypewriter(text: string, speedMs: number, enabled = true) {
   useEffect(() => {
     if (!enabled) return;
     let i = 0;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOut("");
     setDone(false);
 
@@ -244,9 +246,9 @@ export default function Home() {
     const fetchMyResult = async () => {
       try {
         // ✅ 백엔드 코드가 /api/results/my 라고 했으니 그대로 맞춤
-        const res = await apiFetch<any>("/api/applications/results/my");
+        const res = await apiFetch<{ ok?: boolean; result?: ResultModalData }>("/api/applications/results/my");
         if (res?.ok && res.result) {
-          setResultModal(res.result as ResultModalData);
+          setResultModal(res.result);
         }
       } catch {
         // 결과 없거나 권한 없으면 그냥 무시
@@ -561,7 +563,7 @@ export default function Home() {
                     <button
                       className="pill-btn"
                       type="button"
-                      onClick={() => window.open(centerProj.github_url, "_blank")}
+                      onClick={() => { const url = sanitizeUrl(centerProj.github_url); if (url) window.open(url, "_blank"); }}
                     >
                       깃허브 링크
                     </button>
@@ -608,7 +610,7 @@ export default function Home() {
         <div className="pdf-modal-overlay" onClick={() => setPdfModal(null)}>
           <div className="pdf-modal" onClick={(e) => e.stopPropagation()}>
             <button className="pdf-modal-close" type="button" onClick={() => setPdfModal(null)}>✕</button>
-            <iframe className="pdf-modal-iframe" src={pdfModal} title="PDF Viewer" />
+            <iframe className="pdf-modal-iframe" src={sanitizeUrl(pdfModal)} title="PDF Viewer" />
           </div>
         </div>
       )}

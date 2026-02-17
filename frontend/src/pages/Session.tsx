@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../auth/useAuth";
+import { sanitizeUrl } from "../utils/sanitizeUrl";
 import {
   TRACK_TO_DB,
   fetchQuizzes, submitQuizAnswer, createQuiz,
@@ -18,8 +19,10 @@ type MainTab = "frontend" | "backend" | "ai" | "planning";
 export default function Session() {
   const { me } = useAuth();
   const [mainTab, setMainTab] = useState<MainTab>("ai");
+  const prevTrack = useRef(me?.track);
 
-  useEffect(() => {
+  if (me?.track !== prevTrack.current) {
+    prevTrack.current = me?.track;
     if (me?.track) {
       const trackMap: Record<string, MainTab> = {
         FRONTEND: "frontend",
@@ -29,7 +32,7 @@ export default function Session() {
       };
       setMainTab(trackMap[me.track] || "ai");
     }
-  }, [me]);
+  }
 
   const canAccessTab = (tab: MainTab): boolean => {
     if (me?.role === "INSTRUCTOR") return true;
@@ -441,7 +444,7 @@ function AssignmentTab({
                 {selectedAssignment.submissions.map((s: SubmissionItem) => (
                   <tr key={s.id}>
                     <td>{s.student_name}</td>
-                    <td><a href={s.link} target="_blank" rel="noreferrer" className="link-text">{s.link}</a></td>
+                    <td><a href={sanitizeUrl(s.link)} target="_blank" rel="noreferrer" className="link-text">{s.link}</a></td>
                     <td>{new Date(s.submitted_at).toLocaleDateString()}</td>
                     {showReadStatus && (
                       <td>
@@ -581,6 +584,7 @@ function PlanningTab({ trackLabel, desc, role }: { trackLabel: string; desc: str
     }
   }, [dbTrack, role]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { loadData(); }, [loadData]);
 
   /* ── Calendar logic ── */
@@ -819,7 +823,7 @@ function PlanningTab({ trackLabel, desc, role }: { trackLabel: string; desc: str
             <p><strong>제출일:</strong> {new Date(selectedSubmission.submission.submitted_at).toLocaleString()}</p>
             <p>
               <strong>링크:</strong>{" "}
-              <a href={selectedSubmission.submission.link} target="_blank" rel="noreferrer" className="link-text">
+              <a href={sanitizeUrl(selectedSubmission.submission.link)} target="_blank" rel="noreferrer" className="link-text">
                 {selectedSubmission.submission.link}
               </a>
             </p>
