@@ -107,7 +107,7 @@ const EMPTY_FORM: ApplyUIForm = {
   frontend_design_implementation: "",
 };
 
-function safeStr(v: any) {
+function safeStr(v: unknown) {
   return typeof v === "string" ? v : "";
 }
 
@@ -182,10 +182,12 @@ export default function Apply() {
   };
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
 
-    Promise.all([apiFetch<MeResponse>("/api/auth/me"), apiFetch<MyResponse>("/api/applications/my")])
-      .then(([meRes, myRes]) => {
+    (async () => {
+      try {
+        const [meRes, myRes] = await Promise.all([apiFetch<MeResponse>("/api/auth/me"), apiFetch<MyResponse>("/api/applications/my")]);
+        if (cancelled) return;
         const local = (meRes.email || "").split("@")[0] || "";
         setForm((prev) => ({
           ...prev,
@@ -220,11 +222,14 @@ export default function Apply() {
         }
 
         setStep(myRes.status !== "DRAFT" ? 3 : 1);
-      })
-      .catch(() => {
-        showToast("지원서/유저 정보를 불러오지 못했습니다.", "error");
-      })
-      .finally(() => setLoading(false));
+      } catch {
+        if (!cancelled) showToast("지원서/유저 정보를 불러오지 못했습니다.", "error");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -273,7 +278,7 @@ export default function Apply() {
   const saveDraft = async () => {
     try {
       const payload = toPayload();
-      const res = await apiFetch<any>("/api/applications/draft", {
+      const res = await apiFetch<{ ok?: boolean; errors?: Record<string, string[]> }>("/api/applications/draft", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -373,7 +378,7 @@ export default function Apply() {
 
     try {
       const payload = toPayload();
-      const res = await apiFetch<any>("/api/applications/submit", {
+      const res = await apiFetch<{ ok?: boolean; errors?: Record<string, string[]>; status?: MyResponse["status"] }>("/api/applications/submit", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -400,13 +405,13 @@ export default function Apply() {
     return (
       <button type="button" onClick={() => scrollToStep(idx)} className="apply-step-btn" aria-label={`${idx}단계 ${label} 이동`}>
         <div className="apply-step-item">
-          <div className="apply-step-dot" style={{ ["--dot-color" as any]: color, ["--dot-shadow" as any]: shadow }} />
+          <div className="apply-step-dot" style={{ "--dot-color": color, "--dot-shadow": shadow } as React.CSSProperties} />
           <div
             className="apply-step-label"
             style={{
-              ["--label-color" as any]: active ? "#17538D" : "#333",
-              ["--label-weight" as any]: active ? 900 : 700,
-            }}
+              "--label-color": active ? "#17538D" : "#333",
+              "--label-weight": active ? 900 : 700,
+            } as React.CSSProperties}
           >
             {idx}. {label}
           </div>

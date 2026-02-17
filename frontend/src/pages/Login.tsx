@@ -33,14 +33,14 @@ export default function Login() {
 
       // 프로젝트에 따라 login이 그냥 200 + 토큰쿠키 세팅일 수 있어서
       // ok 없어도 성공 취급(실패는 catch로 오거나 ok:false로 오게 보통 구성)
-      if ((res as any)?.ok === false) {
+      if (res?.ok === false) {
         setMsg("로그인에 실패했습니다. 입력 정보를 확인해주세요.");
         return;
       }
 
       // 로그인 성공 후 이동(원하는 라우트로 바꿔도 됨)
       nav("/");
-    } catch (err: any) {
+    } catch {
       setMsg("로그인에 실패했습니다. 입력 정보를 확인해주세요.");
     } finally {
       setLoading(false);
