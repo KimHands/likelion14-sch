@@ -1,4 +1,6 @@
-import json, random
+import json
+import logging
+import secrets
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -8,11 +10,12 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .models import EmailVerification
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 EMAIL_CODE_EXPIRE_MINUTES = 2
 EMAIL_VERIFICATION_VALID_MINUTES = 10  # ✅ 인증 성공 후 회원가입 가능 유효시간(10분)
@@ -25,7 +28,6 @@ def _json(request):
         return {}
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def email_send_code(request):
     """
@@ -47,14 +49,16 @@ def email_send_code(request):
     if user and user.email_verified:
         return JsonResponse({"ok": True, "already_verified": True, "expires_in": 0})
 
-    code = f"{random.randint(100000, 999999)}"
+    code = f"{secrets.randbelow(900000) + 100000}"
     expires_at = timezone.now() + timedelta(minutes=EMAIL_CODE_EXPIRE_MINUTES)
+
+    # 이전 인증코드 삭제 (코드 재사용 방지)
+    EmailVerification.objects.filter(email=email, verified_at__isnull=True).delete()
 
     EmailVerification.objects.create(
         email=email,
         code_hash=make_password(code),
         expires_at=expires_at,
-        # verified_at은 기본 None
     )
 
     send_mail(
@@ -64,12 +68,11 @@ def email_send_code(request):
         recipient_list=[email],
     )
 
-    print(f"[EMAIL VERIFY] to={email} code={code} expires_in={EMAIL_CODE_EXPIRE_MINUTES*60}")
+    logger.debug("[EMAIL VERIFY] to=%s expires_in=%d", email, EMAIL_CODE_EXPIRE_MINUTES * 60)
 
     return JsonResponse({"ok": True, "expires_in": EMAIL_CODE_EXPIRE_MINUTES * 60})
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def email_verify(request):
     """
@@ -90,14 +93,9 @@ def email_verify(request):
         .first()
     )
 
-    if not record:
-        return JsonResponse({"ok": False, "error": "NO_CODE"}, status=400)
-
-    if record.is_expired():
-        return JsonResponse({"ok": False, "error": "EXPIRED"}, status=400)
-
-    if not check_password(code, record.code_hash):
-        return JsonResponse({"ok": False, "error": "INVALID"}, status=400)
+    # 통일된 에러 메시지로 이메일 열거 공격 방지
+    if not record or record.is_expired() or not check_password(code, record.code_hash):
+        return JsonResponse({"ok": False, "error": "INVALID_OR_EXPIRED"}, status=400)
 
     # ✅ 인증 완료 기록 남김 (회원가입 전/후 모두)
     record.verified_at = timezone.now()
@@ -113,7 +111,6 @@ def email_verify(request):
     return JsonResponse({"ok": True, "verified": True, "user_exists": True})
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def login_view(request):
     data = _json(request)
@@ -128,7 +125,6 @@ def login_view(request):
     return JsonResponse({"ok": True})
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def logout_view(request):
     logout(request)
@@ -143,6 +139,14 @@ _TRACK_TO_FRONTEND = {
 }
 
 
+@ensure_csrf_cookie
+@require_http_methods(["GET"])
+def csrf_cookie_view(request):
+    """CSRF 쿠키를 설정하는 엔드포인트 (로그인/회원가입 전 호출)"""
+    return JsonResponse({"ok": True})
+
+
+@ensure_csrf_cookie
 @require_http_methods(["GET"])
 @login_required
 def me_view(request):
@@ -167,7 +171,6 @@ def me_view(request):
     return JsonResponse(data)
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def signup_view(request):
     """

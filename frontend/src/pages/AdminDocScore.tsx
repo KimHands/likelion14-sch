@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiFetch } from "../api/client";
+import { sanitizeUrl } from "../utils/sanitizeUrl";
 import "./AdminDocScore.css";
 
 type Track = "PLANNING_DESIGN" | "FRONTEND" | "BACKEND" | "AI_SERVER";
@@ -99,12 +100,12 @@ export default function AdminDocScore() {
         apiFetch<{ ok: boolean; doc: Score[]; interview: Score[] }>(`/api/applications/admin/${appId}/scores`),
       ]);
 
-      if ((meRes as any)?.ok !== false) {
+      if (meRes.ok !== false) {
         setMe({
-          id: (meRes as any).id,
-          email: (meRes as any).email,
-          name: (meRes as any).name,
-          role: (meRes as any).role,
+          id: meRes.id,
+          email: meRes.email,
+          name: meRes.name,
+          role: meRes.role,
         });
       }
 
@@ -116,7 +117,7 @@ export default function AdminDocScore() {
       setApp(appRes.application);
 
       // ✅ 내가 이전에 저장한 DOC 점수 있으면 자동 로드
-      const myId = (meRes as any)?.id;
+      const myId = meRes.id;
       if (scoreRes.ok && myId) {
         const mine = (scoreRes.doc || []).find((x) => x.reviewer?.id === myId);
         if (mine) {
@@ -143,7 +144,7 @@ export default function AdminDocScore() {
     if (!appId) return;
     setMsg(null);
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${appId}/scores`, {
+      const res = await apiFetch<{ ok?: boolean; errors?: unknown }>(`/api/applications/admin/${appId}/scores`, {
         method: "POST",
         body: JSON.stringify({
           kind: "DOC",
@@ -168,7 +169,7 @@ export default function AdminDocScore() {
     if (!appId) return;
     setMsg(null);
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${appId}/status`, {
+      const res = await apiFetch<{ ok?: boolean }>(`/api/applications/admin/${appId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
@@ -226,8 +227,8 @@ export default function AdminDocScore() {
               {tab === "PORTFOLIO" && (
                 <div className="links">
                   <div className="link-box">
-                    {app.portfolio_url ? (
-                      <a href={app.portfolio_url} target="_blank" rel="noreferrer">
+                    {sanitizeUrl(app.portfolio_url) ? (
+                      <a href={sanitizeUrl(app.portfolio_url)} target="_blank" rel="noreferrer">
                         [Link] {app.portfolio_url}
                       </a>
                     ) : (

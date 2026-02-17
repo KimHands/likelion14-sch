@@ -4,12 +4,10 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    // ✅ ngrok 같은 외부 도메인 접속 허용
-    // (임시 피드백용이면 allowedHosts: "all" 이 제일 편함)
     allowedHosts: [
       "localhost",
       "127.0.0.1",
-      "ester-parsonic-iconically.ngrok-free.dev",
+      ...(process.env.VITE_ALLOWED_HOST ? [process.env.VITE_ALLOWED_HOST] : []),
     ],
 
     proxy: {

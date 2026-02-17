@@ -31,15 +31,11 @@ export default function HomeHeader({
 
 
   const handleLogout = async () => {
-    console.log('로그아웃 시작...');
     try {
-      const result = await apiLogout();
-      console.log('로그아웃 API 성공:', result);
-    } catch (error) {
-      console.error('로그아웃 API 실패:', error);
+      await apiLogout();
+    } catch {
+      // API 실패해도 클라이언트 측 로그아웃 처리 진행
     } finally {
-      // API 성공/실패 여부와 관계없이 클라이언트 측 로그아웃 처리
-      console.log('localStorage 정리 및 페이지 리로드');
       localStorage.clear(); // 모든 localStorage 정리
       sessionStorage.clear(); // 모든 sessionStorage 정리
       

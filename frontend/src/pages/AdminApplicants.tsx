@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../api/client";
+import { sanitizeUrl } from "../utils/sanitizeUrl";
 import "./AdminApplicants.css";
 import { useNavigate } from "react-router-dom";
 
@@ -103,7 +104,7 @@ const DECISION_LABEL = (v?: Decision) => {
   return "미확정";
 };
 
-function safeStr(v: any) {
+function safeStr(v: unknown) {
   return typeof v === "string" ? v : "";
 }
 
@@ -242,7 +243,7 @@ export default function AdminApplicants() {
     if (!ok) return;
 
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${openRowId}/doc-finalize`, {
+      const res = await apiFetch<{ ok?: boolean }>(`/api/applications/admin/${openRowId}/doc-finalize`, {
         method: "PATCH",
         body: JSON.stringify({ decision }),
       });
@@ -279,7 +280,7 @@ export default function AdminApplicants() {
     if (!ok) return;
 
     try {
-      const res = await apiFetch<any>(`/api/applications/admin/${openRowId}/finalize`, {
+      const res = await apiFetch<{ ok?: boolean }>(`/api/applications/admin/${openRowId}/finalize`, {
         method: "PATCH",
         body: JSON.stringify({ decision }),
       });
@@ -312,7 +313,7 @@ export default function AdminApplicants() {
         <div className="filter-box">
           <div className="filter-col">
             <div className="filter-label big">파트</div>
-            <select className="filter-select" value={track} onChange={(e) => setTrack(e.target.value as any)}>
+            <select className="filter-select" value={track} onChange={(e) => setTrack(e.target.value as Track | "ALL")}>
               <option value="ALL">전체</option>
               <option value="PLANNING_DESIGN">기획/디자인</option>
               <option value="FRONTEND">프론트엔드</option>
@@ -325,7 +326,7 @@ export default function AdminApplicants() {
 
           <div className="filter-col">
             <div className="filter-label big">상태</div>
-            <select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value as any)}>
+            <select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value as Status | "ALL")}>
               <option value="ALL">전체</option>
               <option value="DRAFT">작성중</option>
               <option value="SUBMITTED">제출완료</option>
@@ -480,8 +481,8 @@ export default function AdminApplicants() {
                                 <div className="detail-item big">
                                   <div className="detail-label big">포트폴리오</div>
                                   <div className="detail-value big">
-                                    {it.portfolio_url ? (
-                                      <a href={it.portfolio_url} target="_blank" rel="noreferrer">
+                                    {sanitizeUrl(it.portfolio_url) ? (
+                                      <a href={sanitizeUrl(it.portfolio_url)} target="_blank" rel="noreferrer">
                                         {it.portfolio_url}
                                       </a>
                                     ) : (
