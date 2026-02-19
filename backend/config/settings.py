@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "sessionsapp",
     "users",
     "projects",
+    "roadmap",
 ]
 
 MIDDLEWARE = [

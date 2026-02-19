@@ -25,7 +25,7 @@ services:
       - DB_PATH=/app/db/db.sqlite3
     volumes:
       - db_data:/app/db           # SQLite DB 영구 저장
-      - ./data/media:app/media     # 업로드 파일 영구 저장
+      - ./data/media:/app/media     # 업로드 파일 영구 저장
       - ./data/static:/app/staticfiles # 정적 파일 모음
     expose:
       - "8000"
