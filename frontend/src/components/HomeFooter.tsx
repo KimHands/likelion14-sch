@@ -1,5 +1,6 @@
 import "./HomeFooter.css";
 import instagramIcon from "../assets/icons/Instagram.png";
+import githubIcon from "../assets/icons/github.png";
 
 export default function HomeFooter() {
   return (
@@ -13,7 +14,7 @@ export default function HomeFooter() {
             <span>@likelion_sch</span>
           </div>
           <div className="contact-row">
-            <img src={instagramIcon} alt="Instagram" className="contact-icon" />
+            <img src={githubIcon} alt="GitHub" className="contact-icon" />
             <span>@LikeLionSCH</span>
           </div>
         </div>
