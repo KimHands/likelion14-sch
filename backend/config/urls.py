@@ -8,7 +8,7 @@ def health(request):
     return JsonResponse({"ok": True})
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("django-admin/", admin.site.urls),
     path("api/health", health),
     path("api/auth/", include("users.urls")),
     path("api/applications/", include("applications.urls")),
