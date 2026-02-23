@@ -40,15 +40,19 @@ class MyResultView(APIView):
 
         # ✅ 데이터베이스에서 설정 가져오기
         settings = ResultNotificationSettings.get_settings()
-        
+
+        # ✅ 공개 플래그 미설정 시 PENDING 반환
+        effective_doc = doc_decision if settings.doc_result_open else "PENDING"
+        effective_final = final_decision if settings.final_result_open else "PENDING"
+
         result = {
             "name": getattr(u, "name", "") or "-",
             "student_id": getattr(u, "student_id", "") or "-",
             "department": getattr(u, "department", "") or "-",
             "track": app.track,
 
-            "doc_decision": doc_decision,
-            "final_decision": final_decision,
+            "doc_decision": effective_doc,
+            "final_decision": effective_final,
 
             # ✅ DB에서 가져온 안내 정보 (개별 설정 있으면 우선, 없으면 전역 설정 사용)
             "interview_location": app.personal_interview_location or settings.interview_location,

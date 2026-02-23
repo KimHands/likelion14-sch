@@ -101,6 +101,100 @@ export default function AdminDashboard() {
           </button>
         </div>
 
+        {/* ✅ 결과 공개 관리 */}
+        {settings && (
+          <div className="result-visibility-section">
+            <h2 className="result-visibility-title">결과 공개 관리</h2>
+            <div className="result-visibility-grid">
+              <div className="result-visibility-item">
+                <div className="result-visibility-label">서류 결과</div>
+                <span className={`result-visibility-badge ${settings.doc_result_open ? "open" : "closed"}`}>
+                  {settings.doc_result_open ? "공개 중" : "비공개"}
+                </span>
+                <div className="result-visibility-actions">
+                  <button
+                    className="visibility-btn open-btn"
+                    type="button"
+                    disabled={settings.doc_result_open}
+                    onClick={async () => {
+                      if (!window.confirm("서류 결과를 지금 공개할까요?\n모든 지원자가 서류 합격/불합격 결과를 확인할 수 있게 됩니다.")) return;
+                      try {
+                        const updated = await updateNotificationSettings({ doc_result_open: true });
+                        setSettings(updated);
+                        setEditForm(updated);
+                      } catch {
+                        alert("설정 변경에 실패했습니다.");
+                      }
+                    }}
+                  >
+                    공개
+                  </button>
+                  <button
+                    className="visibility-btn close-btn"
+                    type="button"
+                    disabled={!settings.doc_result_open}
+                    onClick={async () => {
+                      if (!window.confirm("서류 결과를 비공개로 전환할까요?")) return;
+                      try {
+                        const updated = await updateNotificationSettings({ doc_result_open: false });
+                        setSettings(updated);
+                        setEditForm(updated);
+                      } catch {
+                        alert("설정 변경에 실패했습니다.");
+                      }
+                    }}
+                  >
+                    비공개
+                  </button>
+                </div>
+              </div>
+
+              <div className="result-visibility-item">
+                <div className="result-visibility-label">최종 결과</div>
+                <span className={`result-visibility-badge ${settings.final_result_open ? "open" : "closed"}`}>
+                  {settings.final_result_open ? "공개 중" : "비공개"}
+                </span>
+                <div className="result-visibility-actions">
+                  <button
+                    className="visibility-btn open-btn"
+                    type="button"
+                    disabled={settings.final_result_open}
+                    onClick={async () => {
+                      if (!window.confirm("최종 결과를 지금 공개할까요?\n모든 지원자가 최종 합격/불합격 결과를 확인할 수 있게 됩니다.")) return;
+                      try {
+                        const updated = await updateNotificationSettings({ final_result_open: true });
+                        setSettings(updated);
+                        setEditForm(updated);
+                      } catch {
+                        alert("설정 변경에 실패했습니다.");
+                      }
+                    }}
+                  >
+                    공개
+                  </button>
+                  <button
+                    className="visibility-btn close-btn"
+                    type="button"
+                    disabled={!settings.final_result_open}
+                    onClick={async () => {
+                      if (!window.confirm("최종 결과를 비공개로 전환할까요?")) return;
+                      try {
+                        const updated = await updateNotificationSettings({ final_result_open: false });
+                        setSettings(updated);
+                        setEditForm(updated);
+                      } catch {
+                        alert("설정 변경에 실패했습니다.");
+                      }
+                    }}
+                  >
+                    비공개
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ✅ 합격 알림 설정 */}
         <div className="notification-settings-section">
           <div className="settings-header">

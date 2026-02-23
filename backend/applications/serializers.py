@@ -196,6 +196,8 @@ class ResultNotificationSettingsSerializer(serializers.ModelSerializer):
             "interview_date",
             "interview_deadline",
             "ot_datetime",
+            "doc_result_open",
+            "final_result_open",
             "updated_at",
         ]
         read_only_fields = ["updated_at"]

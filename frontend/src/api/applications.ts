@@ -6,6 +6,8 @@ export interface ResultNotificationSettings {
   interview_date: string;
   interview_deadline: string;
   ot_datetime: string;
+  doc_result_open: boolean;
+  final_result_open: boolean;
   updated_at: string;
 }
 

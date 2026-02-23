@@ -63,6 +63,103 @@
   .adminDash-grid{ grid-template-columns: 1fr; }
 }
 
+/* ✅ 결과 공개 관리 섹션 */
+.result-visibility-section {
+  margin-top: 60px;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 18px;
+  text-align: left;
+}
+
+.result-visibility-title {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0 0 28px;
+}
+
+.result-visibility-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .result-visibility-grid { grid-template-columns: 1fr; }
+}
+
+.result-visibility-item {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.result-visibility-label {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.result-visibility-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.result-visibility-badge.open {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.result-visibility-badge.closed {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.result-visibility-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.visibility-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.visibility-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.open-btn {
+  background: #1e7e34;
+  color: white;
+}
+
+.open-btn:hover:not(:disabled) {
+  background: #155727;
+}
+
+.close-btn {
+  background: #c5221f;
+  color: white;
+}
+
+.close-btn:hover:not(:disabled) {
+  background: #a71c18;
+}
+
 /* ✅ 합격 알림 설정 섹션 */
 .notification-settings-section {
   margin-top: 60px;

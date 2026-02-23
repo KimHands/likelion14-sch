@@ -177,6 +177,10 @@ class ResultNotificationSettings(models.Model):
         verbose_name="OT 일시"
     )
 
+    # 결과 공개 여부
+    doc_result_open = models.BooleanField(default=False, verbose_name="서류 결과 공개 여부")
+    final_result_open = models.BooleanField(default=False, verbose_name="최종 결과 공개 여부")
+
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
