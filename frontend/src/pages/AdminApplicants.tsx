@@ -133,12 +133,16 @@ function fmtAvg(v: number | null | undefined) {
 
 /**
  * ✅ 채점자 표시 정책
- * - 점수 없으면: 채점자 A/B/C
+ * - 점수 없으면: 채점자 A/B/C(/D)
  * - 점수 있으면: 운영진 이름만 표시 (점수 표시 X)
+ * - 기획/디자인, AI 파트: 채점자 4명 (A/B/C/D)
+ * - 프론트엔드, 백엔드 파트: 채점자 3명 (A/B/C)
  */
-function getReviewerSlots(scores: ApplicationScore[] | undefined) {
+function getReviewerSlots(scores: ApplicationScore[] | undefined, track: Track) {
   const s = [...(scores ?? [])].sort((a, b) => (a.reviewer?.id ?? 0) - (b.reviewer?.id ?? 0));
-  const slots = ["A", "B", "C"] as const;
+  const slots = (track === "PLANNING_DESIGN" || track === "AI_SERVER")
+    ? ["A", "B", "C", "D"]
+    : ["A", "B", "C"];
 
   return slots.map((label, idx) => {
     const sc = s[idx];
@@ -457,8 +461,8 @@ export default function AdminApplicants() {
                   const interviewAvg = fmtAvg(it.interview_avg);
                   const totalAvg = fmtAvg(it.total_avg);
 
-                  const docSlots = getReviewerSlots(it.doc_scores);
-                  const interviewSlots = getReviewerSlots(it.interview_scores);
+                  const docSlots = getReviewerSlots(it.doc_scores, it.track);
+                  const interviewSlots = getReviewerSlots(it.interview_scores, it.track);
 
                   return (
                     <React.Fragment key={it.id}>
