@@ -8,6 +8,7 @@ from .views_admin import (
     AdminApplicationDocFinalizeView,
     AdminApplicationFinalizeView,
     AdminResultNotificationSettingsView,
+    AdminPersonalInterviewScheduleView,
 )
 from .view_results import MyResultView
 
@@ -26,6 +27,9 @@ urlpatterns = [
     # ✅ 확정 API (서류/최종 분리)
     path("admin/<int:app_id>/doc-finalize", AdminApplicationDocFinalizeView.as_view()),
     path("admin/<int:app_id>/finalize", AdminApplicationFinalizeView.as_view()),
+
+    # ✅ 개별 면접 일정
+    path("admin/<int:app_id>/interview-schedule", AdminPersonalInterviewScheduleView.as_view()),
     
     # ✅ 합격 알림 설정 API
     path("admin/notification-settings", AdminResultNotificationSettingsView.as_view()),

@@ -71,6 +71,10 @@ class Application(models.Model):
     final_decision = models.CharField(max_length=20, choices=DECISION_CHOICES, default="PENDING")
     finalized_at = models.DateTimeField(null=True, blank=True)
 
+    # ✅ 개별 면접 일정 (운영진이 직접 지정, 비어있으면 전역 설정 사용)
+    personal_interview_datetime = models.CharField(max_length=100, blank=True, verbose_name="개별 면접 일시")
+    personal_interview_location = models.CharField(max_length=200, blank=True, verbose_name="개별 면접 장소")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

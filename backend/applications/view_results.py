@@ -50,9 +50,9 @@ class MyResultView(APIView):
             "doc_decision": doc_decision,
             "final_decision": final_decision,
 
-            # ✅ DB에서 가져온 안내 정보
-            "interview_location": settings.interview_location,
-            "interview_date": settings.interview_date,
+            # ✅ DB에서 가져온 안내 정보 (개별 설정 있으면 우선, 없으면 전역 설정 사용)
+            "interview_location": app.personal_interview_location or settings.interview_location,
+            "interview_date": app.personal_interview_datetime or settings.interview_date,
             "interview_deadline": settings.interview_deadline,
             "ot_datetime": settings.ot_datetime,
         }

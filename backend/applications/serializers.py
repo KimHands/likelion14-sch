@@ -105,6 +105,9 @@ class AdminApplicationSerializer(serializers.ModelSerializer):
             "doc_decision", "doc_finalized_at",
             "final_decision", "finalized_at",
 
+            # ✅ 개별 면접 일정
+            "personal_interview_datetime", "personal_interview_location",
+
             # ✅ 평균/카운트
             "doc_avg", "interview_avg", "total_avg",
             "doc_count", "interview_count",
@@ -176,6 +179,12 @@ class ApplicationScoreUpsertSerializer(serializers.Serializer):
 # ✅ 서류/최종 확정 요청용
 class AdminDecisionFinalizeSerializer(serializers.Serializer):
     decision = serializers.ChoiceField(choices=["ACCEPTED", "REJECTED"])
+
+
+# ✅ 개별 면접 일정 설정 Serializer
+class PersonalInterviewScheduleSerializer(serializers.Serializer):
+    personal_interview_datetime = serializers.CharField(required=False, allow_blank=True, default="")
+    personal_interview_location = serializers.CharField(required=False, allow_blank=True, default="")
 
 
 # ✅ 합격 알림 설정 Serializer

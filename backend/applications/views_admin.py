@@ -17,6 +17,7 @@ from .serializers import (
     ApplicationScoreUpsertSerializer,
     AdminDecisionFinalizeSerializer,
     ResultNotificationSettingsSerializer,
+    PersonalInterviewScheduleSerializer,
 )
 
 
@@ -253,6 +254,25 @@ class AdminApplicationFinalizeView(APIView):
 
         app.save(update_fields=["final_decision", "finalized_at", "updated_at"])
         return Response({"ok": True, "final_decision": app.final_decision}, status=200)
+
+
+class AdminPersonalInterviewScheduleView(APIView):
+    """
+    ✅ 개별 면접 일정 설정
+    PATCH /api/applications/admin/<app_id>/interview-schedule
+    body: { personal_interview_datetime, personal_interview_location }
+    """
+    permission_classes = [IsInstructorOrStaff]
+
+    def patch(self, request, app_id: int):
+        app = get_object_or_404(Application, id=app_id)
+        ser = PersonalInterviewScheduleSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({"ok": False, "errors": ser.errors}, status=400)
+        app.personal_interview_datetime = ser.validated_data.get("personal_interview_datetime", "")
+        app.personal_interview_location = ser.validated_data.get("personal_interview_location", "")
+        app.save(update_fields=["personal_interview_datetime", "personal_interview_location", "updated_at"])
+        return Response({"ok": True}, status=200)
 
 
 class AdminResultNotificationSettingsView(APIView):

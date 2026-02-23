@@ -88,6 +88,10 @@ type AdminApplication = {
 
   final_decision?: Decision;
   finalized_at?: string | null;
+
+  // ✅ 개별 면접 일정
+  personal_interview_datetime?: string | null;
+  personal_interview_location?: string | null;
 };
 
 type AdminListResponse = {
@@ -174,6 +178,9 @@ export default function AdminApplicants() {
   // 토글
   const [openRowId, setOpenRowId] = useState<number | null>(null);
 
+  // 개별 면접 일정 폼
+  const [scheduleForm, setScheduleForm] = useState({ datetime: "", location: "" });
+
   // 토스트(플로팅 메시지)
   const [toast, setToast] = useState<string | null>(null);
   const showToast = (msg: string) => {
@@ -227,7 +234,18 @@ export default function AdminApplicants() {
     setPage(1);
   }, [q, track, status, sort]);
 
-  const onToggleRow = (id: number) => setOpenRowId((prev) => (prev === id ? null : id));
+  const onToggleRow = (id: number) => {
+    if (openRowId === id) {
+      setOpenRowId(null);
+    } else {
+      const target = items.find((x) => x.id === id);
+      setScheduleForm({
+        datetime: target?.personal_interview_datetime ?? "",
+        location: target?.personal_interview_location ?? "",
+      });
+      setOpenRowId(id);
+    }
+  };
 
   const selected = useMemo(() => {
     if (!openRowId) return null;
@@ -315,6 +333,27 @@ export default function AdminApplicants() {
       await fetchList();
     } catch {
       showToast("최종 확정 실패");
+    }
+  };
+
+  // ✅ 개별 면접 일정 저장
+  const saveSchedule = async (appId: number) => {
+    try {
+      const res = await apiFetch<{ ok?: boolean }>(`/api/applications/admin/${appId}/interview-schedule`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          personal_interview_datetime: scheduleForm.datetime,
+          personal_interview_location: scheduleForm.location,
+        }),
+      });
+      if (res?.ok === false) {
+        showToast("일정 저장 실패");
+        return;
+      }
+      showToast("개별 면접 일정 저장 완료");
+      await fetchList();
+    } catch {
+      showToast("일정 저장 실패");
     }
   };
 
@@ -497,6 +536,16 @@ export default function AdminApplicants() {
                           <td colSpan={9}>
                             <div className="detail-box">
                               <div className="detail-left">
+                                <div className="applicant-info-bar">
+                                  <span className="applicant-info-item"><span className="applicant-info-label">이름</span>{it.user?.name || "-"}</span>
+                                  <span className="applicant-info-divider" />
+                                  <span className="applicant-info-item"><span className="applicant-info-label">학과</span>{it.user?.department || "-"}</span>
+                                  <span className="applicant-info-divider" />
+                                  <span className="applicant-info-item"><span className="applicant-info-label">연락처</span>{it.user?.phone || "-"}</span>
+                                  <span className="applicant-info-divider" />
+                                  <span className="applicant-info-item"><span className="applicant-info-label">학번</span>{it.user?.student_id || "-"}</span>
+                                </div>
+
                                 <div className="detail-title big">제출 내용</div>
 
                                 <div className="detail-item big">
@@ -614,6 +663,39 @@ export default function AdminApplicants() {
                                   <div className="score-divider" />
                                   <div className="score-total big">총점: {totalAvg === "0.0" ? "-" : totalAvg}</div>
                                 </div>
+
+                                {it.doc_decision === "ACCEPTED" && (
+                                  <div className="schedule-form" onClick={(e) => e.stopPropagation()}>
+                                    <div className="schedule-form-title">개별 면접 일정</div>
+                                    <label className="schedule-label">
+                                      면접 일시
+                                      <input
+                                        className="schedule-input"
+                                        type="text"
+                                        placeholder="예: 2026년 03월 05일 14:00"
+                                        value={scheduleForm.datetime}
+                                        onChange={(e) => setScheduleForm((f) => ({ ...f, datetime: e.target.value }))}
+                                      />
+                                    </label>
+                                    <label className="schedule-label">
+                                      면접 장소
+                                      <input
+                                        className="schedule-input"
+                                        type="text"
+                                        placeholder="예: RC218 1호"
+                                        value={scheduleForm.location}
+                                        onChange={(e) => setScheduleForm((f) => ({ ...f, location: e.target.value }))}
+                                      />
+                                    </label>
+                                    <button
+                                      className="schedule-save-btn"
+                                      type="button"
+                                      onClick={() => saveSchedule(it.id)}
+                                    >
+                                      저장
+                                    </button>
+                                  </div>
+                                )}
 
                                 <div className="admin-action-row">
                                   <button
