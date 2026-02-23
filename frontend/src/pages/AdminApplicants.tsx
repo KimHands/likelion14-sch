@@ -49,7 +49,24 @@ type AdminApplication = {
   track: Track;
   one_liner: string;
   portfolio_url: string;
+  // 공통 질문
   motivation: string;
+  common_growth_experience: string;
+  common_time_management: string;
+  common_teamwork: string;
+  // 기획/디자인
+  planning_experience: string;
+  planning_idea: string;
+  // AI
+  ai_programming_level: string;
+  ai_service_impression: string;
+  // 백엔드
+  backend_web_process: string;
+  backend_code_quality: string;
+  // 프론트엔드
+  frontend_ui_experience: string;
+  frontend_design_implementation: string;
+  // 기타
   experience: string;
   created_at: string;
   updated_at: string;
@@ -492,14 +509,76 @@ export default function AdminApplicants() {
                                 </div>
 
                                 <div className="detail-item big">
-                                  <div className="detail-label big">지원 동기</div>
+                                  <div className="detail-label big">Q1. 자기소개 및 지원동기</div>
                                   <pre className="detail-pre big">{safeStr(it.motivation) || "-"}</pre>
                                 </div>
 
                                 <div className="detail-item big">
-                                  <div className="detail-label big">관련 경험</div>
-                                  <pre className="detail-pre big">{safeStr(it.experience) || "-"}</pre>
+                                  <div className="detail-label big">Q2. 열정적으로 몰입하여 성장했던 경험</div>
+                                  <pre className="detail-pre big">{safeStr(it.common_growth_experience) || "-"}</pre>
                                 </div>
+
+                                <div className="detail-item big">
+                                  <div className="detail-label big">Q3. 멋쟁이사자처럼 활동 계획 및 각오</div>
+                                  <pre className="detail-pre big">{safeStr(it.common_time_management) || "-"}</pre>
+                                </div>
+
+                                <div className="detail-item big">
+                                  <div className="detail-label big">Q4. 팀 협업 경험</div>
+                                  <pre className="detail-pre big">{safeStr(it.common_teamwork) || "-"}</pre>
+                                </div>
+
+                                {it.track === "PLANNING_DESIGN" && (
+                                  <>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q5. [기획/디자인] 기획/디자인 관련 경험과 프로젝트</div>
+                                      <pre className="detail-pre big">{safeStr(it.planning_experience) || "-"}</pre>
+                                    </div>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q6. [기획/디자인] 사회 문제 해결 아이디어</div>
+                                      <pre className="detail-pre big">{safeStr(it.planning_idea) || "-"}</pre>
+                                    </div>
+                                  </>
+                                )}
+
+                                {it.track === "AI_SERVER" && (
+                                  <>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q5. [AI] 프로그래밍 학습 경험</div>
+                                      <pre className="detail-pre big">{safeStr(it.ai_programming_level) || "-"}</pre>
+                                    </div>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q6. [AI] AI 서비스 인상</div>
+                                      <pre className="detail-pre big">{safeStr(it.ai_service_impression) || "-"}</pre>
+                                    </div>
+                                  </>
+                                )}
+
+                                {it.track === "BACKEND" && (
+                                  <>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q5. [백엔드] 웹 동작 원리</div>
+                                      <pre className="detail-pre big">{safeStr(it.backend_web_process) || "-"}</pre>
+                                    </div>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q6. [백엔드] 코드 품질 기준</div>
+                                      <pre className="detail-pre big">{safeStr(it.backend_code_quality) || "-"}</pre>
+                                    </div>
+                                  </>
+                                )}
+
+                                {it.track === "FRONTEND" && (
+                                  <>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q5. [프론트엔드] UI/UX 개선 아이디어</div>
+                                      <pre className="detail-pre big">{safeStr(it.frontend_ui_experience) || "-"}</pre>
+                                    </div>
+                                    <div className="detail-item big">
+                                      <div className="detail-label big">Q6. [프론트엔드] 디자인 구현 우선순위</div>
+                                      <pre className="detail-pre big">{safeStr(it.frontend_design_implementation) || "-"}</pre>
+                                    </div>
+                                  </>
+                                )}
                               </div>
 
                               <div className="detail-right">

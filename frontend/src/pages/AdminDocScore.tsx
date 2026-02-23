@@ -32,7 +32,24 @@ type AdminApplication = {
   track: Track;
   one_liner: string;
   portfolio_url: string;
+  // 공통 질문
   motivation: string;
+  common_growth_experience: string;
+  common_time_management: string;
+  common_teamwork: string;
+  // 기획/디자인
+  planning_experience: string;
+  planning_idea: string;
+  // AI
+  ai_programming_level: string;
+  ai_service_impression: string;
+  // 백엔드
+  backend_web_process: string;
+  backend_code_quality: string;
+  // 프론트엔드
+  frontend_ui_experience: string;
+  frontend_design_implementation: string;
+  // 기타
   experience: string;
   created_at: string;
   updated_at: string;
@@ -241,11 +258,57 @@ export default function AdminDocScore() {
 
               {tab === "ESSAY" && (
                 <div className="essay">
-                  <div className="essay-label">Q1. 지원 동기 및 포부</div>
+                  <div className="essay-label">Q1. 자기소개 및 지원동기</div>
                   <pre className="essay-pre">{app.motivation || "-"}</pre>
 
-                  <div className="essay-label" style={{ marginTop: 18 }}>관련 경험</div>
-                  <pre className="essay-pre">{app.experience || "-"}</pre>
+                  <div className="essay-label" style={{ marginTop: 18 }}>Q2. 지금까지 가장 열정적으로 몰입하여 어려움을 극복하고 성장했던 경험</div>
+                  <pre className="essay-pre">{app.common_growth_experience || "-"}</pre>
+
+                  <div className="essay-label" style={{ marginTop: 18 }}>Q3. 멋쟁이사자처럼 활동 계획 및 각오</div>
+                  <pre className="essay-pre">{app.common_time_management || "-"}</pre>
+
+                  <div className="essay-label" style={{ marginTop: 18 }}>Q4. 팀 협업 경험</div>
+                  <pre className="essay-pre">{app.common_teamwork || "-"}</pre>
+
+                  {app.track === "PLANNING_DESIGN" && (
+                    <>
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q5. [기획/디자인] 기획/디자인 관련 경험과 프로젝트</div>
+                      <pre className="essay-pre">{app.planning_experience || "-"}</pre>
+
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q6. [기획/디자인] 사회 문제 해결 아이디어</div>
+                      <pre className="essay-pre">{app.planning_idea || "-"}</pre>
+                    </>
+                  )}
+
+                  {app.track === "AI_SERVER" && (
+                    <>
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q5. [AI] 프로그래밍 학습 경험</div>
+                      <pre className="essay-pre">{app.ai_programming_level || "-"}</pre>
+
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q6. [AI] AI 서비스 인상</div>
+                      <pre className="essay-pre">{app.ai_service_impression || "-"}</pre>
+                    </>
+                  )}
+
+                  {app.track === "BACKEND" && (
+                    <>
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q5. [백엔드] 웹 동작 원리</div>
+                      <pre className="essay-pre">{app.backend_web_process || "-"}</pre>
+
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q6. [백엔드] 코드 품질 기준</div>
+                      <pre className="essay-pre">{app.backend_code_quality || "-"}</pre>
+                    </>
+                  )}
+
+                  {app.track === "FRONTEND" && (
+                    <>
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q5. [프론트엔드] UI/UX 개선 아이디어</div>
+                      <pre className="essay-pre">{app.frontend_ui_experience || "-"}</pre>
+
+                      <div className="essay-label" style={{ marginTop: 18 }}>Q6. [프론트엔드] 디자인 구현 우선순위</div>
+                      <pre className="essay-pre">{app.frontend_design_implementation || "-"}</pre>
+                    </>
+                  )}
                 </div>
               )}
 
