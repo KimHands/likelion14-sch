@@ -6,9 +6,9 @@ services:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
-      - '80:80'    # HTTP 접속
-      - '81:81'    # NPM 관리자 페이지
-      - '443:443'  # HTTPS 접속
+      - '80:80'              # HTTP 접속
+      - '127.0.0.1:81:81'   # NPM 관리자 페이지 (로컬호스트만)
+      - '443:443'            # HTTPS 접속
     volumes:
       - ./data/npm:/data
       - ./letsencrypt:/etc/letsencrypt
