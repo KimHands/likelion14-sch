@@ -91,9 +91,28 @@
 }
 
 .iv-qbox {
-  height: 52px;
   background: #d6d6d6;
   border-radius: 6px;
+  padding: 14px 16px;
+}
+
+.iv-q-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.iv-q-pre {
+  margin: 0;
+  font-family: inherit;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #111;
+  line-height: 1.55;
+  max-height: 160px;
+  overflow-y: auto;
 }
 
 /* RIGHT */
