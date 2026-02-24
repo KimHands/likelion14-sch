@@ -560,3 +560,73 @@
 .schedule-save-btn:hover {
   filter: brightness(1.08);
 }
+
+@media (max-width: 900px) {
+  .admin-page {
+    padding: 16px 14px 40px;
+  }
+
+  .admin-title {
+    font-size: 32px;
+  }
+
+  .admin-controls {
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    width: 100%;
+    height: 70px;
+  }
+
+  .filter-box {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: auto;
+    padding: 12px 14px;
+  }
+
+  .filter-divider {
+    display: none;
+  }
+
+  .filter-col {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .finalize-col {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-title {
+    font-size: 24px;
+  }
+
+  .admin-table thead th,
+  .admin-table tbody td {
+    font-size: 14px;
+    padding: 10px 8px;
+  }
+
+  .detail-box {
+    grid-template-columns: 1fr;
+  }
+
+  .finalize-row {
+    flex-wrap: wrap;
+  }
+
+  .finalize-group {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pager-btn {
+    width: 80px;
+  }
+}

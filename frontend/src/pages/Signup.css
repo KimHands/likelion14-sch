@@ -258,3 +258,52 @@
   font-weight: 700;
   color: #333;
 }
+
+@media (max-width: 860px) {
+  .signup-card {
+    width: min(820px, 94vw);
+    padding: 36px 24px 32px;
+  }
+
+  .signup-form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 580px) {
+  .signup-card {
+    padding: 28px 16px 24px;
+    border-radius: 12px;
+  }
+
+  .signup-logo-img {
+    height: 70px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .hint,
+  .error {
+    margin-left: 0;
+  }
+
+  .email-wrap {
+    flex-wrap: wrap;
+  }
+
+  .code-wrap {
+    flex-wrap: wrap;
+  }
+
+  .timer {
+    width: auto;
+  }
+
+  .verify-btn,
+  .sub-btn.inline {
+    width: 100%;
+  }
+}

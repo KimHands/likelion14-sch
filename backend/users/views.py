@@ -3,7 +3,6 @@ import logging
 import secrets
 from datetime import timedelta
 
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
@@ -148,8 +147,10 @@ def csrf_cookie_view(request):
 
 @ensure_csrf_cookie
 @require_http_methods(["GET"])
-@login_required
 def me_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"ok": False, "error": "NOT_AUTHENTICATED"}, status=401)
+
     u = request.user
     data = {
         "id": u.id,

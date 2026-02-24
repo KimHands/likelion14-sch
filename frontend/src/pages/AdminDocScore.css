@@ -343,3 +343,63 @@
   font-weight: 900;
   clear: both;
 }
+
+@media (max-width: 900px) {
+  .doc-page {
+    padding: 16px 14px 40px;
+  }
+
+  .doc-title {
+    font-size: 32px;
+  }
+
+  .doc-topbar {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .doc-back-btn {
+    width: 100%;
+  }
+
+  .doc-body {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .doc-title {
+    font-size: 24px;
+  }
+
+  .left-title {
+    font-size: 22px;
+  }
+
+  .left-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .left-tabs {
+    align-items: flex-start;
+  }
+
+  .info-row {
+    grid-template-columns: 90px 1fr;
+  }
+
+  .btn-row {
+    grid-template-columns: 1fr;
+  }
+
+  .total-title {
+    font-size: 24px;
+  }
+}

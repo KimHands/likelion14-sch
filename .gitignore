@@ -37,3 +37,6 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
+
+# Local guides (not for version control)
+guide.md
