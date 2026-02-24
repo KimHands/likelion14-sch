@@ -1,5 +1,6 @@
 // Curriculum.tsx
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./Curriculum.css";
 
 type TrackKey = "plan" | "frontend" | "backend" | "ai";
@@ -99,8 +100,14 @@ const CURRICULUM: Record<TrackKey, CurriculumData> = {
   },
 };
 
+const VALID_TABS: TrackKey[] = ["plan", "frontend", "backend", "ai"];
+
 export default function Curriculum() {
-  const [active, setActive] = useState<TrackKey>("frontend");
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab") as TrackKey | null;
+  const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : "frontend";
+
+  const [active, setActive] = useState<TrackKey>(initialTab);
   const data = useMemo(() => CURRICULUM[active], [active]);
 
   return (

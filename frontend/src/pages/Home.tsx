@@ -37,6 +37,7 @@ import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
 
 type TrackCard = {
   key: string;
+  curriculumTab: string; // Curriculum 페이지의 탭 키
   title: string;
   desc: string;
   tags: string;
@@ -55,6 +56,7 @@ type MemberCard = {
 const TRACKS: TrackCard[] = [
   {
     key: "planning",
+    curriculumTab: "plan",
     title: "기획/디자인",
     desc: "서비스의 시작과 끝을\n설계하다",
     tags: "#UI/UX #서비스기획 #피그마",
@@ -62,6 +64,7 @@ const TRACKS: TrackCard[] = [
   },
   {
     key: "frontend",
+    curriculumTab: "frontend",
     title: "프론트엔드",
     desc: "사용자가 만나는 첫 화면,\n코드로 그려내다",
     tags: "#React #JavaScript #UI개발",
@@ -69,6 +72,7 @@ const TRACKS: TrackCard[] = [
   },
   {
     key: "backend",
+    curriculumTab: "backend",
     title: "백엔드",
     desc: "보이지 않는 곳에서\n서비스를 움직이다",
     tags: "#Django #Python #API설계",
@@ -76,6 +80,7 @@ const TRACKS: TrackCard[] = [
   },
   {
     key: "ai",
+    curriculumTab: "ai",
     title: "AI (인공지능)",
     desc: "데이터로 세상을\n예측하다",
     tags: "#Python #딥러닝 #데이터분석",
@@ -447,7 +452,7 @@ export default function Home() {
                 <button
                   className="track-action"
                   type="button"
-                  onClick={() => nav("/tracks")}
+                  onClick={() => nav(`/tracks?tab=${t.curriculumTab}`)}
                 >
                   커리큘럼 바로가기 <span aria-hidden>→</span>
                 </button>

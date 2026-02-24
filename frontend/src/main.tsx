@@ -21,6 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminSessions from "./pages/AdminSessions";
 import AdminProjects from "./pages/AdminProjects";
 import AdminRoadmap from "./pages/AdminRoadmap";
+import ResetPassword from "./pages/ResetPassword";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
   { path: "/signup/done", element: <SignupDone /> },
   { path: "/members", element: <Members /> }, // ✅ 추가
   { path: "/tracks", element: <Curriculum /> },
+  { path: "/reset-password", element: <ResetPassword /> },
 
   {
     path: "/admin",

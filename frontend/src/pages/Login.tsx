@@ -92,9 +92,9 @@ export default function Login() {
             <button
               type="button"
               className="login-link"
-              onClick={() => alert("비밀번호 찾기 기능은 준비중입니다.")}
+              onClick={() => nav("/reset-password")}
             >
-              비밀번호 찾기
+              비밀번호 재설정
             </button>
           </div>
 
