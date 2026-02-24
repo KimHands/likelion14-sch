@@ -69,3 +69,27 @@
 .done-btn:hover {
   filter: brightness(0.98);
 }
+
+@media (max-width: 480px) {
+  .done-wrap {
+    padding: 28px 12px;
+  }
+
+  .done-icon img {
+    width: 90px;
+  }
+
+  .done-title {
+    font-size: 30px;
+  }
+
+  .done-desc {
+    font-size: 15px;
+  }
+
+  .done-btn {
+    width: 100%;
+    font-size: 16px;
+    height: 48px;
+  }
+}

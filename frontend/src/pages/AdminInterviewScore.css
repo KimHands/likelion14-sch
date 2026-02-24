@@ -254,3 +254,50 @@
   font-weight: 900;
   clear: both;
 }
+
+@media (max-width: 900px) {
+  .iv-page {
+    padding: 16px 14px 40px;
+  }
+
+  .iv-title {
+    font-size: 32px;
+  }
+
+  .iv-topbar {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .iv-back-btn {
+    width: 100%;
+  }
+
+  .iv-body {
+    grid-template-columns: 1fr;
+  }
+
+  .iv-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .iv-title {
+    font-size: 24px;
+  }
+
+  .iv-left-title {
+    font-size: 22px;
+  }
+
+  .iv-btn-row {
+    grid-template-columns: 1fr;
+  }
+
+  .iv-total-title {
+    font-size: 24px;
+  }
+}
