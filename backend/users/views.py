@@ -173,6 +173,89 @@ def me_view(request):
 
 
 @require_http_methods(["POST"])
+def password_send_code(request):
+    """
+    비밀번호 재설정용 인증코드 발송.
+    기존 email_send_code와 달리 이미 verified된 유저에게도 코드를 발송한다.
+    보안: 존재하지 않는 이메일도 동일하게 성공 응답 (이메일 열거 공격 방지)
+    body: { "email": "xxx@sch.ac.kr" }
+    """
+    data = _json(request)
+    email = (data.get("email") or "").strip().lower()
+
+    if not email:
+        return JsonResponse({"ok": False, "error": "EMAIL_REQUIRED"}, status=400)
+
+    if not email.endswith("@sch.ac.kr"):
+        return JsonResponse({"ok": False, "error": "SCHOOL_EMAIL_REQUIRED"}, status=400)
+
+    user = User.objects.filter(email=email).first()
+    # 보안: 미가입 이메일도 성공처럼 보임 (실제 메일은 발송 안 함)
+    if not user:
+        return JsonResponse({"ok": True, "expires_in": EMAIL_CODE_EXPIRE_MINUTES * 60})
+
+    code = f"{secrets.randbelow(900000) + 100000}"
+    expires_at = timezone.now() + timedelta(minutes=EMAIL_CODE_EXPIRE_MINUTES)
+
+    EmailVerification.objects.filter(email=email, verified_at__isnull=True).delete()
+    EmailVerification.objects.create(
+        email=email,
+        code_hash=make_password(code),
+        expires_at=expires_at,
+    )
+
+    send_mail(
+        subject="[LIKELION] 비밀번호 재설정 인증 코드",
+        message=f"비밀번호 재설정 인증 코드: {code}\n({EMAIL_CODE_EXPIRE_MINUTES}분 이내 입력해주세요)",
+        from_email=None,
+        recipient_list=[email],
+    )
+
+    logger.debug("[PASSWORD RESET] to=%s expires_in=%d", email, EMAIL_CODE_EXPIRE_MINUTES * 60)
+    return JsonResponse({"ok": True, "expires_in": EMAIL_CODE_EXPIRE_MINUTES * 60})
+
+
+@require_http_methods(["POST"])
+def password_reset(request):
+    """
+    이메일 인증 완료 후 비밀번호 재설정.
+    body: { "email": "...", "password": "..." }
+    """
+    data = _json(request)
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    if not email or not password:
+        return JsonResponse({"ok": False, "error": "EMAIL_PASSWORD_REQUIRED"}, status=400)
+
+    if len(password) < 8:
+        return JsonResponse({"ok": False, "error": "PASSWORD_TOO_SHORT"}, status=400)
+
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return JsonResponse({"ok": False, "error": "USER_NOT_FOUND"}, status=404)
+
+    record = (
+        EmailVerification.objects
+        .filter(email=email)
+        .order_by("-created_at")
+        .first()
+    )
+
+    if not record or not record.verified_at:
+        return JsonResponse({"ok": False, "error": "EMAIL_NOT_VERIFIED"}, status=403)
+
+    if timezone.now() - record.verified_at > timedelta(minutes=EMAIL_VERIFICATION_VALID_MINUTES):
+        return JsonResponse({"ok": False, "error": "EMAIL_VERIFICATION_EXPIRED"}, status=403)
+
+    user.set_password(password)
+    user.save(update_fields=["password"])
+
+    logger.debug("[PASSWORD RESET] password changed for %s", email)
+    return JsonResponse({"ok": True})
+
+
+@require_http_methods(["POST"])
 def signup_view(request):
     """
     이메일 인증 완료(verified_at 존재 + 10분 이내) 해야만 가입 가능
