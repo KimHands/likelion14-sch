@@ -33,7 +33,9 @@ import membersBg from "../assets/team/team_bg.png";
 import aiJoaram from "../assets/team/ai_joaram.png";
 import vpKimdohyun from "../assets/team/vp_kimdohyun.png";
 import pmYujeonghee from "../assets/team/pm_yujeonghee.png";
+import aiAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
+import pmKimsarong from "../assets/team/pm_kimsarong.png";
 
 type TrackCard = {
   key: string;
@@ -90,7 +92,7 @@ const TRACKS: TrackCard[] = [
 
 const MEMBERS: MemberCard[] = [
   {
-    key: "ai",
+    key: "ai-joaram",
     name: "AI 조아람",
     roleLine: "대표 / AI",
     tags: "#AI에_관심_있는 #GPT",
@@ -105,11 +107,18 @@ const MEMBERS: MemberCard[] = [
     img: vpKimdohyun,
   },
   {
-    key: "pm",
+    key: "pm-yujeonghee",
     name: "PM 유정희",
     roleLine: "기획 / 디자인",
     tags: "#창의적이고_문제해결을_좋아하는 #중앙운영단",
     img: pmYujeonghee,
+  },
+  {
+    key: "ai-ahnchaeyeon",
+    name: "AI 안채연",
+    roleLine: "AI",
+    tags: "#AI #꾸준히 배우는 중",
+    img: aiAhnchaeyeon,
   },
   {
     key: "fs",
@@ -117,6 +126,13 @@ const MEMBERS: MemberCard[] = [
     roleLine: "풀스택",
     tags: "#기술_리더 #프론트 #백엔드",
     img: fsKimjonggun,
+  },
+  {
+    key: "pm-kimsarong",
+    name: "PM 김사랑",
+    roleLine: "기획 / 디자인",
+    tags: "#성장중인개발자",
+    img: pmKimsarong,
   },
 ];
 
