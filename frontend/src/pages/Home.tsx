@@ -31,9 +31,8 @@ import iconAI from "../assets/home/icon_ai.png";
 // Members 섹션용 import
 import membersBg from "../assets/team/team_bg.png";
 import aiJoaram from "../assets/team/ai_joaram.png";
-import vpKimdohyun from "../assets/team/vp_kimdohyun.png";
+import vpAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import pmYujeonghee from "../assets/team/pm_yujeonghee.png";
-import aiAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
 import pmKimsarong from "../assets/team/pm_kimsarong.png";
 
@@ -101,10 +100,10 @@ const MEMBERS: MemberCard[] = [
   },
   {
     key: "vp",
-    name: "VP 김도현",
-    roleLine: "부대표",
-    tags: "#올라운더",
-    img: vpKimdohyun,
+    name: "VP 안채연",
+    roleLine: "부대표 / AI",
+    tags: "#AI #꾸준히 배우는 중",
+    img: vpAhnchaeyeon,
   },
   {
     key: "pm-yujeonghee",
@@ -112,13 +111,6 @@ const MEMBERS: MemberCard[] = [
     roleLine: "기획 / 디자인",
     tags: "#창의적이고_문제해결을_좋아하는 #중앙운영단",
     img: pmYujeonghee,
-  },
-  {
-    key: "ai-ahnchaeyeon",
-    name: "AI 안채연",
-    roleLine: "AI",
-    tags: "#AI #꾸준히 배우는 중",
-    img: aiAhnchaeyeon,
   },
   {
     key: "fs",

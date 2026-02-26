@@ -4,7 +4,7 @@ import bg from "../assets/team/team_bg.png";
 import titleImg from "../assets/team/meet_the_team.png"; // ✅ 추가 (MEET THE TEAM 이미지)
 
 import aiJoaram from "../assets/team/ai_joaram.png";
-import vpKimdohyun from "../assets/team/vp_kimdohyun.png";
+import vpAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import pmYujeonghee from "../assets/team/pm_yujeonghee.png";
 import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
 
@@ -30,11 +30,11 @@ const MEMBERS: Members[] = [
   },
   {
     key: "vp",
-    name: "VP 김도현",
-    roleLine: "부대표 / 풀스택",
+    name: "VP 안채연",
+    roleLine: "부대표 / AI",
     trackLine: "",
-    tags: "#올라운더 #중앙운영단",
-    img: vpKimdohyun,
+    tags: "#AI #꾸준히_배우는_중",
+    img: vpAhnchaeyeon,
   },
   {
     key: "pm",

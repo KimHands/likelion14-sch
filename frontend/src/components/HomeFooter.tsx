@@ -26,8 +26,9 @@ export default function HomeFooter() {
         <div className="home-footer-right">
           <div className="pill">Credit</div>
           <div className="credit-grid">
-            <div>김도현</div>
             <div>김종건</div>
+            <div>김사랑</div>
+            <div>안채연</div>
             <div>유정희</div>
             <div>조아람</div>
           </div>
