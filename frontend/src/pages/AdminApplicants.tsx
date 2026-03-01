@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../api/client";
 import { sanitizeUrl } from "../utils/sanitizeUrl";
 import "./AdminApplicants.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type Track = "PLANNING_DESIGN" | "FRONTEND" | "BACKEND" | "AI_SERVER";
 type Status = "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED";
@@ -139,12 +139,12 @@ function fmtAvg(v: number | null | undefined) {
  * ✅ 채점자 표시 정책
  * - 점수 없으면: 채점자 A/B/C(/D)
  * - 점수 있으면: 운영진 이름만 표시 (점수 표시 X)
- * - 기획/디자인, AI 파트: 채점자 3명 (A/B/C)
- * - 프론트엔드, 백엔드 파트: 채점자 2명 (A/B)
+ * - 기획/디자인 파트: 채점자 3명 (A/B/C)
+ * - 프론트엔드, 백엔드, AI 파트: 채점자 2명 (A/B)
  */
 function getReviewerSlots(scores: ApplicationScore[] | undefined, track: Track) {
   const s = [...(scores ?? [])].sort((a, b) => (a.reviewer?.id ?? 0) - (b.reviewer?.id ?? 0));
-  const slots = (track === "PLANNING_DESIGN" || track === "AI_SERVER")
+  const slots = track === "PLANNING_DESIGN"
     ? ["A", "B", "C"]
     : ["A", "B"];
 
@@ -158,20 +158,191 @@ function getReviewerSlots(scores: ApplicationScore[] | undefined, track: Track) 
 
 type Sort = "DEFAULT" | "TOTAL_ASC" | "TOTAL_DESC";
 
+// URL 파라미터 유효성 검증
+const VALID_TRACKS: Array<Track | "ALL"> = ["ALL", "PLANNING_DESIGN", "FRONTEND", "BACKEND", "AI_SERVER"];
+const VALID_STATUSES: Array<Status | "ALL"> = ["ALL", "DRAFT", "SUBMITTED", "ACCEPTED", "REJECTED"];
+const VALID_SORTS: Sort[] = ["DEFAULT", "TOTAL_ASC", "TOTAL_DESC"];
+
+function getValidParam<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T {
+  return allowed.includes(value as T) ? (value as T) : fallback;
+}
+
+// ── PDF 출력 헬퍼 ────────────────────────────────────────────────
+
+function escHtml(s: string | null | undefined): string {
+  return (s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const TRACK_FILE_LABEL: Record<Track, string> = {
+  PLANNING_DESIGN: "기획디자인",
+  FRONTEND: "프론트엔드",
+  BACKEND: "백엔드",
+  AI_SERVER: "AI",
+};
+
+function printApplicationPdf(it: AdminApplication) {
+  const u = it.user;
+  const filename = `${TRACK_FILE_LABEL[it.track]}_${u.name}_${u.student_id}`;
+
+  let trackQA = "";
+  if (it.track === "PLANNING_DESIGN") {
+    trackQA = `
+      <div class="qa">
+        <div class="q">Q5. [기획/디자인] 기획/디자인 관련 경험과 프로젝트</div>
+        <pre class="a">${escHtml(it.planning_experience) || "-"}</pre>
+      </div>
+      <div class="qa">
+        <div class="q">Q6. [기획/디자인] 사회 문제 해결 아이디어</div>
+        <pre class="a">${escHtml(it.planning_idea) || "-"}</pre>
+      </div>`;
+  } else if (it.track === "AI_SERVER") {
+    trackQA = `
+      <div class="qa">
+        <div class="q">Q5. [AI] 프로그래밍 학습 경험</div>
+        <pre class="a">${escHtml(it.ai_programming_level) || "-"}</pre>
+      </div>
+      <div class="qa">
+        <div class="q">Q6. [AI] AI 서비스 인상</div>
+        <pre class="a">${escHtml(it.ai_service_impression) || "-"}</pre>
+      </div>`;
+  } else if (it.track === "BACKEND") {
+    trackQA = `
+      <div class="qa">
+        <div class="q">Q5. [백엔드] 웹 동작 원리</div>
+        <pre class="a">${escHtml(it.backend_web_process) || "-"}</pre>
+      </div>
+      <div class="qa">
+        <div class="q">Q6. [백엔드] 코드 품질 기준</div>
+        <pre class="a">${escHtml(it.backend_code_quality) || "-"}</pre>
+      </div>`;
+  } else if (it.track === "FRONTEND") {
+    trackQA = `
+      <div class="qa">
+        <div class="q">Q5. [프론트엔드] UI/UX 개선 아이디어</div>
+        <pre class="a">${escHtml(it.frontend_ui_experience) || "-"}</pre>
+      </div>
+      <div class="qa">
+        <div class="q">Q6. [프론트엔드] 디자인 구현 우선순위</div>
+        <pre class="a">${escHtml(it.frontend_design_implementation) || "-"}</pre>
+      </div>`;
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>${escHtml(filename)}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+      color: #111; padding: 36px 44px; font-size: 13px; line-height: 1.65;
+    }
+    .header { border-bottom: 2px solid #17538D; padding-bottom: 14px; margin-bottom: 22px; }
+    .header-title { font-size: 19px; font-weight: 900; color: #17538D; }
+    .header-sub { font-size: 12px; color: #555; margin-top: 5px; }
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 32px;
+      background: #f4f7fb; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px;
+      border: 1px solid #dde7f5;
+    }
+    .info-row { display: flex; gap: 10px; align-items: baseline; }
+    .info-k { font-weight: 900; color: #17538D; min-width: 52px; font-size: 12px; }
+    .info-v { color: #111; word-break: break-all; }
+    .section-title {
+      font-size: 14px; font-weight: 900; margin-bottom: 12px;
+      padding-bottom: 6px; border-bottom: 1px solid #ccc; color: #111;
+    }
+    .qa { margin-bottom: 18px; }
+    .q { font-weight: 700; font-size: 12px; color: #17538D; margin-bottom: 6px; }
+    pre.a {
+      white-space: pre-wrap; word-break: break-word; font-family: inherit;
+      font-size: 12.5px; line-height: 1.7; background: #fafafa;
+      border: 1px solid #e2e2e2; border-radius: 6px; padding: 10px 14px;
+      min-height: 40px;
+    }
+    @page { margin: 15mm 18mm; }
+    @media print {
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-title">멋쟁이사자처럼 순천향대학교 14기 지원서</div>
+    <div class="header-sub">
+      지원 트랙: ${escHtml(TRACK_FILE_LABEL[it.track])}
+      &nbsp;·&nbsp;
+      제출 일시: ${it.submitted_at ? new Date(it.submitted_at).toLocaleString("ko-KR") : "-"}
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-row"><div class="info-k">이름</div><div class="info-v">${escHtml(u.name) || "-"}</div></div>
+    <div class="info-row"><div class="info-k">학번</div><div class="info-v">${escHtml(u.student_id) || "-"}</div></div>
+    <div class="info-row"><div class="info-k">학과</div><div class="info-v">${escHtml(u.department) || "-"}</div></div>
+    <div class="info-row"><div class="info-k">연락처</div><div class="info-v">${escHtml(u.phone) || "-"}</div></div>
+    <div class="info-row"><div class="info-k">이메일</div><div class="info-v">${escHtml(u.email) || "-"}</div></div>
+    <div class="info-row"><div class="info-k">포트폴리오</div><div class="info-v">${escHtml(it.portfolio_url) || "-"}</div></div>
+  </div>
+
+  <div class="section-title">지원서 문항</div>
+
+  <div class="qa">
+    <div class="q">Q1. 자기소개 및 지원동기</div>
+    <pre class="a">${escHtml(it.motivation) || "-"}</pre>
+  </div>
+  <div class="qa">
+    <div class="q">Q2. 열정적으로 몰입하여 성장했던 경험</div>
+    <pre class="a">${escHtml(it.common_growth_experience) || "-"}</pre>
+  </div>
+  <div class="qa">
+    <div class="q">Q3. 멋쟁이사자처럼 활동 계획 및 각오</div>
+    <pre class="a">${escHtml(it.common_time_management) || "-"}</pre>
+  </div>
+  <div class="qa">
+    <div class="q">Q4. 팀 협업 경험</div>
+    <pre class="a">${escHtml(it.common_teamwork) || "-"}</pre>
+  </div>
+  ${trackQA}
+
+  <script>
+    window.onload = function () {
+      window.print();
+      window.addEventListener('afterprint', function () { window.close(); });
+    };
+  </script>
+</body>
+</html>`;
+
+  const win = window.open("", "_blank", "width=960,height=720");
+  if (!win) {
+    alert("팝업이 차단되었습니다. 브라우저 팝업 허용 후 다시 시도해주세요.");
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
+}
+
 export default function AdminApplicants() {
   const nav = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // 검색/필터
-  const [q, setQ] = useState("");
-  const [track, setTrack] = useState<Track | "ALL">("ALL");
-  const [status, setStatus] = useState<Status | "ALL">("ALL");
-  const [sort, setSort] = useState<Sort>("DEFAULT");
+  // 검색/필터 — URL query params에서 초기값 복원 (유효성 검증 포함)
+  const [q, setQ] = useState(searchParams.get("q") ?? "");
+  const [track, setTrack] = useState<Track | "ALL">(getValidParam(searchParams.get("track"), VALID_TRACKS, "ALL"));
+  const [status, setStatus] = useState<Status | "ALL">(getValidParam(searchParams.get("status"), VALID_STATUSES, "ALL"));
+  const [sort, setSort] = useState<Sort>(getValidParam(searchParams.get("sort"), VALID_SORTS, "DEFAULT"));
 
   // 목록/페이지
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
   const [totalCount, setTotalCount] = useState(0);
   const [items, setItems] = useState<AdminApplication[]>([]);
 
@@ -230,9 +401,16 @@ export default function AdminApplicants() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryString]);
 
+  // 필터/페이지 상태를 URL에 동기화 (뒤로 가기 시 복원용)
   useEffect(() => {
-    setPage(1);
-  }, [q, track, status, sort]);
+    const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q.trim());
+    if (track !== "ALL") params.set("track", track);
+    if (status !== "ALL") params.set("status", status);
+    if (sort !== "DEFAULT") params.set("sort", sort);
+    if (page !== 1) params.set("page", String(page));
+    setSearchParams(params, { replace: true });
+  }, [q, track, status, sort, page, setSearchParams]);
 
   const onToggleRow = (id: number) => {
     if (openRowId === id) {
@@ -367,13 +545,13 @@ export default function AdminApplicants() {
       <div className="admin-controls">
         <div className="search-box">
           <div className="search-icon">⌕</div>
-          <input className="search-input" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} />
+          <input className="search-input" placeholder="Search" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} />
         </div>
 
         <div className="filter-box">
           <div className="filter-col">
             <div className="filter-label big">파트</div>
-            <select className="filter-select" value={track} onChange={(e) => setTrack(e.target.value as Track | "ALL")}>
+            <select className="filter-select" value={track} onChange={(e) => { setTrack(e.target.value as Track | "ALL"); setPage(1); }}>
               <option value="ALL">전체</option>
               <option value="PLANNING_DESIGN">기획/디자인</option>
               <option value="FRONTEND">프론트엔드</option>
@@ -386,7 +564,7 @@ export default function AdminApplicants() {
 
           <div className="filter-col">
             <div className="filter-label big">상태</div>
-            <select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value as Status | "ALL")}>
+            <select className="filter-select" value={status} onChange={(e) => { setStatus(e.target.value as Status | "ALL"); setPage(1); }}>
               <option value="ALL">전체</option>
               <option value="DRAFT">작성중</option>
               <option value="SUBMITTED">제출완료</option>
@@ -399,7 +577,7 @@ export default function AdminApplicants() {
 
           <div className="filter-col">
             <div className="filter-label big">총점 정렬</div>
-            <select className="filter-select" value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+            <select className="filter-select" value={sort} onChange={(e) => { setSort(e.target.value as Sort); setPage(1); }}>
               <option value="DEFAULT">기본(최근 수정)</option>
               <option value="TOTAL_DESC">총점 내림차순</option>
               <option value="TOTAL_ASC">총점 오름차순</option>
@@ -473,15 +651,15 @@ export default function AdminApplicants() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th style={{ width: 140 }}>이름</th>
-                <th style={{ width: 140 }}>파트</th>
-                <th style={{ width: 140 }}>학번</th>
-                <th style={{ width: 140 }}>제출상태</th>
-                <th style={{ width: 140 }}>서류 평균</th>
-                <th style={{ width: 140 }}>면접 평균</th>
-                <th style={{ width: 120 }}>총점</th>
-                <th style={{ width: 140 }}>서류결과</th>
-                <th style={{ width: 140 }}>최종결과</th>
+                <th>이름</th>
+                <th>파트</th>
+                <th>학번</th>
+                <th>제출상태</th>
+                <th>서류 평균</th>
+                <th>면접 평균</th>
+                <th>총점</th>
+                <th>서류결과</th>
+                <th>최종결과</th>
               </tr>
             </thead>
 
@@ -715,6 +893,15 @@ export default function AdminApplicants() {
                                     }}
                                   >
                                     면접 채점
+                                  </button>
+                                  <button
+                                    className="admin-action-btn pdf"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      printApplicationPdf(it);
+                                    }}
+                                  >
+                                    PDF 출력
                                   </button>
                                 </div>
                               </div>

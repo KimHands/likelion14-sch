@@ -1,17 +1,23 @@
+/* ── 전체 페이지: 뷰포트를 꽉 채우는 flex column ── */
 .admin-page {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: #d9d9d9;
-  padding: 26px 28px 60px;
+  padding: 22px 26px 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .admin-title {
-  font-size: 44px;
+  font-size: 36px;
   font-weight: 900;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   letter-spacing: -0.5px;
+  flex-shrink: 0;
 }
 
-/* ✅ 토스트(플로팅) */
+/* 토스트 */
 .admin-toast {
   position: fixed;
   top: 18px;
@@ -19,44 +25,45 @@
   transform: translateX(-50%);
   background: rgba(17, 17, 17, 0.92);
   color: #fff;
-  padding: 12px 18px;
+  padding: 12px 20px;
   border-radius: 999px;
   font-weight: 900;
   z-index: 9999;
   box-shadow: 0 14px 30px rgba(0,0,0,0.22);
 }
 
-/* 상단 컨트롤 */
+/* ── 상단 컨트롤 ── */
 .admin-controls {
   display: flex;
-  gap: 18px;
-  align-items: center;
-  margin-bottom: 18px; /* 흰 박스와 간격 */
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 /* Search box */
 .search-box {
-  width: 360px;
-  height: 105px;
+  width: 280px;
+  flex-shrink: 0;
   background: #fff;
   border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: 10px 18px;
-  gap: 18px;
+  padding: 8px 16px;
+  gap: 12px;
   box-shadow: 0 0 0 1px rgba(0,0,0,0.08) inset;
 }
 
 .search-icon {
-  font-size: 22px;
-  opacity: 0.55;
+  font-size: 20px;
+  opacity: 0.5;
 }
 
 .search-input {
   width: 100%;
   border: none;
   outline: none;
-  font-size: 18px;
+  font-size: 15px;
   color: #333;
 }
 
@@ -67,42 +74,45 @@
 /* Filter box */
 .filter-box {
   flex: 1;
-  min-height: 62px;
   background: #fff;
   border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: 10px 18px;
+  padding: 8px 16px;
   box-shadow: 0 0 0 1px rgba(0,0,0,0.08) inset;
   gap: 0;
+  min-width: 0;
 }
 
 .filter-col {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
-  min-width: 180px;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
 }
 
 .filter-label {
   font-weight: 900;
-  font-size: 16px;
-  color: #111;
+  font-size: 12px;
+  color: #888;
   line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .filter-label.big {
-  font-size: 20px;
+  font-size: 13px;
 }
 
 .filter-select {
-  height: 34px;
-  font-size: 16px;
+  height: 28px;
+  font-size: 14px;
   border: none;
   outline: none;
   background: transparent;
-  color: #333;
+  color: #111;
   padding: 0;
   cursor: pointer;
   font-weight: 800;
@@ -110,54 +120,59 @@
 
 .filter-divider {
   width: 1px;
-  height: 56px;
-  background: rgba(0,0,0,0.12);
-  margin: 0 18px;
+  height: 44px;
+  background: rgba(0,0,0,0.10);
+  margin: 0 12px;
+  flex-shrink: 0;
 }
 
-/* ✅ 결과 확정 영역 */
+/* 결과 확정 영역 */
 .finalize-col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 420px;
+  gap: 4px;
+  min-width: 360px;
+  flex-shrink: 0;
 }
 
 .finalize-row {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
 }
 
 .finalize-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .finalize-group-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
-  color: #666;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .finalize-btn-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
 .finalize-btn {
-  height: 36px;
+  height: 30px;
   padding: 0 14px;
   border-radius: 8px;
   border: none;
   font-weight: 900;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .finalize-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -172,24 +187,34 @@
 }
 
 .finalize-hint {
-  font-size: 12px;
-  color: #666;
-  font-weight: 800;
+  font-size: 11px;
+  color: #777;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Table */
+/* ── 테이블 영역: 남은 공간 모두 채움 ── */
 .admin-table-wrap {
-  margin-top: 10px;
+  flex: 1;
+  min-height: 0;
   background: #fff;
   border-radius: 12px;
-  padding: 22px 22px 16px;
+  padding: 14px 14px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 14px;
 }
 
+/* 스크롤 컨테이너 */
 .admin-table-inner {
-  max-height: 520px;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.35);
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.30);
 }
 
 .admin-table {
@@ -203,121 +228,133 @@
   top: 0;
   background: #fff;
   z-index: 1;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 900;
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(0,0,0,0.55);
+  padding: 12px 14px;
+  border-bottom: 2px solid rgba(0,0,0,0.45);
+  white-space: nowrap;
+  text-align: center;
+  color: #111;
 }
 
 .admin-table tbody td {
-  font-size: 18px;
-  padding: 14px 12px;
+  font-size: 14px;
+  padding: 11px 14px;
   text-align: center;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 .admin-row {
   cursor: pointer;
+  transition: background 0.1s;
 }
 
 .admin-row:hover {
-  background: rgba(23, 83, 141, 0.06);
+  background: rgba(23, 83, 141, 0.05);
 }
 
 .admin-row.open {
-  background: rgba(23, 83, 141, 0.09);
+  background: rgba(23, 83, 141, 0.08);
 }
 
 .admin-empty {
-  padding: 22px 12px !important;
-  color: #666;
+  padding: 28px 12px !important;
+  color: #888;
   font-weight: 700;
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 
 .admin-empty.error {
   color: #d01818;
 }
 
-/* ✅ 서류/최종 pill */
+/* 서류/최종 pill */
 .final-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 84px;
-  height: 28px;
+  min-width: 76px;
+  height: 24px;
   padding: 0 10px;
   border-radius: 999px;
   font-weight: 900;
-  font-size: 12px;
-  border: 1px solid rgba(0,0,0,0.12);
+  font-size: 11px;
+  border: 1px solid rgba(0,0,0,0.10);
   background: #f2f2f2;
-  color: #333;
+  color: #555;
 }
 
 .final-pill.PENDING {
   background: #f2f2f2;
-  color: #333;
+  color: #555;
 }
 
 .final-pill.ACCEPTED {
   background: rgba(23, 83, 141, 0.10);
   color: #17538D;
-  border-color: rgba(23, 83, 141, 0.25);
+  border-color: rgba(23, 83, 141, 0.22);
 }
 
 .final-pill.REJECTED {
   background: rgba(226, 75, 75, 0.10);
   color: #d01818;
-  border-color: rgba(226, 75, 75, 0.25);
+  border-color: rgba(226, 75, 75, 0.22);
 }
 
-/* Detail */
+/* ── 상세 펼침 영역 ── */
 .admin-detail-row td {
   padding: 0 !important;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 2px solid rgba(23, 83, 141, 0.20);
+  white-space: normal !important;
+  overflow: visible !important;
+  max-width: none !important;
 }
 
 .detail-box {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 18px;
-  padding: 18px 18px 20px;
-  background: rgba(0,0,0,0.02);
+  grid-template-columns: 1.7fr 1fr;
+  gap: 20px;
+  padding: 16px 18px 20px;
+  background: #fafcff;
 }
 
 .detail-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 900;
   margin-bottom: 10px;
   color: #111;
 }
 
 .detail-title.big {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .detail-item {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 12px;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
   align-items: start;
-  margin: 12px 0;
+  margin: 8px 0;
 }
 
 .detail-item.big {
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 180px 1fr;
 }
 
 .detail-label {
   font-weight: 900;
   color: #333;
-  font-size: 13px;
+  font-size: 12px;
   text-align: left;
 }
 
 .detail-label.big {
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .detail-value {
@@ -328,7 +365,7 @@
 }
 
 .detail-value.big {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .detail-value a {
@@ -341,24 +378,24 @@
   white-space: pre-wrap;
   word-break: break-word;
   text-align: left;
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.6;
   color: #222;
   background: #fff;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 8px;
+  padding: 10px 12px;
 }
 
 .detail-pre.big {
-  font-size: 14px;
-  line-height: 1.75;
-  min-height: 140px;
+  font-size: 13px;
+  line-height: 1.7;
+  min-height: 80px;
 }
 
 /* 점수 패널 */
 .score-panel {
-  border: 1px solid rgba(0,0,0,0.18);
+  border: 1px solid rgba(0,0,0,0.14);
   border-radius: 12px;
   padding: 14px 16px;
   background: #fff;
@@ -366,34 +403,34 @@
 
 .score-panel-title {
   font-weight: 900;
-  font-size: 14px;
+  font-size: 13px;
   color: #111;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-align: left;
 }
 
 .score-panel-title.big {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .score-list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 16px;
   text-align: left;
-  font-size: 13px;
-  line-height: 1.8;
-  color: #222;
-  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.85;
+  color: #333;
+  font-weight: 700;
 }
 
 .score-list.big {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .score-divider {
   height: 1px;
-  background: rgba(0,0,0,0.18);
-  margin: 12px 0;
+  background: rgba(0,0,0,0.12);
+  margin: 10px 0;
 }
 
 .score-total {
@@ -407,20 +444,21 @@
   font-size: 14px;
 }
 
-/* 버튼 */
+/* 액션 버튼 */
 .admin-action-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 12px;
 }
 
 .admin-action-btn {
   flex: 1;
-  height: 40px;
+  height: 38px;
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.18);
-  background: #f2f2f2;
+  border: 1px solid rgba(0,0,0,0.16);
+  background: #f4f4f4;
   font-weight: 900;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -430,42 +468,51 @@
   border: none;
 }
 
-.admin-action-btn:hover {
-  filter: brightness(0.98);
+.admin-action-btn.pdf {
+  background: #2d7a4f;
+  color: #fff;
+  border: none;
 }
 
-/* pager */
+.admin-action-btn:hover {
+  filter: brightness(0.97);
+}
+
+/* 페이지네이션 */
 .pager {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 14px;
-  margin-top: 14px;
+  padding: 10px 0 12px;
+  flex-shrink: 0;
 }
 
 .pager-btn {
-  width: 110px;
-  height: 40px;
+  width: 90px;
+  height: 34px;
   border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.22);
-  background: #f3f3f3;
+  border: 1px solid rgba(0,0,0,0.20);
+  background: #f4f4f4;
   cursor: pointer;
   font-weight: 900;
+  font-size: 13px;
 }
 
 .pager-btn:disabled {
-  opacity: 0.55;
+  opacity: 0.50;
   cursor: not-allowed;
 }
 
 .pager-info {
   font-weight: 900;
   color: #222;
+  font-size: 14px;
 }
 
 .pager-count {
-  font-weight: 800;
-  color: #666;
+  font-weight: 700;
+  color: #777;
 }
 
 /* 지원자 기본 정보 바 */
@@ -475,23 +522,23 @@
   flex-wrap: wrap;
   gap: 8px;
   background: #eef3fa;
-  border: 1px solid rgba(23,83,141,0.18);
+  border: 1px solid rgba(23,83,141,0.16);
   border-radius: 10px;
-  padding: 10px 16px;
-  margin-bottom: 16px;
+  padding: 9px 14px;
+  margin-bottom: 14px;
 }
 
 .applicant-info-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   color: #111;
 }
 
 .applicant-info-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
   color: #17538D;
   background: rgba(23,83,141,0.10);
@@ -502,23 +549,23 @@
 .applicant-info-divider {
   width: 1px;
   height: 14px;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.16);
 }
 
 /* 개별 면접 일정 폼 */
 .schedule-form {
-  border: 1px solid rgba(0,0,0,0.15);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,0.13);
+  border-radius: 10px;
+  padding: 12px 14px;
   background: #f7f9ff;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .schedule-form-title {
   font-weight: 900;
-  font-size: 15px;
+  font-size: 14px;
   color: #17538D;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   text-align: left;
 }
 
@@ -526,19 +573,19 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   color: #333;
   text-align: left;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .schedule-input {
-  height: 36px;
+  height: 34px;
   border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.18);
   padding: 0 10px;
-  font-size: 13px;
+  font-size: 12px;
   background: #fff;
   width: 100%;
   box-sizing: border-box;
@@ -546,13 +593,13 @@
 
 .schedule-save-btn {
   width: 100%;
-  height: 36px;
+  height: 34px;
   border-radius: 8px;
   border: none;
   background: #17538D;
   color: #fff;
   font-weight: 900;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   margin-top: 4px;
 }
@@ -561,13 +608,23 @@
   filter: brightness(1.08);
 }
 
+/* ── 반응형 ── */
+@media (max-width: 1100px) {
+  .finalize-col {
+    min-width: 300px;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
     padding: 16px 14px 40px;
   }
 
   .admin-title {
-    font-size: 32px;
+    font-size: 26px;
   }
 
   .admin-controls {
@@ -576,14 +633,12 @@
 
   .search-box {
     width: 100%;
-    height: 70px;
   }
 
   .filter-box {
     width: 100%;
     flex-wrap: wrap;
     gap: 10px;
-    min-height: auto;
     padding: 12px 14px;
   }
 
@@ -592,7 +647,6 @@
   }
 
   .filter-col {
-    min-width: 0;
     flex: 1;
   }
 
@@ -600,21 +654,37 @@
     min-width: 0;
     width: 100%;
   }
-}
 
-@media (max-width: 640px) {
-  .admin-title {
-    font-size: 24px;
+  .admin-table-wrap {
+    flex: none;
+    overflow: visible;
+    padding: 12px 12px 12px;
+    margin-bottom: 0;
   }
 
-  .admin-table thead th,
-  .admin-table tbody td {
-    font-size: 14px;
-    padding: 10px 8px;
+  .admin-table-inner {
+    flex: none;
+    max-height: 60vh;
   }
 
   .detail-box {
     grid-template-columns: 1fr;
+  }
+
+  .pager {
+    padding: 14px 0 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-title {
+    font-size: 22px;
+  }
+
+  .admin-table thead th,
+  .admin-table tbody td {
+    font-size: 12px;
+    padding: 9px 8px;
   }
 
   .finalize-row {
@@ -627,6 +697,6 @@
   }
 
   .pager-btn {
-    width: 80px;
+    width: 72px;
   }
 }

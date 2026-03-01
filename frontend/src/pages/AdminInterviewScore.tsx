@@ -207,7 +207,7 @@ export default function AdminInterviewScore() {
       <div className="iv-card">
         <div className="iv-topbar">
           <div className="iv-top-left">{topBarLeft}</div>
-          <button className="iv-back-btn" onClick={() => nav("/admin/applicants")}>
+          <button className="iv-back-btn" onClick={() => window.history.length > 1 ? nav(-1) : nav("/admin/applicants")}>
             지원자 리스트로 돌아가기
           </button>
         </div>
