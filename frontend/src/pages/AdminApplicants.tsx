@@ -140,11 +140,13 @@ function fmtAvg(v: number | null | undefined) {
  * - 점수 없으면: 채점자 A/B/C(/D)
  * - 점수 있으면: 운영진 이름만 표시 (점수 표시 X)
  * - 기획/디자인 파트: 채점자 3명 (A/B/C)
- * - 프론트엔드, 백엔드, AI 파트: 채점자 2명 (A/B)
+ * - 프론트엔드, 백엔드: 서류 2명 (A/B), 면접 3명 (A/B/C)
+ * - AI 파트: 채점자 2명 (A/B)
  */
-function getReviewerSlots(scores: ApplicationScore[] | undefined, track: Track) {
+function getReviewerSlots(scores: ApplicationScore[] | undefined, track: Track, kind: "DOC" | "INTERVIEW" = "DOC") {
   const s = [...(scores ?? [])].sort((a, b) => (a.reviewer?.id ?? 0) - (b.reviewer?.id ?? 0));
-  const slots = track === "PLANNING_DESIGN"
+  const isInterviewFrontBack = kind === "INTERVIEW" && (track === "FRONTEND" || track === "BACKEND");
+  const slots = (track === "PLANNING_DESIGN" || isInterviewFrontBack)
     ? ["A", "B", "C"]
     : ["A", "B"];
 
@@ -678,8 +680,8 @@ export default function AdminApplicants() {
                   const interviewAvg = fmtAvg(it.interview_avg);
                   const totalAvg = fmtAvg(it.total_avg);
 
-                  const docSlots = getReviewerSlots(it.doc_scores, it.track);
-                  const interviewSlots = getReviewerSlots(it.interview_scores, it.track);
+                  const docSlots = getReviewerSlots(it.doc_scores, it.track, "DOC");
+                  const interviewSlots = getReviewerSlots(it.interview_scores, it.track, "INTERVIEW");
 
                   return (
                     <React.Fragment key={it.id}>
