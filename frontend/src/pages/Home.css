@@ -853,6 +853,9 @@ _toggle: none;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.86);
 }
+.member-tag-line {
+  display: block;
+}
 
 /* -----------------------------
    PROJECTS (현재는 UI 자리 + 애니메이션 기반만)

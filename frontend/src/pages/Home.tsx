@@ -35,6 +35,7 @@ import vpAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import pmYujeonghee from "../assets/team/pm_yujeonghee.png";
 import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
 import pmKimsarong from "../assets/team/pm_kimsarong.png";
+import fsKimheesung from "../assets/team/fs_kimheesung.png";
 
 type TrackCard = {
   key: string;
@@ -52,6 +53,7 @@ type MemberCard = {
   tags: string;
   img: string;
   halo?: boolean;
+  wrapTags?: boolean;
 };
 
 const TRACKS: TrackCard[] = [
@@ -111,6 +113,7 @@ const MEMBERS: MemberCard[] = [
     roleLine: "기획 / 디자인",
     tags: "#창의적이고_문제해결을_좋아하는 #중앙운영단",
     img: pmYujeonghee,
+    wrapTags: true,
   },
   {
     key: "fs",
@@ -125,6 +128,14 @@ const MEMBERS: MemberCard[] = [
     roleLine: "기획 / 디자인",
     tags: "#성장중인개발자",
     img: pmKimsarong,
+  },
+  {
+    key: "fs-kimheesung",
+    name: "FS 김희성",
+    roleLine: "풀스택",
+    tags: "#결과물로_말하는_스타일 #AI_전공_FE_특기",
+    img: fsKimheesung,
+    wrapTags: true,
   },
 ];
 
@@ -492,7 +503,13 @@ export default function Home() {
                 </div>
                 <div className="member-name">{m.name}</div>
                 <div className="member-role">{m.roleLine}</div>
-                <div className="member-tags">{m.tags}</div>
+                <div className="member-tags">
+                  {m.wrapTags
+                    ? m.tags.split(" #").map((tag, i) => (
+                        <span key={i} className="member-tag-line">{i === 0 ? tag : `#${tag}`}</span>
+                      ))
+                    : m.tags}
+                </div>
               </div>
             ))}
           </div>
