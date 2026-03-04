@@ -7,6 +7,7 @@ import aiJoaram from "../assets/team/ai_joaram.png";
 import vpAhnchaeyeon from "../assets/team/ai_ahnchaeyeon.png";
 import pmYujeonghee from "../assets/team/pm_yujeonghee.png";
 import fsKimjonggun from "../assets/team/fs_kimjonggun.png";
+import fsKimheesung from "../assets/team/fs_kimheesung.png";
 
 type Members = {
   key: string;
@@ -16,6 +17,7 @@ type Members = {
   tags: string;
   img: string;
   halo?: boolean;
+  wrapTags?: boolean;
 };
 
 const MEMBERS: Members[] = [
@@ -51,6 +53,15 @@ const MEMBERS: Members[] = [
     trackLine: "",
     tags: "#기술_리더 #프론트 #백엔드",
     img: fsKimjonggun,
+  },
+  {
+    key: "fs2",
+    name: "FS 김희성",
+    roleLine: "풀스택",
+    trackLine: "",
+    tags: "#결과물로_말하는_스타일 #AI_전공_FE_특기",
+    img: fsKimheesung,
+    wrapTags: true,
   },
 ];
 
@@ -89,7 +100,13 @@ export default function Members() {
                 <div className="member-role spacer" />
               )}
 
-              <div className="member-tags">{m.tags}</div>
+              <div className="member-tags">
+                {m.wrapTags
+                  ? m.tags.split(" #").map((tag, i) => (
+                      <span key={i} className="member-tag-line">{i === 0 ? tag : `#${tag}`}</span>
+                    ))
+                  : m.tags}
+              </div>
             </div>
           ))}
         </div>
