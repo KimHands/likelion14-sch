@@ -101,6 +101,66 @@ export default function AdminDashboard() {
           </button>
         </div>
 
+        {/* ✅ 트랙별 지원 관리 */}
+        {settings && (
+          <div className="result-visibility-section">
+            <h2 className="result-visibility-title">트랙별 지원 관리</h2>
+            <div className="result-visibility-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+              {(
+                [
+                  { label: "기획/디자인", field: "track_planning_design_open" as const },
+                  { label: "프론트엔드", field: "track_frontend_open" as const },
+                  { label: "백엔드", field: "track_backend_open" as const },
+                  { label: "AI", field: "track_ai_server_open" as const },
+                ] as const
+              ).map(({ label, field }) => (
+                <div key={field} className="result-visibility-item">
+                  <div className="result-visibility-label">{label} 트랙</div>
+                  <span className={`result-visibility-badge ${settings[field] ? "open" : "closed"}`}>
+                    {settings[field] ? "활성화 중" : "비활성화"}
+                  </span>
+                  <div className="result-visibility-actions">
+                    <button
+                      className="visibility-btn open-btn"
+                      type="button"
+                      disabled={settings[field]}
+                      onClick={async () => {
+                        if (!window.confirm(`${label} 트랙 지원을 활성화할까요?`)) return;
+                        try {
+                          const updated = await updateNotificationSettings({ [field]: true });
+                          setSettings(updated);
+                          setEditForm(updated);
+                        } catch {
+                          alert("설정 변경에 실패했습니다.");
+                        }
+                      }}
+                    >
+                      활성화
+                    </button>
+                    <button
+                      className="visibility-btn close-btn"
+                      type="button"
+                      disabled={!settings[field]}
+                      onClick={async () => {
+                        if (!window.confirm(`${label} 트랙 지원을 비활성화할까요?\n해당 트랙으로는 지원이 불가능해집니다.`)) return;
+                        try {
+                          const updated = await updateNotificationSettings({ [field]: false });
+                          setSettings(updated);
+                          setEditForm(updated);
+                        } catch {
+                          alert("설정 변경에 실패했습니다.");
+                        }
+                      }}
+                    >
+                      비활성화
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ✅ 결과 공개 관리 */}
         {settings && (
           <div className="result-visibility-section">

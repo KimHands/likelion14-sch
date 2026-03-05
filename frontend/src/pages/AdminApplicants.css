@@ -195,6 +195,22 @@
   text-overflow: ellipsis;
 }
 
+/* 엑셀 다운로드 버튼 */
+.excel-download-btn {
+  padding: 8px 18px;
+  background: #1e7e34;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.excel-download-btn:hover {
+  background: #155724;
+}
+
 /* ── 테이블 영역: 남은 공간 모두 채움 ── */
 .admin-table-wrap {
   flex: 1;

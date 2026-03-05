@@ -9,6 +9,8 @@ from .views_admin import (
     AdminApplicationFinalizeView,
     AdminResultNotificationSettingsView,
     AdminPersonalInterviewScheduleView,
+    AdminApplicationExportView,
+    track_application_settings,
 )
 from .view_results import MyResultView
 
@@ -18,6 +20,7 @@ urlpatterns = [
     path("submit", views.submit_application),
 
     path("admin", AdminApplicationListView.as_view()),
+    path("admin/export", AdminApplicationExportView.as_view()),
     path("admin/<int:app_id>", AdminApplicationDetailView.as_view()),
     path("admin/<int:app_id>/status", AdminApplicationStatusUpdateView.as_view()),
 
@@ -34,5 +37,8 @@ urlpatterns = [
     # ✅ 합격 알림 설정 API
     path("admin/notification-settings", AdminResultNotificationSettingsView.as_view()),
     
+    # ✅ 공개: 트랙별 지원 활성화 상태
+    path("track-settings", track_application_settings),
+
     path("results/my", MyResultView.as_view()),
 ]

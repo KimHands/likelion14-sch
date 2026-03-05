@@ -516,6 +516,25 @@ export default function AdminApplicants() {
     }
   };
 
+  // ✅ 엑셀 다운로드
+  const handleExcelDownload = () => {
+    const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q.trim());
+    if (track !== "ALL") params.set("track", track);
+    if (status !== "ALL") params.set("status", status);
+    if (sort !== "DEFAULT") params.set("sort", sort);
+
+    fetch(`/api/applications/admin/export?${params.toString()}`, { credentials: "include" })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "지원자목록.xlsx";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+  };
+
   // ✅ 개별 면접 일정 저장
   const saveSchedule = async (appId: number) => {
     try {
@@ -645,6 +664,13 @@ export default function AdminApplicants() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 엑셀 다운로드 버튼 */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8, flexShrink: 0 }}>
+        <button className="excel-download-btn" type="button" onClick={handleExcelDownload}>
+          엑셀 다운로드
+        </button>
       </div>
 
       {/* 표 */}
