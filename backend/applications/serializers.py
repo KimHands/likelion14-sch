@@ -198,6 +198,10 @@ class ResultNotificationSettingsSerializer(serializers.ModelSerializer):
             "ot_datetime",
             "doc_result_open",
             "final_result_open",
+            "track_planning_design_open",
+            "track_frontend_open",
+            "track_backend_open",
+            "track_ai_server_open",
             "updated_at",
         ]
         read_only_fields = ["updated_at"]

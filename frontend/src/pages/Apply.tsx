@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../api/client";
+import { getTrackSettings } from "../api/applications";
+import type { TrackSettings } from "../api/applications";
 import { useAuth } from "../auth/useAuth";
 import HomeHeader from "../components/HomeHeader";
 import HomeFooter from "../components/HomeFooter";
@@ -121,6 +123,7 @@ export default function Apply() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<MyResponse["status"]>("DRAFT");
   const locked = useMemo(() => status !== "DRAFT", [status]);
+  const [trackSettings, setTrackSettings] = useState<TrackSettings | null>(null);
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [form, setForm] = useState<ApplyUIForm>(EMPTY_FORM);
@@ -186,7 +189,12 @@ export default function Apply() {
 
     (async () => {
       try {
-        const [meRes, myRes] = await Promise.all([apiFetch<MeResponse>("/api/auth/me"), apiFetch<MyResponse>("/api/applications/my")]);
+        const [meRes, myRes, tracks] = await Promise.all([
+          apiFetch<MeResponse>("/api/auth/me"),
+          apiFetch<MyResponse>("/api/applications/my"),
+          getTrackSettings().catch(() => null),
+        ]);
+        if (!cancelled) setTrackSettings(tracks);
         if (cancelled) return;
         const local = (meRes.email || "").split("@")[0] || "";
         setForm((prev) => ({
@@ -378,13 +386,17 @@ export default function Apply() {
 
     try {
       const payload = toPayload();
-      const res = await apiFetch<{ ok?: boolean; errors?: Record<string, string[]>; status?: MyResponse["status"] }>("/api/applications/submit", {
+      const res = await apiFetch<{ ok?: boolean; error?: string; errors?: Record<string, string[]>; status?: MyResponse["status"] }>("/api/applications/submit", {
         method: "POST",
         body: JSON.stringify(payload),
       });
 
-      if (res?.ok === false && res?.errors) {
-        showToast(`제출 실패: ${JSON.stringify(res.errors, null, 2)}`, "error");
+      if (res?.ok === false) {
+        if (res.error === "TRACK_CLOSED") {
+          showToast("해당 트랙의 지원이 마감되었습니다.", "error");
+        } else {
+          showToast(`제출 실패: ${JSON.stringify(res.errors, null, 2)}`, "error");
+        }
         return;
       }
 
@@ -474,15 +486,17 @@ export default function Apply() {
           <div className="apply-track-row">
             {(Object.keys(TRACK_LABEL) as Track[]).map((t) => {
               const selected = form.track === t;
+              const trackClosed = trackSettings !== null && !trackSettings[t];
               return (
                 <button
                   key={t}
                   type="button"
-                  disabled={locked}
+                  disabled={locked || trackClosed}
                   onClick={() => onSelectTrack(t)}
-                  className={`apply-track-btn ${selected ? "selected" : ""}`}
+                  className={`apply-track-btn ${selected ? "selected" : ""} ${trackClosed ? "closed" : ""}`}
                 >
                   {TRACK_LABEL[t]}
+                  {trackClosed && <span className="apply-track-closed-badge">마감</span>}
                 </button>
               );
             })}

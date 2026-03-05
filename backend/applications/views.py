@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status as drf_status
 
-from .models import Application
+from .models import Application, ResultNotificationSettings
 from .serializers import ApplicationFormSerializer
 
 
@@ -62,6 +62,19 @@ def submit_application(request):
     ser = ApplicationFormSerializer(app, data=request.data)
     if not ser.is_valid():
         return Response({"ok": False, "errors": ser.errors}, status=drf_status.HTTP_400_BAD_REQUEST)
+
+    # 트랙 활성화 여부 확인
+    track = request.data.get("track")
+    track_settings = ResultNotificationSettings.get_settings()
+    track_field_map = {
+        "PLANNING_DESIGN": "track_planning_design_open",
+        "FRONTEND": "track_frontend_open",
+        "BACKEND": "track_backend_open",
+        "AI_SERVER": "track_ai_server_open",
+    }
+    field = track_field_map.get(track)
+    if field and not getattr(track_settings, field, True):
+        return Response({"ok": False, "error": "TRACK_CLOSED"}, status=drf_status.HTTP_400_BAD_REQUEST)
 
     with transaction.atomic():
         ser.save()

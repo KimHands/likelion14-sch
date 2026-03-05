@@ -181,6 +181,12 @@ class ResultNotificationSettings(models.Model):
     doc_result_open = models.BooleanField(default=False, verbose_name="서류 결과 공개 여부")
     final_result_open = models.BooleanField(default=False, verbose_name="최종 결과 공개 여부")
 
+    # 트랙별 지원 활성화 여부
+    track_planning_design_open = models.BooleanField(default=True, verbose_name="기획/디자인 트랙 지원 활성화")
+    track_frontend_open = models.BooleanField(default=True, verbose_name="프론트엔드 트랙 지원 활성화")
+    track_backend_open = models.BooleanField(default=True, verbose_name="백엔드 트랙 지원 활성화")
+    track_ai_server_open = models.BooleanField(default=True, verbose_name="AI 트랙 지원 활성화")
+
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
