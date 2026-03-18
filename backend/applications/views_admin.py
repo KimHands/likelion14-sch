@@ -253,7 +253,9 @@ class AdminApplicationFinalizeView(APIView):
         u = app.user
         if decision == "ACCEPTED":
             u.role = "STUDENT"
-            u.education_track = app.track
+            # FRONTEND/BACKEND 지원 트랙은 FULLSTACK 교육 트랙으로 통합
+            track_map = {"FRONTEND": "FULLSTACK", "BACKEND": "FULLSTACK"}
+            u.education_track = track_map.get(app.track, app.track)
             u.save(update_fields=["role", "education_track"])
         else:
             # 불합격이면 role/track은 유지(원하면 APPLICANT로 강제도 가능)

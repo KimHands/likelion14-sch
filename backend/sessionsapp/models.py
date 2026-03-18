@@ -3,17 +3,17 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-TRACK_FB = [("FRONTEND", "프론트엔드"), ("BACKEND", "백엔드")]
+TRACK_FS = [("FULLSTACK", "풀스택")]
 TRACK_AP = [("AI_SERVER", "AI"), ("PLANNING_DESIGN", "기획/디자인")]
-TRACK_ALL = TRACK_FB + TRACK_AP
+TRACK_ALL = TRACK_FS + TRACK_AP
 
 
 # ──────────────────────────────────────────
-# 그룹 A: 프론트엔드 / 백엔드 트랙
+# 그룹 A: 풀스택 트랙
 # ──────────────────────────────────────────
 
 class Quiz(models.Model):
-    track = models.CharField(max_length=30, choices=TRACK_FB)
+    track = models.CharField(max_length=30, choices=TRACK_FS)
     title = models.CharField(max_length=200)
     question = models.TextField()
     option_1 = models.CharField(max_length=300)
@@ -56,7 +56,7 @@ class QuizAnswer(models.Model):
 
 
 class QnAPost(models.Model):
-    track = models.CharField(max_length=30, choices=TRACK_FB)
+    track = models.CharField(max_length=30, choices=TRACK_FS)
     title = models.CharField(max_length=200)
     content = models.TextField()
     author = models.ForeignKey(
@@ -148,3 +148,56 @@ class Announcement(models.Model):
 
     def __str__(self):
         return f"[{self.track}] {self.title}"
+
+
+# ──────────────────────────────────────────
+# 출석부
+# ──────────────────────────────────────────
+
+class AttendanceSession(models.Model):
+    """교육 세션별 출석부 (트랙별 관리)"""
+    track = models.CharField(max_length=30, choices=TRACK_ALL)
+    title = models.CharField(max_length=200)
+    date = models.DateField()
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="attendance_sessions"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date", "-created_at"]
+
+    def __str__(self):
+        return f"[{self.track}] {self.title} ({self.date})"
+
+
+class AttendanceRecord(models.Model):
+    """개별 출석 기록"""
+    ATTENDANCE_CHOICES = [
+        ("PRESENT", "출석"),
+        ("ABSENT", "결석"),
+        ("LATE", "지각"),
+    ]
+
+    session = models.ForeignKey(
+        AttendanceSession, on_delete=models.CASCADE, related_name="records"
+    )
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="attendance_records"
+    )
+    status = models.CharField(max_length=10, choices=ATTENDANCE_CHOICES, default="ABSENT")
+    marked_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="marked_attendances",
+    )
+    marked_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("session", "student")
+        ordering = ["student__name"]
+
+    def __str__(self):
+        return f"{self.student.name} - {self.session.title} ({self.status})"

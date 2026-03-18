@@ -3,8 +3,7 @@ import { apiFetch } from "./client";
 // ── Track mapping (frontend label → DB value) ──
 
 export const TRACK_TO_DB: Record<string, string> = {
-  FRONTEND: "FRONTEND",
-  BACKEND: "BACKEND",
+  FULLSTACK: "FULLSTACK",
   AI: "AI_SERVER",
   PLANNING: "PLANNING_DESIGN",
 };
@@ -194,5 +193,52 @@ export function createAnnouncement(data: { track: string; title: string; content
   return apiFetch<AnnouncementItem>("/api/sessions/announcements/", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+// ── Attendance API ────────────────────────
+
+export type AttendanceStatus = "PRESENT" | "ABSENT" | "LATE";
+
+export interface AttendanceRecordItem {
+  id: number;
+  student_id: number;
+  student_name: string;
+  status: AttendanceStatus;
+  marked_at: string;
+}
+
+export interface AttendanceSessionItem {
+  id: number;
+  track: string;
+  title: string;
+  date: string;
+  created_by_name: string;
+  created_at: string;
+}
+
+export interface AttendanceSessionDetail extends AttendanceSessionItem {
+  records: AttendanceRecordItem[];
+}
+
+export function fetchAttendanceSessions(track: string) {
+  return apiFetch<AttendanceSessionItem[]>(`/api/sessions/attendance/?track=${track}`);
+}
+
+export function createAttendanceSession(data: { track: string; title: string; date: string }) {
+  return apiFetch<AttendanceSessionDetail>("/api/sessions/attendance/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function fetchAttendanceSessionDetail(id: number) {
+  return apiFetch<AttendanceSessionDetail>(`/api/sessions/attendance/${id}/`);
+}
+
+export function markAttendance(sessionId: number, studentId: number, status: AttendanceStatus) {
+  return apiFetch<AttendanceRecordItem>(`/api/sessions/attendance/${sessionId}/mark/`, {
+    method: "PATCH",
+    body: JSON.stringify({ student_id: studentId, status }),
   });
 }

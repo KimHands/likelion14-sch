@@ -1,5 +1,5 @@
 export type Role = "APPLICANT" | "STUDENT" | "INSTRUCTOR";
-export type Track = "FRONTEND" | "BACKEND" | "AI" | "PLANNING";
+export type Track = "FULLSTACK" | "AI" | "PLANNING";
 
 export interface MeResponse {
   id: number;

@@ -14,23 +14,22 @@ import {
 } from "../api/sessions";
 import "./Session.css";
 
-type MainTab = "frontend" | "backend" | "ai" | "planning";
+type MainTab = "fullstack" | "ai" | "planning";
 
 export default function Session() {
   const { me } = useAuth();
-  const [mainTab, setMainTab] = useState<MainTab>("ai");
+  const [mainTab, setMainTab] = useState<MainTab>("fullstack");
   const prevTrack = useRef(me?.track);
 
   if (me?.track !== prevTrack.current) {
     prevTrack.current = me?.track;
     if (me?.track) {
       const trackMap: Record<string, MainTab> = {
-        FRONTEND: "frontend",
-        BACKEND: "backend",
+        FULLSTACK: "fullstack",
         AI: "ai",
         PLANNING: "planning",
       };
-      setMainTab(trackMap[me.track] || "ai");
+      setMainTab(trackMap[me.track] || "fullstack");
     }
   }
 
@@ -38,8 +37,7 @@ export default function Session() {
     if (me?.role === "INSTRUCTOR") return true;
     if (me?.role === "STUDENT") {
       const trackMap: Record<string, MainTab> = {
-        FRONTEND: "frontend",
-        BACKEND: "backend",
+        FULLSTACK: "fullstack",
         AI: "ai",
         PLANNING: "planning",
       };
@@ -62,21 +60,20 @@ export default function Session() {
         <h1 className="session-title">EDUCATION SESSION</h1>
 
         <div className="session-main-tabs">
-          {(["frontend", "backend", "ai", "planning"] as MainTab[]).map((tab) => (
+          {(["fullstack", "ai", "planning"] as MainTab[]).map((tab) => (
             <button
               key={tab}
               className={`session-tab ${mainTab === tab ? "active" : ""} ${!canAccessTab(tab) ? "disabled" : ""}`}
               onClick={() => handleTabClick(tab)}
               disabled={!canAccessTab(tab)}
             >
-              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI", planning: "기획/디자인" }[tab]}
+              {{ fullstack: "풀스택", ai: "AI", planning: "기획/디자인" }[tab]}
             </button>
           ))}
         </div>
 
         <div className="session-content">
-          {mainTab === "frontend" && <QuizQnATab trackLabel="FRONTEND" desc="프론트엔드 개발을 학습하는 과정입니다." role={me?.role} />}
-          {mainTab === "backend" && <QuizQnATab trackLabel="BACKEND" desc="백엔드 개발을 학습하는 과정입니다." role={me?.role} />}
+          {mainTab === "fullstack" && <QuizQnATab trackLabel="FULLSTACK" desc="풀스택 개발을 학습하는 과정입니다." role={me?.role} />}
           {mainTab === "ai" && <AssignmentTab trackLabel="AI" desc="AI 및 서버 개발을 학습하는 과정입니다." role={me?.role} />}
           {mainTab === "planning" && <PlanningTab trackLabel="PLANNING" desc="서비스 아이디어를 구체화하는 과정입니다." role={me?.role} />}
         </div>
