@@ -10,6 +10,7 @@ from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
+    StudentGroup, StudentReview,
 )
 from .serializers import (
     QuizListSerializer, QuizDetailSerializer, QuizCreateSerializer, QuizAnswerSerializer,
@@ -20,6 +21,8 @@ from .serializers import (
     AnnouncementSerializer, AnnouncementCreateSerializer,
     AttendanceSessionListSerializer, AttendanceSessionDetailSerializer,
     AttendanceSessionCreateSerializer, AttendanceMarkSerializer,
+    StudentGroupSerializer, StudentGroupCreateSerializer, StudentGroupMembersSerializer,
+    StudentReviewSerializer, StudentReviewWriteSerializer,
 )
 
 User = get_user_model()
@@ -312,3 +315,128 @@ def attendance_mark(request, pk):
 
     from .serializers import AttendanceRecordSerializer
     return Response(AttendanceRecordSerializer(record).data)
+
+
+# ── StudentGroup ──────────────────────────────
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def group_list_create(request):
+    """
+    GET  /api/sessions/groups/?track=FULLSTACK  — 그룹 목록
+    POST /api/sessions/groups/                  — 그룹 생성 (INSTRUCTOR)
+    """
+    if request.method == "GET":
+        track = request.query_params.get("track")
+        qs = StudentGroup.objects.prefetch_related("members")
+        if track:
+            qs = qs.filter(track=track)
+        return Response(StudentGroupSerializer(qs, many=True).data)
+
+    if request.user.role != "INSTRUCTOR" and not request.user.is_staff:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    ser = StudentGroupCreateSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+    group = ser.save(created_by=request.user)
+    return Response(StudentGroupSerializer(group).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsInstructorOrStaff])
+def group_delete(request, pk):
+    """DELETE /api/sessions/groups/<id>/"""
+    try:
+        StudentGroup.objects.get(pk=pk).delete()
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsInstructorOrStaff])
+def group_update_members(request, pk):
+    """
+    PATCH /api/sessions/groups/<id>/members/
+    body: { member_ids: [int, ...] }
+    """
+    try:
+        group = StudentGroup.objects.prefetch_related("members").get(pk=pk)
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    ser = StudentGroupMembersSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+    group.members.set(User.objects.filter(id__in=ser.validated_data["member_ids"], role="STUDENT"))
+    return Response(StudentGroupSerializer(group).data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def track_students(request):
+    """
+    GET /api/sessions/students/?track=FULLSTACK
+    학생 목록 + 소속 그룹 정보 포함
+    """
+    track = request.query_params.get("track")
+    qs = User.objects.filter(role="STUDENT").prefetch_related("student_groups")
+    if track:
+        qs = qs.filter(education_track=track)
+    data = [
+        {
+            "id": u.id,
+            "name": u.name,
+            "email": u.email,
+            "groups": [{"id": g.id, "name": g.name} for g in u.student_groups.all()],
+        }
+        for u in qs
+    ]
+    return Response(data)
+
+
+# ── StudentReview ─────────────────────────────
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def review_list_create(request):
+    """
+    GET  /api/sessions/reviews/?student_id=<id>  — 감상평 조회
+    POST /api/sessions/reviews/                  — 감상평 작성/수정 (INSTRUCTOR, upsert)
+    """
+    if request.method == "GET":
+        student_id = request.query_params.get("student_id")
+        if student_id:
+            qs = StudentReview.objects.filter(student_id=student_id).select_related("author", "student")
+        elif request.user.role == "INSTRUCTOR" or request.user.is_staff:
+            qs = StudentReview.objects.all().select_related("author", "student")
+        else:
+            qs = StudentReview.objects.filter(student=request.user).select_related("author", "student")
+        return Response(StudentReviewSerializer(qs, many=True).data)
+
+    if request.user.role != "INSTRUCTOR" and not request.user.is_staff:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    ser = StudentReviewWriteSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+    review, _ = StudentReview.objects.update_or_create(
+        student=ser.validated_data["student"],
+        author=request.user,
+        defaults={"content": ser.validated_data["content"]},
+    )
+    return Response(StudentReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsInstructorOrStaff])
+def review_delete(request, pk):
+    """DELETE /api/sessions/reviews/<id>/"""
+    try:
+        StudentReview.objects.get(pk=pk).delete()
+    except StudentReview.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_reviews(request):
+    """GET /api/sessions/reviews/my/  — 내 감상평 조회 (학생용)"""
+    reviews = StudentReview.objects.filter(student=request.user).select_related("author")
+    return Response(StudentReviewSerializer(reviews, many=True).data)

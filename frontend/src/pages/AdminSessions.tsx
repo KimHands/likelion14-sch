@@ -7,9 +7,12 @@ import {
   markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
   fetchAttendanceSessions, createAttendanceSession, fetchAttendanceSessionDetail, markAttendance,
+  fetchGroups, createGroup, deleteGroup, updateGroupMembers, fetchTrackStudents,
+  fetchReviews, saveReview, deleteReview,
   type QuizItem, type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem, type AnnouncementItem,
   type AttendanceSessionItem, type AttendanceSessionDetail, type AttendanceStatus,
+  type GroupItem, type StudentItem, type ReviewItem,
 } from "../api/sessions";
 import "./AdminSessions.css";
 
@@ -50,6 +53,10 @@ export default function AdminSessions() {
         <AttendanceAdmin trackLabel={
           tab === "fullstack" ? "FULLSTACK" : tab === "ai" ? "AI" : "PLANNING"
         } />
+
+        {/* 그룹 관리 & 감상평은 풀스택 탭에서만 */}
+        {tab === "fullstack" && <GroupAdmin />}
+        {tab === "fullstack" && <ReviewAdmin />}
       </div>
     </div>
   );
@@ -491,6 +498,238 @@ function AttendanceAdmin({ trackLabel }: { trackLabel: string }) {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── 그룹 관리 ──
+
+function GroupAdmin() {
+  const dbTrack = TRACK_TO_DB["FULLSTACK"];
+
+  const [groups, setGroups] = useState<GroupItem[]>([]);
+  const [students, setStudents] = useState<StudentItem[]>([]);
+  const [newGroupName, setNewGroupName] = useState("");
+  const [editingGroup, setEditingGroup] = useState<GroupItem | null>(null);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<Set<number>>(new Set());
+
+  const load = useCallback(() => {
+    fetchGroups(dbTrack).then(setGroups).catch(() => {});
+    fetchTrackStudents(dbTrack).then(setStudents).catch(() => {});
+  }, [dbTrack]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleCreateGroup = async () => {
+    if (!newGroupName.trim()) { alert("그룹명을 입력하세요."); return; }
+    await createGroup({ track: dbTrack, name: newGroupName.trim() });
+    setNewGroupName("");
+    load();
+  };
+
+  const handleDeleteGroup = async (id: number) => {
+    if (!confirm("그룹을 삭제하시겠습니까?")) return;
+    await deleteGroup(id);
+    load();
+  };
+
+  const openEdit = (group: GroupItem) => {
+    setEditingGroup(group);
+    setSelectedMemberIds(new Set(group.members.map((m) => m.id)));
+  };
+
+  const toggleMember = (id: number) => {
+    setSelectedMemberIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const handleSaveMembers = async () => {
+    if (!editingGroup) return;
+    await updateGroupMembers(editingGroup.id, Array.from(selectedMemberIds));
+    setEditingGroup(null);
+    load();
+  };
+
+  return (
+    <div className="admin-section" style={{ marginTop: 32 }}>
+      <div className="admin-card">
+        <h3>그룹 관리</h3>
+
+        <div className="admin-form">
+          <div className="form-inline">
+            <input
+              placeholder="그룹명 (예: 1팀)"
+              value={newGroupName}
+              onChange={(e) => setNewGroupName(e.target.value)}
+              style={{ flex: 2 }}
+            />
+            <button className="admin-btn" onClick={handleCreateGroup}>그룹 생성</button>
+          </div>
+        </div>
+
+        <table className="admin-table" style={{ marginTop: 12 }}>
+          <thead>
+            <tr><th>그룹명</th><th>인원</th><th>멤버</th><th>관리</th></tr>
+          </thead>
+          <tbody>
+            {groups.map((g) => (
+              <tr key={g.id}>
+                <td>{g.name}</td>
+                <td>{g.member_count}명</td>
+                <td className="post-meta">{g.members.map((m) => m.name).join(", ") || "—"}</td>
+                <td>
+                  <div className="att-btn-group">
+                    <button className="admin-btn small" onClick={() => openEdit(g)}>멤버 편집</button>
+                    <button className="admin-btn small" onClick={() => handleDeleteGroup(g.id)}>삭제</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {groups.length === 0 && (
+              <tr><td colSpan={4} className="empty-text">생성된 그룹이 없습니다.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {editingGroup && (
+        <div className="admin-card highlight">
+          <div className="admin-card-header">
+            <h3>"{editingGroup.name}" 멤버 편집</h3>
+            <button className="close-btn" onClick={() => setEditingGroup(null)}>&times;</button>
+          </div>
+          <p className="post-meta">체크된 학생이 해당 그룹에 포함됩니다.</p>
+          <div className="group-member-grid">
+            {students.map((s) => (
+              <label key={s.id} className="group-member-item">
+                <input
+                  type="checkbox"
+                  checked={selectedMemberIds.has(s.id)}
+                  onChange={() => toggleMember(s.id)}
+                />
+                <span>{s.name}</span>
+                {s.groups.length > 0 && (
+                  <span className="post-meta"> ({s.groups.map((g) => g.name).join(", ")})</span>
+                )}
+              </label>
+            ))}
+            {students.length === 0 && <p className="empty-text">풀스택 수강생이 없습니다.</p>}
+          </div>
+          <button className="admin-btn" style={{ marginTop: 12 }} onClick={handleSaveMembers}>저장</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── 감상평 관리 ──
+
+function ReviewAdmin() {
+  const dbTrack = TRACK_TO_DB["FULLSTACK"];
+
+  const [students, setStudents] = useState<StudentItem[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<StudentItem | null>(null);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const [content, setContent] = useState("");
+
+  const loadStudents = useCallback(() => {
+    fetchTrackStudents(dbTrack).then(setStudents).catch(() => {});
+  }, [dbTrack]);
+
+  useEffect(() => { loadStudents(); }, [loadStudents]);
+
+  const openStudent = async (student: StudentItem) => {
+    setSelectedStudent(student);
+    const data = await fetchReviews(student.id);
+    setReviews(data);
+    setContent(data[0]?.content ?? "");
+  };
+
+  const handleSave = async () => {
+    if (!selectedStudent || !content.trim()) { alert("내용을 입력하세요."); return; }
+    await saveReview(selectedStudent.id, content.trim());
+    const data = await fetchReviews(selectedStudent.id);
+    setReviews(data);
+    alert("저장되었습니다.");
+  };
+
+  const handleDelete = async (reviewId: number) => {
+    if (!confirm("감상평을 삭제하시겠습니까?")) return;
+    await deleteReview(reviewId);
+    if (selectedStudent) {
+      const data = await fetchReviews(selectedStudent.id);
+      setReviews(data);
+      setContent(data[0]?.content ?? "");
+    }
+  };
+
+  return (
+    <div className="admin-section" style={{ marginTop: 32 }}>
+      <div className="admin-card">
+        <h3>학생 감상평 관리</h3>
+        <p className="post-meta">학생을 클릭하여 개인별 감상평을 작성합니다.</p>
+        <table className="admin-table" style={{ marginTop: 12 }}>
+          <thead>
+            <tr><th>이름</th><th>그룹</th><th>감상평</th></tr>
+          </thead>
+          <tbody>
+            {students.map((s) => (
+              <tr
+                key={s.id}
+                className="clickable"
+                onClick={() => openStudent(s)}
+              >
+                <td>{s.name}</td>
+                <td className="post-meta">{s.groups.map((g) => g.name).join(", ") || "—"}</td>
+                <td>
+                  <button className="admin-btn small">작성/수정</button>
+                </td>
+              </tr>
+            ))}
+            {students.length === 0 && (
+              <tr><td colSpan={3} className="empty-text">풀스택 수강생이 없습니다.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {selectedStudent && (
+        <div className="admin-card highlight">
+          <div className="admin-card-header">
+            <h3>{selectedStudent.name} 감상평</h3>
+            <button className="close-btn" onClick={() => setSelectedStudent(null)}>&times;</button>
+          </div>
+
+          {reviews.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              {reviews.map((r) => (
+                <div key={r.id} className="admin-comment instructor" style={{ marginBottom: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span className="comment-name">{r.author_name} | {new Date(r.updated_at).toLocaleDateString()}</span>
+                    <button className="admin-btn small" onClick={() => handleDelete(r.id)}>삭제</button>
+                  </div>
+                  <p style={{ margin: "4px 0 0" }}>{r.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="admin-reply">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="감상평을 입력하세요..."
+              rows={4}
+            />
+            <button className="admin-btn" onClick={handleSave}>
+              {reviews.length > 0 ? "수정" : "저장"}
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -367,3 +367,28 @@
   background: #111;
   color: #fff;
 }
+
+/* ── 그룹 멤버 편집 ── */
+.group-member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.group-member-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  background: #fafafa;
+}
+
+.group-member-item:has(input:checked) {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}

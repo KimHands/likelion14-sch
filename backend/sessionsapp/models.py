@@ -201,3 +201,58 @@ class AttendanceRecord(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.session.title} ({self.status})"
+
+
+# ──────────────────────────────────────────
+# 학생 그룹
+# ──────────────────────────────────────────
+
+class StudentGroup(models.Model):
+    """트랙별 학생 그룹"""
+    track = models.CharField(max_length=30, choices=TRACK_ALL)
+    name = models.CharField(max_length=100)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name="student_groups",
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="created_groups",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"[{self.track}] {self.name}"
+
+
+# ──────────────────────────────────────────
+# 학생 감상평
+# ──────────────────────────────────────────
+
+class StudentReview(models.Model):
+    """교육자가 학생 개인에게 작성하는 감상평 (교육자 1명당 학생 1개)"""
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews_received",
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews_written",
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        unique_together = ("student", "author")
+
+    def __str__(self):
+        return f"{self.author.name} → {self.student.name}"
