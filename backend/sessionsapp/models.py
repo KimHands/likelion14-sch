@@ -231,28 +231,23 @@ class StudentGroup(models.Model):
 
 
 # ──────────────────────────────────────────
-# 학생 감상평
+# 수업 감상평 (학생이 수업 후 작성)
 # ──────────────────────────────────────────
 
-class StudentReview(models.Model):
-    """교육자가 학생 개인에게 작성하는 감상평 (교육자 1명당 학생 1개)"""
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reviews_received",
-    )
+class ClassReview(models.Model):
+    """학생이 수업을 듣고 작성하는 감상 및 후기"""
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="reviews_written",
+        related_name="class_reviews",
     )
+    track = models.CharField(max_length=30, choices=TRACK_ALL)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-updated_at"]
-        unique_together = ("student", "author")
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.author.name} → {self.student.name}"
+        return f"[{self.track}] {self.author.name}의 감상평"

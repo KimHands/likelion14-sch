@@ -26,8 +26,8 @@ urlpatterns = [
     path("groups/<int:pk>/", views.group_delete),
     path("groups/<int:pk>/members/", views.group_update_members),
     path("students/", views.track_students),
-    # Reviews (감상평)
-    path("reviews/my/", views.my_reviews),
-    path("reviews/", views.review_list_create),
-    path("reviews/<int:pk>/", views.review_delete),
+    # ClassReviews (수업 감상평 - 학생이 작성)
+    path("class-reviews/my/", views.my_class_reviews),
+    path("class-reviews/", views.class_review_list_create),
+    path("class-reviews/<int:pk>/", views.class_review_delete),
 ]

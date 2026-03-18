@@ -10,7 +10,7 @@ from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
-    StudentGroup, StudentReview,
+    StudentGroup, ClassReview,
 )
 from .serializers import (
     QuizListSerializer, QuizDetailSerializer, QuizCreateSerializer, QuizAnswerSerializer,
@@ -22,7 +22,7 @@ from .serializers import (
     AttendanceSessionListSerializer, AttendanceSessionDetailSerializer,
     AttendanceSessionCreateSerializer, AttendanceMarkSerializer,
     StudentGroupSerializer, StudentGroupCreateSerializer, StudentGroupMembersSerializer,
-    StudentReviewSerializer, StudentReviewWriteSerializer,
+    ClassReviewSerializer, ClassReviewWriteSerializer,
 )
 
 User = get_user_model()
@@ -392,51 +392,45 @@ def track_students(request):
     return Response(data)
 
 
-# ── StudentReview ─────────────────────────────
+# ── ClassReview (수업 감상평) ──────────────────────
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
-def review_list_create(request):
+def class_review_list_create(request):
     """
-    GET  /api/sessions/reviews/?student_id=<id>  — 감상평 조회
-    POST /api/sessions/reviews/                  — 감상평 작성/수정 (INSTRUCTOR, upsert)
+    GET  /api/sessions/class-reviews/?track=FULLSTACK  — 감상평 목록 조회
+    POST /api/sessions/class-reviews/                  — 감상평 작성 (학생)
     """
     if request.method == "GET":
-        student_id = request.query_params.get("student_id")
-        if student_id:
-            qs = StudentReview.objects.filter(student_id=student_id).select_related("author", "student")
-        elif request.user.role == "INSTRUCTOR" or request.user.is_staff:
-            qs = StudentReview.objects.all().select_related("author", "student")
-        else:
-            qs = StudentReview.objects.filter(student=request.user).select_related("author", "student")
-        return Response(StudentReviewSerializer(qs, many=True).data)
+        track = request.query_params.get("track")
+        qs = ClassReview.objects.select_related("author")
+        if track:
+            qs = qs.filter(track=track)
+        return Response(ClassReviewSerializer(qs, many=True).data)
 
-    if request.user.role != "INSTRUCTOR" and not request.user.is_staff:
-        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
-    ser = StudentReviewWriteSerializer(data=request.data)
+    ser = ClassReviewWriteSerializer(data=request.data)
     ser.is_valid(raise_exception=True)
-    review, _ = StudentReview.objects.update_or_create(
-        student=ser.validated_data["student"],
-        author=request.user,
-        defaults={"content": ser.validated_data["content"]},
-    )
-    return Response(StudentReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+    review = ser.save(author=request.user)
+    return Response(ClassReviewSerializer(review).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["DELETE"])
-@permission_classes([IsInstructorOrStaff])
-def review_delete(request, pk):
-    """DELETE /api/sessions/reviews/<id>/"""
+@permission_classes([IsAuthenticated])
+def class_review_delete(request, pk):
+    """DELETE /api/sessions/class-reviews/<id>/  — 본인 감상평 삭제"""
     try:
-        StudentReview.objects.get(pk=pk).delete()
-    except StudentReview.DoesNotExist:
+        review = ClassReview.objects.get(pk=pk)
+    except ClassReview.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    if review.author != request.user and not request.user.is_staff:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    review.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def my_reviews(request):
-    """GET /api/sessions/reviews/my/  — 내 감상평 조회 (학생용)"""
-    reviews = StudentReview.objects.filter(student=request.user).select_related("author")
-    return Response(StudentReviewSerializer(reviews, many=True).data)
+def my_class_reviews(request):
+    """GET /api/sessions/class-reviews/my/  — 내가 작성한 감상평 목록"""
+    reviews = ClassReview.objects.filter(author=request.user).select_related("author")
+    return Response(ClassReviewSerializer(reviews, many=True).data)

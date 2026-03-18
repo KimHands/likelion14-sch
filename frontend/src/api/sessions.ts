@@ -288,34 +288,33 @@ export function fetchTrackStudents(track: string) {
   return apiFetch<StudentItem[]>(`/api/sessions/students/?track=${track}`);
 }
 
-// ── Reviews API ───────────────────────────
+// ── ClassReview API (수업 감상평 - 학생이 작성) ───────────────────────────
 
-export interface ReviewItem {
+export interface ClassReviewItem {
   id: number;
-  student_id: number;
-  student_name: string;
+  author_id: number;
   author_name: string;
+  track: string;
   content: string;
   created_at: string;
   updated_at: string;
 }
 
-export function fetchReviews(studentId?: number) {
-  const query = studentId ? `?student_id=${studentId}` : "";
-  return apiFetch<ReviewItem[]>(`/api/sessions/reviews/${query}`);
+export function fetchClassReviews(track: string) {
+  return apiFetch<ClassReviewItem[]>(`/api/sessions/class-reviews/?track=${track}`);
 }
 
-export function saveReview(studentId: number, content: string) {
-  return apiFetch<ReviewItem>("/api/sessions/reviews/", {
+export function createClassReview(track: string, content: string) {
+  return apiFetch<ClassReviewItem>("/api/sessions/class-reviews/", {
     method: "POST",
-    body: JSON.stringify({ student: studentId, content }),
+    body: JSON.stringify({ track, content }),
   });
 }
 
-export function deleteReview(id: number) {
-  return apiFetch<void>(`/api/sessions/reviews/${id}/`, { method: "DELETE" });
+export function deleteClassReview(id: number) {
+  return apiFetch<void>(`/api/sessions/class-reviews/${id}/`, { method: "DELETE" });
 }
 
-export function fetchMyReviews() {
-  return apiFetch<ReviewItem[]>("/api/sessions/reviews/my/");
+export function fetchMyClassReviews() {
+  return apiFetch<ClassReviewItem[]>("/api/sessions/class-reviews/my/");
 }

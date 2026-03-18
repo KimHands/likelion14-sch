@@ -7,12 +7,12 @@ import {
   fetchQnAPosts, fetchQnADetail, createQnAPost, createQnAComment,
   fetchAssignments, fetchAssignmentDetail, submitAssignment, createAssignment, markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
-  fetchGroups, fetchMyReviews,
+  fetchGroups, fetchMyClassReviews, createClassReview, deleteClassReview,
   type QuizItem, type QuizAnswerResult,
   type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem,
   type AnnouncementItem,
-  type GroupItem, type ReviewItem,
+  type GroupItem, type ClassReviewItem,
 } from "../api/sessions";
 import "./Session.css";
 
@@ -101,18 +101,17 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
   const [showQnaCreate, setShowQnaCreate] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  // 그룹 & 감상평 (학생용)
+  // 그룹 & 수업 감상평
   const [groups, setGroups] = useState<GroupItem[]>([]);
-  const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
+  const [classReviews, setClassReviews] = useState<ClassReviewItem[]>([]);
+  const [reviewText, setReviewText] = useState("");
 
   const loadData = useCallback(() => {
     fetchQuizzes(dbTrack).then(setQuizzes).catch(() => {});
     fetchQnAPosts(dbTrack).then(setQnaPosts).catch(() => {});
     fetchGroups(dbTrack).then(setGroups).catch(() => {});
-    if (!isInstructor) {
-      fetchMyReviews().then(setMyReviews).catch(() => {});
-    }
-  }, [dbTrack, isInstructor]);
+    fetchMyClassReviews().then(setClassReviews).catch(() => {});
+  }, [dbTrack]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -305,27 +304,63 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
         )}
       </div>
 
-      {/* 교육자 감상평 (학생 전용) */}
-      {!isInstructor && (
-        <div className="submitted-list" style={{ marginTop: 20 }}>
-          <h2 className="submitted-title">교육자 감상평</h2>
-          {myReviews.length === 0 ? (
-            <p className="empty-text">아직 작성된 감상평이 없습니다.</p>
-          ) : (
-            <div className="announcement-list">
-              {myReviews.map((r) => (
-                <div key={r.id} className="announcement-item">
-                  <div className="announcement-header">
-                    <strong>{r.author_name}</strong>
-                    <span className="announcement-meta">{new Date(r.updated_at).toLocaleDateString()}</span>
-                  </div>
-                  <p className="announcement-body">{r.content}</p>
+      {/* 수업 감상평 작성 & 조회 */}
+      <div className="submitted-list" style={{ marginTop: 20 }}>
+        <h2 className="submitted-title">수업 감상평</h2>
+        <p className="session-desc" style={{ marginBottom: 12 }}>수업을 듣고 느낀 점, 배운 점을 자유롭게 남겨주세요.</p>
+
+        {/* 작성 폼 (학생만) */}
+        {!isInstructor && (
+          <div className="comment-form" style={{ marginBottom: 20 }}>
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="수업 감상 및 후기를 입력하세요..."
+              rows={4}
+            />
+            <button
+              className="submit-btn"
+              onClick={async () => {
+                if (!reviewText.trim()) return;
+                await createClassReview(dbTrack, reviewText.trim());
+                setReviewText("");
+                fetchMyClassReviews().then(setClassReviews).catch(() => {});
+              }}
+            >
+              등록하기
+            </button>
+          </div>
+        )}
+
+        {/* 내가 쓴 감상평 목록 */}
+        {classReviews.length === 0 ? (
+          <p className="empty-text">아직 작성한 감상평이 없습니다.</p>
+        ) : (
+          <div className="announcement-list">
+            {classReviews.map((r) => (
+              <div key={r.id} className="announcement-item">
+                <div className="announcement-header">
+                  <span className="announcement-meta">{new Date(r.created_at).toLocaleDateString()}</span>
+                  {!isInstructor && (
+                    <button
+                      className="small-btn"
+                      style={{ fontSize: 12 }}
+                      onClick={async () => {
+                        if (!confirm("삭제하시겠습니까?")) return;
+                        await deleteClassReview(r.id);
+                        fetchMyClassReviews().then(setClassReviews).catch(() => {});
+                      }}
+                    >
+                      삭제
+                    </button>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+                <p className="announcement-body">{r.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

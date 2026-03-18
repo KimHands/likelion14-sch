@@ -3,7 +3,7 @@ from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
-    StudentGroup, StudentReview,
+    StudentGroup, ClassReview,
 )
 
 
@@ -239,18 +239,17 @@ class StudentGroupMembersSerializer(serializers.Serializer):
     member_ids = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)
 
 
-# ── StudentReview ────────────────────────────
+# ── ClassReview ────────────────────────────
 
-class StudentReviewSerializer(serializers.ModelSerializer):
+class ClassReviewSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source="author.name", read_only=True)
-    student_name = serializers.CharField(source="student.name", read_only=True)
 
     class Meta:
-        model = StudentReview
-        fields = ["id", "student_id", "student_name", "author_name", "content", "created_at", "updated_at"]
+        model = ClassReview
+        fields = ["id", "author_id", "author_name", "track", "content", "created_at", "updated_at"]
 
 
-class StudentReviewWriteSerializer(serializers.ModelSerializer):
+class ClassReviewWriteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudentReview
-        fields = ["student", "content"]
+        model = ClassReview
+        fields = ["track", "content"]
