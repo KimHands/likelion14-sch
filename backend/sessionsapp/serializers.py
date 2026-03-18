@@ -3,6 +3,7 @@ from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
+    StudentGroup, StudentReview,
 )
 
 
@@ -205,3 +206,51 @@ class AttendanceSessionCreateSerializer(serializers.ModelSerializer):
 class AttendanceMarkSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
     status = serializers.ChoiceField(choices=["PRESENT", "ABSENT", "LATE"])
+
+
+# ── StudentGroup ────────────────────────────
+
+class GroupMemberSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    email = serializers.CharField()
+
+
+class StudentGroupSerializer(serializers.ModelSerializer):
+    members = GroupMemberSerializer(many=True, read_only=True)
+    created_by_name = serializers.CharField(source="created_by.name", read_only=True)
+    member_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudentGroup
+        fields = ["id", "track", "name", "members", "member_count", "created_by_name", "created_at"]
+
+    def get_member_count(self, obj):
+        return obj.members.count()
+
+
+class StudentGroupCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentGroup
+        fields = ["track", "name"]
+
+
+class StudentGroupMembersSerializer(serializers.Serializer):
+    member_ids = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)
+
+
+# ── StudentReview ────────────────────────────
+
+class StudentReviewSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source="author.name", read_only=True)
+    student_name = serializers.CharField(source="student.name", read_only=True)
+
+    class Meta:
+        model = StudentReview
+        fields = ["id", "student_id", "student_name", "author_name", "content", "created_at", "updated_at"]
+
+
+class StudentReviewWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentReview
+        fields = ["student", "content"]

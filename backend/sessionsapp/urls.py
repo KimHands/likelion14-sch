@@ -21,4 +21,13 @@ urlpatterns = [
     path("attendance/", views.attendance_session_list_create),
     path("attendance/<int:pk>/", views.attendance_session_detail),
     path("attendance/<int:pk>/mark/", views.attendance_mark),
+    # Groups (학생 그룹)
+    path("groups/", views.group_list_create),
+    path("groups/<int:pk>/", views.group_delete),
+    path("groups/<int:pk>/members/", views.group_update_members),
+    path("students/", views.track_students),
+    # Reviews (감상평)
+    path("reviews/my/", views.my_reviews),
+    path("reviews/", views.review_list_create),
+    path("reviews/<int:pk>/", views.review_delete),
 ]

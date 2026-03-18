@@ -7,10 +7,12 @@ import {
   fetchQnAPosts, fetchQnADetail, createQnAPost, createQnAComment,
   fetchAssignments, fetchAssignmentDetail, submitAssignment, createAssignment, markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
+  fetchGroups, fetchMyReviews,
   type QuizItem, type QuizAnswerResult,
   type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem,
   type AnnouncementItem,
+  type GroupItem, type ReviewItem,
 } from "../api/sessions";
 import "./Session.css";
 
@@ -99,10 +101,18 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
   const [showQnaCreate, setShowQnaCreate] = useState(false);
   const [commentText, setCommentText] = useState("");
 
+  // 그룹 & 감상평 (학생용)
+  const [groups, setGroups] = useState<GroupItem[]>([]);
+  const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
+
   const loadData = useCallback(() => {
     fetchQuizzes(dbTrack).then(setQuizzes).catch(() => {});
     fetchQnAPosts(dbTrack).then(setQnaPosts).catch(() => {});
-  }, [dbTrack]);
+    fetchGroups(dbTrack).then(setGroups).catch(() => {});
+    if (!isInstructor) {
+      fetchMyReviews().then(setMyReviews).catch(() => {});
+    }
+  }, [dbTrack, isInstructor]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -273,6 +283,48 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
           onClose={() => setShowQnaCreate(false)}
           onCreated={() => { setShowQnaCreate(false); loadData(); }}
         />
+      )}
+
+      {/* 내 그룹 */}
+      <div className="submitted-list" style={{ marginTop: 28 }}>
+        <h2 className="submitted-title">내 그룹</h2>
+        {groups.length === 0 ? (
+          <p className="empty-text">배정된 그룹이 없습니다.</p>
+        ) : (
+          groups.map((g) => (
+            <div key={g.id} className="announcement-item">
+              <div className="announcement-header">
+                <strong>{g.name}</strong>
+                <span className="announcement-meta">{g.member_count}명</span>
+              </div>
+              <p className="announcement-body">
+                {g.members.map((m) => m.name).join(" · ")}
+              </p>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* 교육자 감상평 (학생 전용) */}
+      {!isInstructor && (
+        <div className="submitted-list" style={{ marginTop: 20 }}>
+          <h2 className="submitted-title">교육자 감상평</h2>
+          {myReviews.length === 0 ? (
+            <p className="empty-text">아직 작성된 감상평이 없습니다.</p>
+          ) : (
+            <div className="announcement-list">
+              {myReviews.map((r) => (
+                <div key={r.id} className="announcement-item">
+                  <div className="announcement-header">
+                    <strong>{r.author_name}</strong>
+                    <span className="announcement-meta">{new Date(r.updated_at).toLocaleDateString()}</span>
+                  </div>
+                  <p className="announcement-body">{r.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

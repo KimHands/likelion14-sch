@@ -242,3 +242,80 @@ export function markAttendance(sessionId: number, studentId: number, status: Att
     body: JSON.stringify({ student_id: studentId, status }),
   });
 }
+
+// ── Groups API ────────────────────────────
+
+export interface StudentItem {
+  id: number;
+  name: string;
+  email: string;
+  groups: { id: number; name: string }[];
+}
+
+export interface GroupItem {
+  id: number;
+  track: string;
+  name: string;
+  members: { id: number; name: string; email: string }[];
+  member_count: number;
+  created_by_name: string;
+  created_at: string;
+}
+
+export function fetchGroups(track: string) {
+  return apiFetch<GroupItem[]>(`/api/sessions/groups/?track=${track}`);
+}
+
+export function createGroup(data: { track: string; name: string }) {
+  return apiFetch<GroupItem>("/api/sessions/groups/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteGroup(id: number) {
+  return apiFetch<void>(`/api/sessions/groups/${id}/`, { method: "DELETE" });
+}
+
+export function updateGroupMembers(id: number, memberIds: number[]) {
+  return apiFetch<GroupItem>(`/api/sessions/groups/${id}/members/`, {
+    method: "PATCH",
+    body: JSON.stringify({ member_ids: memberIds }),
+  });
+}
+
+export function fetchTrackStudents(track: string) {
+  return apiFetch<StudentItem[]>(`/api/sessions/students/?track=${track}`);
+}
+
+// ── Reviews API ───────────────────────────
+
+export interface ReviewItem {
+  id: number;
+  student_id: number;
+  student_name: string;
+  author_name: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export function fetchReviews(studentId?: number) {
+  const query = studentId ? `?student_id=${studentId}` : "";
+  return apiFetch<ReviewItem[]>(`/api/sessions/reviews/${query}`);
+}
+
+export function saveReview(studentId: number, content: string) {
+  return apiFetch<ReviewItem>("/api/sessions/reviews/", {
+    method: "POST",
+    body: JSON.stringify({ student: studentId, content }),
+  });
+}
+
+export function deleteReview(id: number) {
+  return apiFetch<void>(`/api/sessions/reviews/${id}/`, { method: "DELETE" });
+}
+
+export function fetchMyReviews() {
+  return apiFetch<ReviewItem[]>("/api/sessions/reviews/my/");
+}
