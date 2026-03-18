@@ -7,12 +7,11 @@ import {
   markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
   fetchAttendanceSessions, createAttendanceSession, fetchAttendanceSessionDetail, markAttendance,
-  fetchGroups, createGroup, deleteGroup, updateGroupMembers, fetchTrackStudents,
-  fetchReviews, saveReview, deleteReview,
+  fetchGroups, createGroup, deleteGroup, updateGroupMembers, fetchTrackStudents, fetchClassReviews,
   type QuizItem, type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem, type AnnouncementItem,
   type AttendanceSessionItem, type AttendanceSessionDetail, type AttendanceStatus,
-  type GroupItem, type StudentItem, type ReviewItem,
+  type GroupItem, type StudentItem, type ClassReviewItem,
 } from "../api/sessions";
 import "./AdminSessions.css";
 
@@ -54,9 +53,9 @@ export default function AdminSessions() {
           tab === "fullstack" ? "FULLSTACK" : tab === "ai" ? "AI" : "PLANNING"
         } />
 
-        {/* 그룹 관리 & 감상평은 풀스택 탭에서만 */}
+        {/* 그룹 관리 & 수업 감상평은 풀스택 탭에서만 */}
         {tab === "fullstack" && <GroupAdmin />}
-        {tab === "fullstack" && <ReviewAdmin />}
+        {tab === "fullstack" && <ClassReviewAdmin />}
       </div>
     </div>
   );
@@ -627,111 +626,40 @@ function GroupAdmin() {
   );
 }
 
-// ── 감상평 관리 ──
+// ── 수업 감상평 목록 (교육자 열람용) ──
 
-function ReviewAdmin() {
+function ClassReviewAdmin() {
   const dbTrack = TRACK_TO_DB["FULLSTACK"];
+  const [reviews, setReviews] = useState<ClassReviewItem[]>([]);
 
-  const [students, setStudents] = useState<StudentItem[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<StudentItem | null>(null);
-  const [reviews, setReviews] = useState<ReviewItem[]>([]);
-  const [content, setContent] = useState("");
-
-  const loadStudents = useCallback(() => {
-    fetchTrackStudents(dbTrack).then(setStudents).catch(() => {});
+  const load = useCallback(() => {
+    fetchClassReviews(dbTrack).then(setReviews).catch(() => {});
   }, [dbTrack]);
 
-  useEffect(() => { loadStudents(); }, [loadStudents]);
-
-  const openStudent = async (student: StudentItem) => {
-    setSelectedStudent(student);
-    const data = await fetchReviews(student.id);
-    setReviews(data);
-    setContent(data[0]?.content ?? "");
-  };
-
-  const handleSave = async () => {
-    if (!selectedStudent || !content.trim()) { alert("내용을 입력하세요."); return; }
-    await saveReview(selectedStudent.id, content.trim());
-    const data = await fetchReviews(selectedStudent.id);
-    setReviews(data);
-    alert("저장되었습니다.");
-  };
-
-  const handleDelete = async (reviewId: number) => {
-    if (!confirm("감상평을 삭제하시겠습니까?")) return;
-    await deleteReview(reviewId);
-    if (selectedStudent) {
-      const data = await fetchReviews(selectedStudent.id);
-      setReviews(data);
-      setContent(data[0]?.content ?? "");
-    }
-  };
+  useEffect(() => { load(); }, [load]);
 
   return (
     <div className="admin-section" style={{ marginTop: 32 }}>
       <div className="admin-card">
-        <h3>학생 감상평 관리</h3>
-        <p className="post-meta">학생을 클릭하여 개인별 감상평을 작성합니다.</p>
-        <table className="admin-table" style={{ marginTop: 12 }}>
-          <thead>
-            <tr><th>이름</th><th>그룹</th><th>감상평</th></tr>
-          </thead>
-          <tbody>
-            {students.map((s) => (
-              <tr
-                key={s.id}
-                className="clickable"
-                onClick={() => openStudent(s)}
-              >
-                <td>{s.name}</td>
-                <td className="post-meta">{s.groups.map((g) => g.name).join(", ") || "—"}</td>
-                <td>
-                  <button className="admin-btn small">작성/수정</button>
-                </td>
-              </tr>
-            ))}
-            {students.length === 0 && (
-              <tr><td colSpan={3} className="empty-text">풀스택 수강생이 없습니다.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {selectedStudent && (
-        <div className="admin-card highlight">
-          <div className="admin-card-header">
-            <h3>{selectedStudent.name} 감상평</h3>
-            <button className="close-btn" onClick={() => setSelectedStudent(null)}>&times;</button>
-          </div>
-
-          {reviews.length > 0 && (
-            <div style={{ marginBottom: 12 }}>
-              {reviews.map((r) => (
-                <div key={r.id} className="admin-comment instructor" style={{ marginBottom: 8 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span className="comment-name">{r.author_name} | {new Date(r.updated_at).toLocaleDateString()}</span>
-                    <button className="admin-btn small" onClick={() => handleDelete(r.id)}>삭제</button>
-                  </div>
-                  <p style={{ margin: "4px 0 0" }}>{r.content}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="admin-reply">
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="감상평을 입력하세요..."
-              rows={4}
-            />
-            <button className="admin-btn" onClick={handleSave}>
-              {reviews.length > 0 ? "수정" : "저장"}
-            </button>
-          </div>
+        <div className="admin-card-header">
+          <h3>수업 감상평 목록</h3>
+          <button className="admin-btn small" onClick={load}>새로고침</button>
         </div>
-      )}
+        <p className="post-meta" style={{ marginBottom: 12 }}>학생들이 수업 후 작성한 감상 및 후기입니다.</p>
+        {reviews.length === 0 ? (
+          <p className="empty-text">아직 작성된 감상평이 없습니다.</p>
+        ) : (
+          reviews.map((r) => (
+            <div key={r.id} className="admin-comment" style={{ marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span className="comment-name">{r.author_name}</span>
+                <span className="post-meta">{new Date(r.created_at).toLocaleDateString()}</span>
+              </div>
+              <p style={{ margin: "6px 0 0", whiteSpace: "pre-wrap" }}>{r.content}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
