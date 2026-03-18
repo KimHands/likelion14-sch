@@ -345,3 +345,25 @@
     width: 100%;
   }
 }
+
+/* ── 출석부 ── */
+.att-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.att-present { background: #d1fae5; color: #065f46; }
+.att-absent  { background: #fee2e2; color: #991b1b; }
+.att-late    { background: #fef3c7; color: #92400e; }
+
+.att-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.admin-btn.active {
+  background: #111;
+  color: #fff;
+}

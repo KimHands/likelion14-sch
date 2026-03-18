@@ -6,45 +6,50 @@ import {
   fetchAssignments, fetchAssignmentDetail, createAssignment,
   markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
+  fetchAttendanceSessions, createAttendanceSession, fetchAttendanceSessionDetail, markAttendance,
   type QuizItem, type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem, type AnnouncementItem,
+  type AttendanceSessionItem, type AttendanceSessionDetail, type AttendanceStatus,
 } from "../api/sessions";
 import "./AdminSessions.css";
 
-type AdminTab = "frontend" | "backend" | "ai" | "planning";
+type AdminTab = "fullstack" | "ai" | "planning";
 
 export default function AdminSessions() {
-  const [tab, setTab] = useState<AdminTab>("frontend");
+  const [tab, setTab] = useState<AdminTab>("fullstack");
 
   return (
     <div className="adminSessions-root">
       <div className="adminSessions-inner">
         <div className="adminSessions-title">교육 세션 관리</div>
         <div className="adminSessions-sub">
-          트랙별 퀴즈, Q&A, 과제, 공지를 관리합니다.
+          트랙별 퀴즈, Q&A, 과제, 공지, 출석부를 관리합니다.
         </div>
 
         <div className="admin-tabs">
-          {(["frontend", "backend", "ai", "planning"] as AdminTab[]).map((t) => (
+          {(["fullstack", "ai", "planning"] as AdminTab[]).map((t) => (
             <button
               key={t}
               className={`admin-tab ${tab === t ? "active" : ""}`}
               onClick={() => setTab(t)}
             >
-              {{ frontend: "프론트엔드", backend: "백엔드", ai: "AI", planning: "기획/디자인" }[t]}
+              {{ fullstack: "풀스택", ai: "AI", planning: "기획/디자인" }[t]}
             </button>
           ))}
         </div>
 
-        {(tab === "frontend" || tab === "backend") && (
-          <QuizQnAAdmin trackLabel={tab === "frontend" ? "FRONTEND" : "BACKEND"} />
-        )}
+        {tab === "fullstack" && <QuizQnAAdmin trackLabel="FULLSTACK" />}
         {(tab === "ai" || tab === "planning") && (
           <AssignmentAdmin
             trackLabel={tab === "ai" ? "AI" : "PLANNING"}
             showReadStatus={tab === "planning"}
           />
         )}
+
+        {/* 출석부는 모든 탭에서 공통으로 제공 */}
+        <AttendanceAdmin trackLabel={
+          tab === "fullstack" ? "FULLSTACK" : tab === "ai" ? "AI" : "PLANNING"
+        } />
       </div>
     </div>
   );
@@ -337,6 +342,157 @@ function AssignmentAdmin({ trackLabel, showReadStatus }: { trackLabel: string; s
         ))}
         {announcements.length === 0 && <p className="empty-text">공지가 없습니다.</p>}
       </div>
+    </div>
+  );
+}
+
+// ── 출석부 관리 ──
+
+function AttendanceAdmin({ trackLabel }: { trackLabel: string }) {
+  const dbTrack = TRACK_TO_DB[trackLabel];
+
+  const [sessions, setSessions] = useState<AttendanceSessionItem[]>([]);
+  const [selectedSession, setSelectedSession] = useState<AttendanceSessionDetail | null>(null);
+  const [createForm, setCreateForm] = useState({ title: "", date: "" });
+
+  const loadSessions = useCallback(() => {
+    fetchAttendanceSessions(dbTrack).then(setSessions).catch(() => {});
+  }, [dbTrack]);
+
+  useEffect(() => { loadSessions(); }, [loadSessions]);
+
+  const handleCreateSession = async () => {
+    if (!createForm.title || !createForm.date) {
+      alert("세션명과 날짜를 입력하세요."); return;
+    }
+    await createAttendanceSession({ track: dbTrack, ...createForm });
+    setCreateForm({ title: "", date: "" });
+    loadSessions();
+  };
+
+  const handleViewSession = async (id: number) => {
+    const detail = await fetchAttendanceSessionDetail(id);
+    setSelectedSession(detail);
+  };
+
+  const handleMarkAttendance = async (studentId: number, status: AttendanceStatus) => {
+    if (!selectedSession) return;
+    await markAttendance(selectedSession.id, studentId, status);
+    const detail = await fetchAttendanceSessionDetail(selectedSession.id);
+    setSelectedSession(detail);
+  };
+
+  const statusLabel: Record<AttendanceStatus, string> = {
+    PRESENT: "출석",
+    ABSENT: "결석",
+    LATE: "지각",
+  };
+
+  const statusClass: Record<AttendanceStatus, string> = {
+    PRESENT: "att-present",
+    ABSENT: "att-absent",
+    LATE: "att-late",
+  };
+
+  const presentCount = selectedSession?.records.filter((r) => r.status === "PRESENT").length ?? 0;
+  const lateCount = selectedSession?.records.filter((r) => r.status === "LATE").length ?? 0;
+  const totalCount = selectedSession?.records.length ?? 0;
+
+  return (
+    <div className="admin-section" style={{ marginTop: 32 }}>
+      <div className="admin-card">
+        <h3>출석부 관리</h3>
+
+        {/* 세션 생성 */}
+        <div className="admin-form">
+          <div className="form-inline">
+            <input
+              placeholder="세션명 (예: 1주차 세션)"
+              value={createForm.title}
+              onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
+              style={{ flex: 2 }}
+            />
+            <input
+              type="date"
+              value={createForm.date}
+              onChange={(e) => setCreateForm({ ...createForm, date: e.target.value })}
+              style={{ flex: 1 }}
+            />
+            <button className="admin-btn" onClick={handleCreateSession}>세션 생성</button>
+          </div>
+        </div>
+
+        {/* 세션 목록 */}
+        <table className="admin-table" style={{ marginTop: 12 }}>
+          <thead>
+            <tr><th>세션명</th><th>날짜</th><th>생성자</th><th>출석부</th></tr>
+          </thead>
+          <tbody>
+            {sessions.map((s) => (
+              <tr key={s.id}>
+                <td>{s.title}</td>
+                <td>{s.date}</td>
+                <td>{s.created_by_name}</td>
+                <td>
+                  <button className="admin-btn small" onClick={() => handleViewSession(s.id)}>
+                    출석 확인
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {sessions.length === 0 && (
+              <tr><td colSpan={4} className="empty-text">생성된 세션이 없습니다.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 출석부 상세 */}
+      {selectedSession && (
+        <div className="admin-card highlight">
+          <div className="admin-card-header">
+            <h3>출석부: {selectedSession.title} ({selectedSession.date})</h3>
+            <button className="close-btn" onClick={() => setSelectedSession(null)}>&times;</button>
+          </div>
+          <p className="post-meta">
+            출석 {presentCount} / 지각 {lateCount} / 전체 {totalCount}
+          </p>
+          <table className="admin-table">
+            <thead>
+              <tr><th>이름</th><th>상태</th><th>변경</th></tr>
+            </thead>
+            <tbody>
+              {selectedSession.records.map((r) => (
+                <tr key={r.id}>
+                  <td>{r.student_name}</td>
+                  <td>
+                    <span className={`att-badge ${statusClass[r.status]}`}>
+                      {statusLabel[r.status]}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="att-btn-group">
+                      {(["PRESENT", "LATE", "ABSENT"] as AttendanceStatus[]).map((s) => (
+                        <button
+                          key={s}
+                          className={`admin-btn small ${r.status === s ? "active" : ""}`}
+                          onClick={() => handleMarkAttendance(r.student_id, s)}
+                          disabled={r.status === s}
+                        >
+                          {statusLabel[s]}
+                        </button>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {selectedSession.records.length === 0 && (
+                <tr><td colSpan={3} className="empty-text">등록된 학생이 없습니다.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

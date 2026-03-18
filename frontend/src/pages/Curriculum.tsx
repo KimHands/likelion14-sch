@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./Curriculum.css";
 
-type TrackKey = "plan" | "frontend" | "backend" | "ai";
+type TrackKey = "plan" | "fullstack" | "ai";
 
 type CurriculumData = {
   label: string; // 상단 탭 표시명
@@ -35,48 +35,17 @@ const CURRICULUM: Record<TrackKey, CurriculumData> = {
     goal: "내 아이디어를\n완벽한 기획서와 디자인으로\n만들어내는 PM",
   },
 
-  frontend: {
-    label: "프론트엔드",
+  fullstack: {
+    label: "풀스택",
     whatWeLearn: [
-      { title: "React 기초", desc: "컴포넌트 기반 UI 개발", emoji: "⚛️" },
-      { title: "UI/UX 구현", desc: "반응형 웹 & 인터랙션 구현", emoji: "🖥️" },
+      { title: "풀스택 개발", desc: "프론트엔드 & 백엔드 통합 개발", emoji: "🌐" },
+      { title: "웹 서비스 구현", desc: "UI부터 API까지 직접 만들기", emoji: "🚀" },
       { title: "협업", desc: "Git/GitHub로 팀 개발하기", emoji: "🤝" },
     ],
     weekly: [
-      "1주차: OT 및 팀 빌딩",
-      "2주차: 웹 기본(HTML/CSS/JavaScript)",
-      "3주차: React 기초(컴포넌트/props/state)",
-      "4주차: React 심화(라우터/비동기/폼)",
-      "5주차: 스타일링(CSS Module/반응형)",
-      "6주차: 상태 관리 & API 연동",
-      "7주차: TypeScript 기초 & 적용",
-      "8주차: 성능 최적화 & 빌드/배포",
-      "9주차: 팀 프로젝트 구현(스프린트)",
-      "10주차: 리팩터링 & 최종 발표",
+      "커리큘럼 준비 중입니다.",
     ],
-    goal: "사용자 경험을 코드로 구현하는\n프론트엔드 개발자",
-  },
-
-  backend: {
-    label: "백엔드",
-    whatWeLearn: [
-      { title: "Django 기초", desc: "Python 기반 웹 서버 구축", emoji: "🐍" },
-      { title: "API 설계", desc: "REST API 설계 & 데이터베이스", emoji: "🧩" },
-      { title: "협업", desc: "Git/GitHub로 팀 개발하기", emoji: "🤝" },
-    ],
-    weekly: [
-      "1주차: OT 및 팀 빌딩",
-      "2주차: Python 기초 & 웹 개념(HTTP/REST)",
-      "3주차: Django 기초(프로젝트 구조/모델/뷰)",
-      "4주차: Django ORM & 데이터베이스 모델링",
-      "5주차: Django REST Framework(시리얼라이저/뷰셋)",
-      "6주차: 인증/인가(로그인/세션/JWT)",
-      "7주차: 파일 업로드 & 외부 API 연동",
-      "8주차: 배포 기초(Docker/서버 환경)",
-      "9주차: 팀 프로젝트 구현(스프린트)",
-      "10주차: 리팩터링 & 최종 발표",
-    ],
-    goal: "안정적인 서버와 API를 설계하는\n백엔드 개발자",
+    goal: "프론트엔드와 백엔드를\n모두 다루는\n풀스택 개발자",
   },
 
   ai: {
@@ -100,12 +69,12 @@ const CURRICULUM: Record<TrackKey, CurriculumData> = {
   },
 };
 
-const VALID_TABS: TrackKey[] = ["plan", "frontend", "backend", "ai"];
+const VALID_TABS: TrackKey[] = ["plan", "fullstack", "ai"];
 
 export default function Curriculum() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get("tab") as TrackKey | null;
-  const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : "frontend";
+  const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : "fullstack";
 
   const [active, setActive] = useState<TrackKey>(initialTab);
   const data = useMemo(() => CURRICULUM[active], [active]);
@@ -133,21 +102,11 @@ export default function Curriculum() {
             <button
               type="button"
               role="tab"
-              aria-selected={active === "frontend"}
-              className={`curri-tab ${active === "frontend" ? "active" : ""}`}
-              onClick={() => setActive("frontend")}
+              aria-selected={active === "fullstack"}
+              className={`curri-tab ${active === "fullstack" ? "active" : ""}`}
+              onClick={() => setActive("fullstack")}
             >
-              [프론트엔드]
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={active === "backend"}
-              className={`curri-tab ${active === "backend" ? "active" : ""}`}
-              onClick={() => setActive("backend")}
-            >
-              [백엔드]
+              [풀스택]
             </button>
 
             <button

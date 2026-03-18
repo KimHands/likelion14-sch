@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
+    AttendanceSession, AttendanceRecord,
 )
 
 
@@ -165,3 +166,42 @@ class AnnouncementCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         fields = ["track", "title", "content"]
+
+
+# ── Attendance ─────────────────────────────
+
+class AttendanceRecordSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source="student.name", read_only=True)
+    student_id = serializers.IntegerField(source="student.id", read_only=True)
+
+    class Meta:
+        model = AttendanceRecord
+        fields = ["id", "student_id", "student_name", "status", "marked_at"]
+
+
+class AttendanceSessionListSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source="created_by.name", read_only=True)
+
+    class Meta:
+        model = AttendanceSession
+        fields = ["id", "track", "title", "date", "created_by_name", "created_at"]
+
+
+class AttendanceSessionDetailSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source="created_by.name", read_only=True)
+    records = AttendanceRecordSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = AttendanceSession
+        fields = ["id", "track", "title", "date", "created_by_name", "created_at", "records"]
+
+
+class AttendanceSessionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttendanceSession
+        fields = ["track", "title", "date"]
+
+
+class AttendanceMarkSerializer(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    status = serializers.ChoiceField(choices=["PRESENT", "ABSENT", "LATE"])

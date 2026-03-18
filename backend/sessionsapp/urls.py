@@ -17,4 +17,8 @@ urlpatterns = [
     path("submissions/<int:pk>/read/", views.submission_mark_read),
     # Announcement
     path("announcements/", views.announcement_list_create),
+    # Attendance (출석부)
+    path("attendance/", views.attendance_session_list_create),
+    path("attendance/<int:pk>/", views.attendance_session_detail),
+    path("attendance/<int:pk>/mark/", views.attendance_mark),
 ]

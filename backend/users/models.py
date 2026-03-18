@@ -29,8 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # ✅ 교육 트랙(최종 합격 확정 시 반영)
     TRACK_CHOICES = [
         ("PLANNING_DESIGN", "기획/디자인"),
-        ("FRONTEND", "프론트엔드"),
-        ("BACKEND", "백엔드"),
+        ("FULLSTACK", "풀스택"),
         ("AI_SERVER", "AI"),
     ]
 
