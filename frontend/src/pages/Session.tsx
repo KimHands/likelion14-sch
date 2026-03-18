@@ -7,7 +7,7 @@ import {
   fetchQnAPosts, fetchQnADetail, createQnAPost, createQnAComment,
   fetchAssignments, fetchAssignmentDetail, submitAssignment, createAssignment, markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
-  fetchGroups, fetchMyClassReviews, createClassReview, deleteClassReview,
+  fetchGroups, fetchClassReviews, createClassReview, deleteClassReview,
   type QuizItem, type QuizAnswerResult,
   type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem,
@@ -90,6 +90,7 @@ export default function Session() {
 function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: string; role?: string }) {
   const dbTrack = TRACK_TO_DB[trackLabel];
   const isInstructor = role === "INSTRUCTOR";
+  const { me } = useAuth();
 
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
   const [qnaPosts, setQnaPosts] = useState<QnAPostItem[]>([]);
@@ -110,7 +111,7 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
     fetchQuizzes(dbTrack).then(setQuizzes).catch(() => {});
     fetchQnAPosts(dbTrack).then(setQnaPosts).catch(() => {});
     fetchGroups(dbTrack).then(setGroups).catch(() => {});
-    fetchMyClassReviews().then(setClassReviews).catch(() => {});
+    fetchClassReviews(dbTrack).then(setClassReviews).catch(() => {});
   }, [dbTrack]);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -324,7 +325,7 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
                 if (!reviewText.trim()) return;
                 await createClassReview(dbTrack, reviewText.trim());
                 setReviewText("");
-                fetchMyClassReviews().then(setClassReviews).catch(() => {});
+                fetchClassReviews(dbTrack).then(setClassReviews).catch(() => {});
               }}
             >
               등록하기
@@ -337,27 +338,33 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
           <p className="empty-text">아직 작성한 감상평이 없습니다.</p>
         ) : (
           <div className="announcement-list">
-            {classReviews.map((r) => (
-              <div key={r.id} className="announcement-item">
-                <div className="announcement-header">
-                  <span className="announcement-meta">{new Date(r.created_at).toLocaleDateString()}</span>
-                  {!isInstructor && (
-                    <button
-                      className="small-btn"
-                      style={{ fontSize: 12 }}
-                      onClick={async () => {
-                        if (!confirm("삭제하시겠습니까?")) return;
-                        await deleteClassReview(r.id);
-                        fetchMyClassReviews().then(setClassReviews).catch(() => {});
-                      }}
-                    >
-                      삭제
-                    </button>
-                  )}
+            {classReviews.map((r) => {
+              const isMine = r.author_id === me?.id;
+              return (
+                <div key={r.id} className="announcement-item">
+                  <div className="announcement-header">
+                    <strong>{isMine ? "나" : "익명"}</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className="announcement-meta">{new Date(r.created_at).toLocaleDateString()}</span>
+                      {isMine && (
+                        <button
+                          className="small-btn"
+                          style={{ fontSize: 12 }}
+                          onClick={async () => {
+                            if (!confirm("삭제하시겠습니까?")) return;
+                            await deleteClassReview(r.id);
+                            fetchClassReviews(dbTrack).then(setClassReviews).catch(() => {});
+                          }}
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <p className="announcement-body">{r.content}</p>
                 </div>
-                <p className="announcement-body">{r.content}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
