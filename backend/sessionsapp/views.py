@@ -11,6 +11,7 @@ from .models import (
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
     StudentGroup, ClassReview,
+    HomeworkCategory, HomeworkSubmission,
 )
 from .serializers import (
     QuizListSerializer, QuizDetailSerializer, QuizCreateSerializer, QuizAnswerSerializer,
@@ -23,6 +24,8 @@ from .serializers import (
     AttendanceSessionCreateSerializer, AttendanceMarkSerializer,
     StudentGroupSerializer, StudentGroupCreateSerializer, StudentGroupMembersSerializer,
     ClassReviewSerializer, ClassReviewWriteSerializer,
+    HomeworkCategorySerializer, HomeworkCategoryCreateSerializer,
+    HomeworkSubmissionSerializer,
 )
 
 User = get_user_model()
@@ -434,3 +437,84 @@ def my_class_reviews(request):
     """GET /api/sessions/class-reviews/my/  — 내가 작성한 감상평 목록"""
     reviews = ClassReview.objects.filter(author=request.user).select_related("author")
     return Response(ClassReviewSerializer(reviews, many=True).data)
+
+
+# ── HomeworkCategory (과제 갤러리 카테고리) ──────────────
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def homework_category_list_create(request):
+    """
+    GET  /api/sessions/homework-categories/?track=FULLSTACK  — 카테고리 목록
+    POST /api/sessions/homework-categories/                   — 카테고리 생성 (INSTRUCTOR)
+    """
+    if request.method == "GET":
+        track = request.query_params.get("track", "FULLSTACK")
+        qs = HomeworkCategory.objects.filter(track=track).prefetch_related("submissions__student")
+        ser = HomeworkCategorySerializer(qs, many=True, context={"request": request})
+        return Response(ser.data)
+
+    if request.user.role != "INSTRUCTOR" and not request.user.is_staff:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    ser = HomeworkCategoryCreateSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+    category = ser.save(created_by=request.user)
+    return Response(
+        HomeworkCategorySerializer(category, context={"request": request}).data,
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsInstructorOrStaff])
+def homework_category_delete(request, pk):
+    """DELETE /api/sessions/homework-categories/<id>/"""
+    try:
+        HomeworkCategory.objects.get(pk=pk).delete()
+    except HomeworkCategory.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def homework_submit(request, pk):
+    """
+    POST /api/sessions/homework-categories/<id>/submit/
+    multipart/form-data: { pdf_file: File }  — PDF만 허용
+    """
+    try:
+        category = HomeworkCategory.objects.get(pk=pk)
+    except HomeworkCategory.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    pdf = request.FILES.get("pdf_file")
+    if not pdf:
+        return Response({"detail": "pdf_file 필드가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+    if not pdf.name.lower().endswith(".pdf") or pdf.content_type != "application/pdf":
+        return Response({"detail": "PDF 파일만 업로드 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    sub, created = HomeworkSubmission.objects.update_or_create(
+        category=category,
+        student=request.user,
+        defaults={"pdf_file": pdf},
+    )
+    return Response(
+        HomeworkSubmissionSerializer(sub, context={"request": request}).data,
+        status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def homework_submission_delete(request, pk):
+    """DELETE /api/sessions/homework-submissions/<id>/  — 본인 제출 삭제"""
+    try:
+        sub = HomeworkSubmission.objects.get(pk=pk)
+    except HomeworkSubmission.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if sub.student != request.user and not request.user.is_staff:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    sub.pdf_file.delete(save=False)
+    sub.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

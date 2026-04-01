@@ -8,11 +8,14 @@ import {
   fetchAssignments, fetchAssignmentDetail, submitAssignment, createAssignment, markSubmissionRead,
   fetchAnnouncements, createAnnouncement,
   fetchGroups, fetchClassReviews, createClassReview, deleteClassReview,
+  fetchHomeworkCategories, deleteHomeworkCategory,
+  submitHomeworkPdf, deleteHomeworkSubmission,
   type QuizItem, type QuizAnswerResult,
   type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem,
   type AnnouncementItem,
   type GroupItem, type ClassReviewItem,
+  type HomeworkCategoryItem,
 } from "../api/sessions";
 import "./Session.css";
 
@@ -107,11 +110,16 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
   const [classReviews, setClassReviews] = useState<ClassReviewItem[]>([]);
   const [reviewText, setReviewText] = useState("");
 
+  // 과제 갤러리
+  const [hwCategories, setHwCategories] = useState<HomeworkCategoryItem[]>([]);
+  const [hwUploadCategoryId, setHwUploadCategoryId] = useState<number | null>(null);
+
   const loadData = useCallback(() => {
     fetchQuizzes(dbTrack).then(setQuizzes).catch(() => {});
     fetchQnAPosts(dbTrack).then(setQnaPosts).catch(() => {});
     fetchGroups(dbTrack).then(setGroups).catch(() => {});
     fetchClassReviews(dbTrack).then(setClassReviews).catch(() => {});
+    fetchHomeworkCategories(dbTrack).then(setHwCategories).catch(() => {});
   }, [dbTrack]);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -304,6 +312,91 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
           ))
         )}
       </div>
+
+      {/* 과제 갤러리 */}
+      <div className="submitted-list" style={{ marginTop: 28 }}>
+        <div className="panel-header">
+          <h2 className="submitted-title">과제 갤러리</h2>
+        </div>
+        {hwCategories.length === 0 ? (
+          <p className="empty-text">등록된 카테고리가 없습니다.</p>
+        ) : (
+          hwCategories.map((cat) => (
+            <div key={cat.id} className="hw-category-section">
+              <div className="hw-category-header">
+                <span className="hw-week-badge">{cat.week}주차</span>
+                <strong>{cat.title}</strong>
+                <span className="hw-count">{cat.submission_count}개 제출</span>
+                {isInstructor && (
+                  <button
+                    className="small-btn danger"
+                    style={{ marginLeft: "auto" }}
+                    onClick={async () => {
+                      if (!confirm("카테고리를 삭제하시겠습니까? 제출물도 함께 삭제됩니다.")) return;
+                      await deleteHomeworkCategory(cat.id);
+                      loadData();
+                    }}
+                  >
+                    삭제
+                  </button>
+                )}
+              </div>
+
+              <div className="gallery-grid" style={{ marginTop: 12 }}>
+                {/* 학생 제출물 카드 */}
+                {(isInstructor ? cat.submissions : cat.my_submission ? [cat.my_submission] : []).map((sub) => (
+                  <div key={sub.id} className="gallery-card">
+                    <a href={sub.pdf_url} target="_blank" rel="noreferrer" className="gallery-thumbnail pdf-thumbnail">
+                      <span className="pdf-icon">PDF</span>
+                    </a>
+                    <p className="gallery-caption">{sub.student_name}</p>
+                    <p className="gallery-date">{new Date(sub.submitted_at).toLocaleDateString()}</p>
+                    {!isInstructor && (
+                      <button
+                        className="small-btn danger"
+                        style={{ marginTop: 4, fontSize: 11 }}
+                        onClick={async () => {
+                          if (!confirm("제출물을 삭제하시겠습니까?")) return;
+                          await deleteHomeworkSubmission(sub.id);
+                          loadData();
+                        }}
+                      >
+                        삭제
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                {/* 학생 미제출 시 업로드 카드 */}
+                {!isInstructor && !cat.my_submission && (
+                  <div
+                    className="gallery-card upload-card"
+                    onClick={() => setHwUploadCategoryId(cat.id)}
+                  >
+                    <div className="gallery-thumbnail upload-thumbnail">
+                      <span className="upload-icon">+</span>
+                    </div>
+                    <p className="gallery-caption">PDF 제출하기</p>
+                  </div>
+                )}
+
+                {isInstructor && cat.submissions.length === 0 && (
+                  <p className="empty-text" style={{ gridColumn: "1/-1" }}>아직 제출한 학생이 없습니다.</p>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* 과제 PDF 업로드 모달 */}
+      {hwUploadCategoryId !== null && (
+        <HwUploadModal
+          category={hwCategories.find((c) => c.id === hwUploadCategoryId)!}
+          onClose={() => setHwUploadCategoryId(null)}
+          onUploaded={() => { setHwUploadCategoryId(null); loadData(); }}
+        />
+      )}
 
       {/* 수업 감상평 작성 & 조회 */}
       <div className="submitted-list" style={{ marginTop: 20 }}>
@@ -1060,6 +1153,94 @@ function AssignmentCreateModal({ track, onClose, onCreated }: { track: string; o
         <label>제출기한</label>
         <input type="datetime-local" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} />
         <button className="submit-btn" onClick={handleSubmit}>출제하기</button>
+      </div>
+    </Modal>
+  );
+}
+
+// ============================================
+// 과제 갤러리 - 카테고리 생성 모달
+// ============================================
+function HwCategoryCreateModal({ track, onClose, onCreated }: { track: string; onClose: () => void; onCreated: () => void }) {
+  const [title, setTitle] = useState("");
+  const [week, setWeek] = useState(1);
+
+  const handleSubmit = async () => {
+    if (!title) { alert("카테고리 제목을 입력하세요."); return; }
+    await createHomeworkCategory({ track, title, week });
+    onCreated();
+  };
+
+  return (
+    <Modal onClose={onClose} title="과제 카테고리 추가">
+      <div className="create-form">
+        <label>주차</label>
+        <input
+          type="number"
+          min={1}
+          max={20}
+          value={week}
+          onChange={(e) => setWeek(Number(e.target.value))}
+        />
+        <label>카테고리 제목</label>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="예) UX 리서치 발표 자료"
+        />
+        <button className="submit-btn" onClick={handleSubmit}>추가하기</button>
+      </div>
+    </Modal>
+  );
+}
+
+// ============================================
+// 과제 갤러리 - PDF 업로드 모달
+// ============================================
+function HwUploadModal({
+  category, onClose, onUploaded,
+}: {
+  category: HomeworkCategoryItem;
+  onClose: () => void;
+  onUploaded: () => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!file) { alert("PDF 파일을 선택하세요."); return; }
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      alert("PDF 파일만 업로드 가능합니다.");
+      return;
+    }
+    setUploading(true);
+    try {
+      await submitHomeworkPdf(category.id, file);
+      onUploaded();
+    } catch {
+      alert("업로드에 실패했습니다.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Modal onClose={onClose} title="과제 제출하기">
+      <div className="create-form">
+        <div className="info-row">
+          <span className="info-label">카테고리:</span>
+          <span className="info-value">{category.week}주차 · {category.title}</span>
+        </div>
+        <label>PDF 파일 선택</label>
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        />
+        {file && <p style={{ fontSize: 13, color: "#666" }}>{file.name}</p>}
+        <button className="submit-btn" onClick={handleSubmit} disabled={uploading}>
+          {uploading ? "업로드 중..." : "제출하기"}
+        </button>
       </div>
     </Modal>
   );

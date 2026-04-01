@@ -251,3 +251,47 @@ class ClassReview(models.Model):
 
     def __str__(self):
         return f"[{self.track}] {self.author.name}의 감상평"
+
+
+# ──────────────────────────────────────────
+# 과제 갤러리 (풀스택 트랙 PDF 제출)
+# ──────────────────────────────────────────
+
+class HomeworkCategory(models.Model):
+    """관리자가 생성하는 주차별 과제 카테고리"""
+    track = models.CharField(max_length=30, choices=TRACK_FS, default="FULLSTACK")
+    title = models.CharField(max_length=200)
+    week = models.PositiveSmallIntegerField()
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="homework_categories"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["week", "-created_at"]
+
+    def __str__(self):
+        return f"[{self.track}] {self.week}주차 - {self.title}"
+
+
+def homework_pdf_upload_path(instance, filename):
+    return f"homework/{instance.category.track}/{instance.category.week}주차/{filename}"
+
+
+class HomeworkSubmission(models.Model):
+    """학생의 과제 PDF 제출물"""
+    category = models.ForeignKey(
+        HomeworkCategory, on_delete=models.CASCADE, related_name="submissions"
+    )
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="homework_submissions"
+    )
+    pdf_file = models.FileField(upload_to=homework_pdf_upload_path)
+    submitted_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("category", "student")
+        ordering = ["-submitted_at"]
+
+    def __str__(self):
+        return f"{self.student.name} → {self.category}"

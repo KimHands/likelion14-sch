@@ -4,6 +4,7 @@ from .models import (
     Assignment, AssignmentSubmission, Announcement,
     AttendanceSession, AttendanceRecord,
     StudentGroup, ClassReview,
+    HomeworkCategory, HomeworkSubmission,
 )
 
 
@@ -253,3 +254,59 @@ class ClassReviewWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassReview
         fields = ["track", "content"]
+
+
+# ── HomeworkCategory / HomeworkSubmission ──────────────
+
+class HomeworkSubmissionSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source="student.name", read_only=True)
+    student_id = serializers.IntegerField(source="student.id", read_only=True)
+    pdf_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HomeworkSubmission
+        fields = ["id", "student_id", "student_name", "pdf_url", "submitted_at"]
+
+    def get_pdf_url(self, obj):
+        request = self.context.get("request")
+        if request and obj.pdf_file:
+            return request.build_absolute_uri(obj.pdf_file.url)
+        return obj.pdf_file.url if obj.pdf_file else None
+
+
+class HomeworkCategorySerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source="created_by.name", read_only=True)
+    submissions = serializers.SerializerMethodField()
+    my_submission = serializers.SerializerMethodField()
+    submission_count = serializers.IntegerField(source="submissions.count", read_only=True)
+
+    class Meta:
+        model = HomeworkCategory
+        fields = [
+            "id", "track", "title", "week",
+            "created_by_name", "created_at",
+            "submission_count", "submissions", "my_submission",
+        ]
+
+    def get_submissions(self, obj):
+        user = self.context.get("request") and self.context["request"].user
+        if user and (user.role == "INSTRUCTOR" or user.is_staff):
+            return HomeworkSubmissionSerializer(
+                obj.submissions.all(), many=True, context=self.context
+            ).data
+        return []
+
+    def get_my_submission(self, obj):
+        user = self.context.get("request") and self.context["request"].user
+        if not user or not user.is_authenticated:
+            return None
+        sub = obj.submissions.filter(student=user).first()
+        if not sub:
+            return None
+        return HomeworkSubmissionSerializer(sub, context=self.context).data
+
+
+class HomeworkCategoryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HomeworkCategory
+        fields = ["track", "title", "week"]

@@ -8,10 +8,12 @@ import {
   fetchAnnouncements, createAnnouncement,
   fetchAttendanceSessions, createAttendanceSession, fetchAttendanceSessionDetail, markAttendance,
   fetchGroups, createGroup, deleteGroup, updateGroupMembers, fetchTrackStudents, fetchClassReviews,
+  fetchHomeworkCategories, createHomeworkCategory, deleteHomeworkCategory,
   type QuizItem, type QnAPostItem, type QnAPostDetail,
   type AssignmentItem, type SubmissionItem, type AnnouncementItem,
   type AttendanceSessionItem, type AttendanceSessionDetail, type AttendanceStatus,
   type GroupItem, type StudentItem, type ClassReviewItem,
+  type HomeworkCategoryItem,
 } from "../api/sessions";
 import "./AdminSessions.css";
 
@@ -53,8 +55,9 @@ export default function AdminSessions() {
           tab === "fullstack" ? "FULLSTACK" : tab === "ai" ? "AI" : "PLANNING"
         } />
 
-        {/* 그룹 관리 & 수업 감상평은 풀스택 탭에서만 */}
+        {/* 그룹 관리 & 수업 감상평 & 과제 갤러리는 풀스택 탭에서만 */}
         {tab === "fullstack" && <GroupAdmin />}
+        {tab === "fullstack" && <HomeworkCategoryAdmin />}
         {tab === "fullstack" && <ClassReviewAdmin />}
       </div>
     </div>
@@ -622,6 +625,89 @@ function GroupAdmin() {
           <button className="admin-btn" style={{ marginTop: 12 }} onClick={handleSaveMembers}>저장</button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── 과제 갤러리 카테고리 관리 ──
+
+function HomeworkCategoryAdmin() {
+  const dbTrack = TRACK_TO_DB["FULLSTACK"];
+  const [categories, setCategories] = useState<HomeworkCategoryItem[]>([]);
+  const [form, setForm] = useState({ title: "", week: 1 });
+
+  const load = useCallback(() => {
+    fetchHomeworkCategories(dbTrack).then(setCategories).catch(() => {});
+  }, [dbTrack]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleCreate = async () => {
+    if (!form.title.trim()) { alert("카테고리 제목을 입력하세요."); return; }
+    await createHomeworkCategory({ track: dbTrack, title: form.title.trim(), week: form.week });
+    setForm({ title: "", week: 1 });
+    load();
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("카테고리를 삭제하시겠습니까? 제출물도 함께 삭제됩니다.")) return;
+    await deleteHomeworkCategory(id);
+    load();
+  };
+
+  return (
+    <div className="admin-section" style={{ marginTop: 32 }}>
+      <div className="admin-card">
+        <h3>과제 갤러리 카테고리 관리</h3>
+        <p className="post-meta" style={{ marginBottom: 12 }}>
+          풀스택 수강생이 PDF를 제출하는 주차별 카테고리를 관리합니다.
+        </p>
+
+        {/* 생성 폼 */}
+        <div className="admin-form">
+          <div className="form-inline">
+            <input
+              type="number"
+              min={1}
+              max={20}
+              value={form.week}
+              onChange={(e) => setForm({ ...form, week: Number(e.target.value) })}
+              style={{ width: 70 }}
+              placeholder="주차"
+            />
+            <input
+              placeholder="카테고리 제목 (예: UX 리서치 발표 자료)"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              style={{ flex: 2 }}
+            />
+            <button className="admin-btn" onClick={handleCreate}>카테고리 추가</button>
+          </div>
+        </div>
+
+        {/* 목록 */}
+        <table className="admin-table" style={{ marginTop: 12 }}>
+          <thead>
+            <tr><th>주차</th><th>제목</th><th>제출 수</th><th>생성일</th><th>삭제</th></tr>
+          </thead>
+          <tbody>
+            {categories.map((c) => (
+              <tr key={c.id}>
+                <td>{c.week}주차</td>
+                <td>{c.title}</td>
+                <td>{c.submission_count}개</td>
+                <td>{new Date(c.created_at).toLocaleDateString()}</td>
+                <td>
+                  <button className="admin-btn small" onClick={() => handleDelete(c.id)}>삭제</button>
+                </td>
+              </tr>
+            ))}
+            {categories.length === 0 && (
+              <tr><td colSpan={5} className="empty-text">생성된 카테고리가 없습니다.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -318,3 +318,53 @@ export function deleteClassReview(id: number) {
 export function fetchMyClassReviews() {
   return apiFetch<ClassReviewItem[]>("/api/sessions/class-reviews/my/");
 }
+
+// ── Homework Gallery API (과제 갤러리 - PDF 제출) ──────────────
+
+export interface HomeworkSubmissionItem {
+  id: number;
+  student_id: number;
+  student_name: string;
+  pdf_url: string;
+  submitted_at: string;
+}
+
+export interface HomeworkCategoryItem {
+  id: number;
+  track: string;
+  title: string;
+  week: number;
+  created_by_name: string;
+  created_at: string;
+  submission_count: number;
+  submissions: HomeworkSubmissionItem[];
+  my_submission: HomeworkSubmissionItem | null;
+}
+
+export function fetchHomeworkCategories(track: string) {
+  return apiFetch<HomeworkCategoryItem[]>(`/api/sessions/homework-categories/?track=${track}`);
+}
+
+export function createHomeworkCategory(data: { track: string; title: string; week: number }) {
+  return apiFetch<HomeworkCategoryItem>("/api/sessions/homework-categories/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteHomeworkCategory(id: number) {
+  return apiFetch<void>(`/api/sessions/homework-categories/${id}/`, { method: "DELETE" });
+}
+
+export function submitHomeworkPdf(categoryId: number, file: File) {
+  const formData = new FormData();
+  formData.append("pdf_file", file);
+  return apiFetch<HomeworkSubmissionItem>(`/api/sessions/homework-categories/${categoryId}/submit/`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export function deleteHomeworkSubmission(id: number) {
+  return apiFetch<void>(`/api/sessions/homework-submissions/${id}/`, { method: "DELETE" });
+}

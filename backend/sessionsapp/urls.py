@@ -30,4 +30,9 @@ urlpatterns = [
     path("class-reviews/my/", views.my_class_reviews),
     path("class-reviews/", views.class_review_list_create),
     path("class-reviews/<int:pk>/", views.class_review_delete),
+    # Homework Gallery (과제 갤러리 - 풀스택 PDF 제출)
+    path("homework-categories/", views.homework_category_list_create),
+    path("homework-categories/<int:pk>/", views.homework_category_delete),
+    path("homework-categories/<int:pk>/submit/", views.homework_submit),
+    path("homework-submissions/<int:pk>/", views.homework_submission_delete),
 ]

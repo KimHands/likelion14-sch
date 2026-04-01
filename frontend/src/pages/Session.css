@@ -946,6 +946,96 @@
   margin: 8px 0 0;
 }
 
+.gallery-date {
+  text-align: center;
+  font-size: 11px;
+  color: #999;
+  margin: 2px 0 0;
+}
+
+/* Homework Gallery */
+.hw-category-section {
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.hw-category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.hw-week-badge {
+  background: #ff6b00;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.hw-count {
+  font-size: 13px;
+  color: #888;
+}
+
+.pdf-thumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffeee0;
+  border: 2px solid #ff6b00;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.pdf-icon {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ff6b00;
+  letter-spacing: 1px;
+}
+
+.upload-thumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border: 2px dashed #bbb;
+  border-radius: 8px;
+}
+
+.upload-icon {
+  font-size: 32px;
+  color: #bbb;
+  line-height: 1;
+}
+
+.upload-card:hover .upload-thumbnail {
+  border-color: #ff6b00;
+  background: #fff5f0;
+}
+
+.upload-card:hover .upload-icon {
+  color: #ff6b00;
+}
+
+.small-btn.danger {
+  background: transparent;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+}
+
+.small-btn.danger:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
 /* Feedback Section */
 .feedback-section {
   border: 1px solid #e0e0e0;
