@@ -1159,40 +1159,40 @@ function AssignmentCreateModal({ track, onClose, onCreated }: { track: string; o
 }
 
 // ============================================
-// 과제 갤러리 - 카테고리 생성 모달
+// 과제 갤러리 - 카테고리 생성 모달 (미사용 - 추후 UI 연결 시 주석 해제)
 // ============================================
-function HwCategoryCreateModal({ track, onClose, onCreated }: { track: string; onClose: () => void; onCreated: () => void }) {
-  const [title, setTitle] = useState("");
-  const [week, setWeek] = useState(1);
-
-  const handleSubmit = async () => {
-    if (!title) { alert("카테고리 제목을 입력하세요."); return; }
-    await createHomeworkCategory({ track, title, week });
-    onCreated();
-  };
-
-  return (
-    <Modal onClose={onClose} title="과제 카테고리 추가">
-      <div className="create-form">
-        <label>주차</label>
-        <input
-          type="number"
-          min={1}
-          max={20}
-          value={week}
-          onChange={(e) => setWeek(Number(e.target.value))}
-        />
-        <label>카테고리 제목</label>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="예) UX 리서치 발표 자료"
-        />
-        <button className="submit-btn" onClick={handleSubmit}>추가하기</button>
-      </div>
-    </Modal>
-  );
-}
+// function HwCategoryCreateModal({ track, onClose, onCreated }: { track: string; onClose: () => void; onCreated: () => void }) {
+//   const [title, setTitle] = useState("");
+//   const [week, setWeek] = useState(1);
+//
+//   const handleSubmit = async () => {
+//     if (!title) { alert("카테고리 제목을 입력하세요."); return; }
+//     await createHomeworkCategory({ track, title, week });
+//     onCreated();
+//   };
+//
+//   return (
+//     <Modal onClose={onClose} title="과제 카테고리 추가">
+//       <div className="create-form">
+//         <label>주차</label>
+//         <input
+//           type="number"
+//           min={1}
+//           max={20}
+//           value={week}
+//           onChange={(e) => setWeek(Number(e.target.value))}
+//         />
+//         <label>카테고리 제목</label>
+//         <input
+//           value={title}
+//           onChange={(e) => setTitle(e.target.value)}
+//           placeholder="예) UX 리서치 발표 자료"
+//         />
+//         <button className="submit-btn" onClick={handleSubmit}>추가하기</button>
+//       </div>
+//     </Modal>
+//   );
+// }
 
 // ============================================
 // 과제 갤러리 - PDF 업로드 모달
