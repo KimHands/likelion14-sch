@@ -1,192 +1,294 @@
 <div align="center">
-  <img src="frontend/src/assets/likelion_sch_logo.png" width="100" alt="LIKELION SCH Logo" />
 
-  # LIKELION SCH — 멋쟁이사자처럼 순천향대
+<img src="frontend/src/assets/likelion_sch_logo.png" width="96" alt="LIKELION SCH 로고" />
 
-  순천향대학교 멋쟁이사자처럼 동아리 **모집 · 심사 · 운영 플랫폼**
+# LIKELION SCH
 
-  [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-  [![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
-  [![Django](https://img.shields.io/badge/Django-4.2-092E20?style=flat-square&logo=django&logoColor=white)](https://www.djangoproject.com)
-  [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/compose)
+**멋쟁이사자처럼 순천향대학교 14기 모집 · 심사 · 교육 운영 플랫폼**
+
+지원서 접수부터 서류·면접 채점, 합격 처리, 합격 후 교육 세션 운영까지 한곳에서 다루기 위해 만든 풀스택 웹 서비스입니다.
+
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Django](https://img.shields.io/badge/Django-4.2-092E20?logo=django&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-black)
 
 </div>
 
+> [!NOTE]
+> **서비스는 2026년 7월에 운영을 종료했습니다.** 이 저장소는 코드를 보존하기 위한 것이며, 현재 접속할 수 있는 운영 서버는 없습니다.
+
 ---
 
+## 프로젝트 정보
+
 | 항목 | 내용 |
-|---|---|
-| 소속 | 순천향대학교 멋쟁이사자처럼 14기 |
-| 형태 | 동아리 공식 운영 플랫폼 (홈페이지 · 모집 · 심사 · 교육) |
-| 본인 담당 | FS 운영진 — 풀스택 개발 · Docker 배포 |
+|------|------|
+| 소속 | 멋쟁이사자처럼 순천향대학교 14기 |
+| 활동 기간 | 2026-03 ~ 2027-01 |
+| 서비스 운영 | 2026년 7월 종료 |
+| 개발 기록 | 첫 커밋 2026-02-12, 마지막 코드 커밋 2026-04-05 |
+| 본인 역할 | 디자인을 제외한 모든 역할 (2026-05-19까지 커밋 35개 중 32개) |
 
 ---
 
 ## 목차
 
-- [스크린샷](#스크린샷)
+- [심사 흐름](#심사-흐름)
+- [화면 구성](#화면-구성)
 - [주요 기능](#주요-기능)
+- [보안 설계](#보안-설계)
+- [아키텍처](#아키텍처)
 - [기술 스택](#기술-스택)
-- [프로젝트 구조](#프로젝트-구조)
-- [로컬 개발](#로컬-개발)
-- [Docker 배포](#docker-배포)
+- [실행 방법](#실행-방법)
+- [테스트](#테스트)
+- [API 개요](#api-개요)
 - [역할별 접근 권한](#역할별-접근-권한)
+- [프로젝트 구조](#프로젝트-구조)
+- [라이선스](#라이선스)
 
 ---
 
-## 스크린샷
+## 심사 흐름
 
-### 메인 페이지
+```mermaid
+flowchart LR
+    A[회원가입<br/>학교 메일 인증] --> B[지원서 임시저장]
+    B --> C[지원서 제출]
+    C --> D[서류 채점]
+    D --> E{서류 확정}
+    E -- 불합격 --> R[결과 공개]
+    E -- 합격 --> F[면접 채점]
+    F --> G{최종 확정}
+    G -- 불합격 --> R
+    G -- 합격 --> S[수강생 전환<br/>교육 트랙 배정]
+    S --> R
+```
 
-<div align="center">
-  <img src="FIgma/5%EC%B0%A8_%EB%A9%94%EC%9D%B8%20%ED%8E%98%EC%9D%B4%EC%A7%80.png" width="90%" alt="메인 페이지" />
-</div>
+- 채점은 서류와 면접을 구분하고, 운영진 한 명이 지원서마다 종류별로 하나의 점수를 남깁니다. 점수는 항목 3개로 나뉩니다.
+- 최종 확정은 서류 합격이 확정된 지원서에만 할 수 있습니다.
+- 최종 합격하면 계정 역할이 `STUDENT`로 바뀝니다. 프론트엔드·백엔드 지원자는 풀스택 교육 트랙으로 배정됩니다.
+- 지원자는 운영진이 결과를 공개한 뒤에야 서류·최종 결과를 볼 수 있습니다.
 
-<br />
+---
 
-### 지원 시스템
+## 화면 구성
 
-| 회원가입 | 로그인 | 가입 완료 |
-|:---:|:---:|:---:|
-| ![회원가입](FIgma/1%EC%B0%A8_%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.png) | ![로그인](FIgma/3%EC%B0%A8_%EB%A1%9C%EA%B7%B8%EC%9D%B8.png) | ![가입 완료](FIgma/3%EC%B0%A8_%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85%20%EC%99%84%EB%A3%8C%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/home.png" alt="메인 페이지" /><br/>
+      <sub><b>메인 페이지</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/apply.png" alt="지원서 작성" /><br/>
+      <sub><b>지원서</b><br/>제출 후에는 수정할 수 없습니다</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/admin-applicants.png" alt="지원자 목록" /><br/>
+      <sub><b>지원자 목록</b><br/>검색 · 필터 · 정렬 · 결과 확정 · 엑셀 다운로드</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/admin-doc-score.png" alt="서류 채점" /><br/>
+      <sub><b>서류 채점</b><br/>항목별 점수와 코멘트</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/admin-dashboard.png" alt="관리자 페이지" /><br/>
+      <sub><b>관리자 페이지</b><br/>메뉴 이동과 트랙별 지원 활성화</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/session.png" alt="교육 세션" /><br/>
+      <sub><b>교육 세션</b><br/>퀴즈 · Q&amp;A · 그룹 · 과제 갤러리</sub>
+    </td>
+  </tr>
+</table>
 
-| 지원서 작성 | 합격 결과 확인 |
-|:---:|:---:|
-| ![지원서 작성](FIgma/1%EC%B0%A8_%EC%98%88%EB%B9%84%20%EC%88%98%EA%B0%95%EC%83%9D%20%EC%A7%80%EC%9B%90%EC%84%9C%20%EC%9E%91%EC%84%B1%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) | ![합불 결과](FIgma/%EC%A7%80%EC%9B%90%20%ED%95%A9%EB%B6%88%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) |
-
-### 관리자 (운영진)
-
-| 지원자 목록 | 서류 채점 | 면접 채점 |
-|:---:|:---:|:---:|
-| ![지원자 리스트](FIgma/2%EC%B0%A8_%EC%A7%80%EC%9B%90%EC%9E%90%20%EB%A6%AC%EC%8A%A4%ED%8A%B8%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) | ![서류 채점](FIgma/2%EC%B0%A8_%EC%84%9C%EB%A5%98%20%EC%B1%84%EC%A0%90%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) | ![면접 채점](FIgma/2%EC%B0%A8_%EB%A9%B4%EC%A0%91%20%EC%B1%84%EC%A0%90%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) |
-
-### 교육 세션 & 커리큘럼
-
-| AI 세션 | 풀스택 세션 | 기획 세션 |
-|:---:|:---:|:---:|
-| ![AI 세션](FIgma/%EA%B5%90%EC%9C%A1%20%EC%84%B8%EC%85%98_AI.png) | ![풀스택 세션](FIgma/%EA%B5%90%EC%9C%A1%20%EC%84%B8%EC%85%98_%ED%92%80%EC%8A%A4%ED%83%9D.png) | ![기획 세션](FIgma/%EA%B5%90%EC%9C%A1%20%EC%84%B8%EC%85%98_%EA%B8%B0%ED%9A%8D.png) |
-
-| 운영진 소개 | 커리큘럼 상세 (AI) |
-|:---:|:---:|
-| ![운영진 소개](FIgma/4%EC%B0%A8_%EA%B5%90%EC%9C%A1%EC%9E%90%20%EC%86%8C%EA%B0%9C%20%ED%8E%98%EC%9D%B4%EC%A7%80.png) | ![커리큘럼 AI](FIgma/6%EC%B0%A8_%EC%BB%A4%EB%A6%AC%ED%81%98%EB%9F%BC%20%EC%83%81%EC%84%B8%20%ED%8E%98%EC%9D%B4%EC%A7%80_AI.png) |
+> 로컬 환경에서 더미 데이터로 캡처했습니다. 화면의 이름, 학번, 메일 주소는 모두 가상의 값입니다.
+> 디자인 시안은 [`FIgma/`](FIgma/) 폴더에 있습니다.
 
 ---
 
 ## 주요 기능
 
-### 홈페이지
-- 동아리 소개 (About, 트랙 소개, 로드맵, 프로젝트 포트폴리오)
-- 운영진 소개 페이지
+| 영역 | 기능 |
+|------|------|
+| **홈페이지** | 동아리 소개, 연간 로드맵, 트랙 소개와 커리큘럼, 운영진 소개, 프로젝트 목록 |
+| **계정** | `@sch.ac.kr` 메일 인증 회원가입, 로그인, 비밀번호 재설정 |
+| **지원** | 트랙별 질문이 다른 지원서 작성, 임시저장, 제출, 결과 확인 |
+| **심사** | 지원자 검색·필터·정렬, 서류·면접 채점, 서류·최종 결과 확정, 엑셀 내보내기 |
+| **모집 운영** | 트랙별 지원 활성화, 결과 공개 여부 설정, 지원자별 면접 일정 지정 |
+| **교육 세션** | 풀스택 퀴즈·Q&A, AI·기획 과제 제출과 공지, 학생 그룹, 출석부, 수업 감상평, 풀스택 과제 갤러리(PDF) |
+| **콘텐츠 관리** | 프로젝트(썸네일·PDF)와 메인 페이지 로드맵 항목 관리 |
 
-### 지원 시스템
-- 회원가입 + 이메일 인증
-- 지원서 작성 (임시저장 → 제출)
-- 2단계 심사: 서류 평가 → 면접 평가
-- 합격/불합격 결과 확인
+---
 
-### 관리자 (운영진)
-- 지원자 목록 조회 및 필터링
-- 서류/면접 점수 입력 (3개 항목별 채점)
-- 합격 여부 최종 결정
-- 세션(퀴즈, 과제, Q&A, 공지) 관리
-- 프로젝트 포트폴리오 관리
+## 보안 설계
 
-### 교육 세션
-- 트랙별 퀴즈 (프론트엔드/백엔드)
-- 트랙별 과제 (AI/기획)
-- Q&A 게시판
-- 공지사항
+- **인증 코드:** 메일 인증 코드는 해시로 저장하고 만료 시간을 둡니다.
+- **세션과 CSRF:** 세션 쿠키로 인증하고, 프론트엔드의 API 클라이언트가 요청에 CSRF 토큰을 담아 보냅니다.
+- **운영 설정:** `DEBUG=False`이면 쿠키 Secure, HTTPS 리다이렉트, HSTS를 적용하고, 기본 `SECRET_KEY`로는 서버가 시작되지 않습니다.
+- **요청 제한:** DRF Throttling으로 비로그인 분당 30회, 로그인 사용자 분당 60회로 제한합니다.
+- **업로드 검증:** 프로젝트 썸네일은 Pillow로 형식을 확인하고(5MB), 프로젝트 PDF는 파일 시그니처를 확인합니다(20MB). 과제 PDF는 확장자와 content-type을 검사합니다.
+- **경로 차단:** Nginx에서 숨김 파일과 흔한 스캔 경로 요청을 차단합니다.
+
+---
+
+## 아키텍처
+
+```mermaid
+flowchart LR
+    U[브라우저] --> P[Nginx Proxy Manager<br/>HTTPS 종료]
+    P --> F[Nginx<br/>React 빌드 · 정적 · 미디어 파일]
+    F -- /api, /django-admin --> B[Gunicorn + Django REST Framework]
+    B --> D[(SQLite)]
+    B --> M[업로드 파일]
+    F --> M
+    B -- 인증 메일 --> E[[Gmail SMTP]]
+```
+
+개발 환경에서는 Vite dev server가 `/api`와 `/media` 요청을 Django로 넘깁니다.
 
 ---
 
 ## 기술 스택
 
-| 구분 | 기술 |
+| 영역 | 기술 |
 |------|------|
-| **Frontend** | React 19, TypeScript 5, Vite 5, React Router 7 |
-| **Backend** | Django 4.2, Django REST Framework |
-| **Database** | SQLite |
-| **Deployment** | Docker, Nginx, Gunicorn |
+| 프론트엔드 | React 19 · TypeScript 5 · Vite 7 · React Router 7 · 일반 CSS |
+| 백엔드 | Python 3.11 · Django 4.2 · Django REST Framework 3.16 |
+| 인증 | Django 세션 · CSRF 토큰 · 메일 인증 |
+| 데이터 | SQLite |
+| 파일 처리 | Pillow(이미지 검증) · openpyxl(엑셀 내보내기) |
+| 배포 | Docker Compose · Nginx · Nginx Proxy Manager · Gunicorn · WhiteNoise |
+
+---
+
+## 실행 방법
+
+### 준비물
+
+- Python 3.11
+- Node.js 20.19 이상
+- Docker Compose (Docker로 실행할 때만)
+
+### 1. 백엔드
+
+```bash
+cd backend
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py runserver    # http://127.0.0.1:8000
+```
+
+### 2. 프론트엔드
+
+```bash
+cd frontend
+npm ci
+npm run dev                   # http://localhost:5173
+```
+
+두 서버를 함께 실행해야 합니다.
+
+### 3. 계정 준비
+
+회원가입은 `@sch.ac.kr` 메일로만 할 수 있고, 인증 메일을 보내려면 `backend/.env`에 `EMAIL_HOST_USER`와 `EMAIL_HOST_PASSWORD`를 넣어야 합니다.
+메일 없이 운영진 화면을 보려면 인증이 끝난 계정을 직접 만듭니다.
+
+```bash
+cd backend
+python manage.py shell -c "from users.models import User; User.objects.create_superuser('admin@sch.ac.kr', '비밀번호', name='관리자', role='INSTRUCTOR', email_verified=True)"
+```
+
+### 4. Docker
+
+> [!WARNING]
+> 현재 `frontend/nginx.conf`는 1번째 줄의 `limit_req_zone`이 주석 처리되어 있어 프론트엔드 컨테이너가 시작되지 않습니다. 실행 전에 이 줄의 주석을 해제하세요.
+
+```bash
+cp .env.example .env          # SECRET_KEY, ALLOWED_HOSTS 등을 실제 값으로 변경
+docker compose up -d --build
+docker compose exec backend python manage.py migrate
+```
+
+Nginx Proxy Manager의 프록시 설정은 관리 화면(서버 로컬 81번 포트)에서 합니다.
+[`DEPLOY.md`](DEPLOY.md)에 운영 명령이 정리되어 있지만, Nginx Proxy Manager를 넣기 전 내용이 일부 남아 있습니다.
+
+---
+
+## 테스트
+
+현재 자동화 테스트와 CI는 없습니다. 각 앱의 `tests.py`는 비어 있습니다.
+
+---
+
+## API 개요
+
+Base URL: `/api`
+
+| 모듈 | 주요 엔드포인트 |
+|------|----------------|
+| 인증 | `GET /auth/csrf` · `POST /auth/login` · `/auth/logout` · `/auth/signup` · `GET /auth/me` · `POST /auth/email/send-code` · `/auth/email/verify` · `/auth/password/send-code` · `/auth/password/reset` |
+| 지원 | `/applications/my` · `/applications/draft` · `/applications/submit` · `/applications/results/my` · `/applications/track-settings` |
+| 심사 | `/applications/admin` · `/admin/export` · `/admin/<id>` · `/admin/<id>/scores` · `/admin/<id>/doc-finalize` · `/admin/<id>/finalize` · `/admin/<id>/interview-schedule` · `/admin/notification-settings` |
+| 교육 세션 | `/sessions/quizzes/` · `/qna/` · `/assignments/` · `/announcements/` · `/attendance/` · `/groups/` · `/class-reviews/` · `/homework-categories/` |
+| 콘텐츠 | `/projects/` · `/roadmap/` · `/roadmap/admin` |
+| 상태 확인 | `GET /health` |
+
+심사와 교육 세션 경로의 뒷부분은 각각 `/applications`, `/sessions` 아래에 있습니다.
+
+---
+
+## 역할별 접근 권한
+
+| 역할 | 접근할 수 있는 페이지 |
+|------|----------------------|
+| 비로그인 | 홈, 로그인, 회원가입, 비밀번호 재설정, 운영진, 트랙 소개 |
+| `APPLICANT` (지원자) | 지원서 작성, 결과 확인 |
+| `STUDENT` (수강생) | 교육 세션 |
+| `INSTRUCTOR` (운영진) | 교육 세션, 관리자 페이지, 지원자 심사, 세션·프로젝트·로드맵 관리 |
 
 ---
 
 ## 프로젝트 구조
 
 ```
-├── frontend/                # React + Vite + TypeScript
+.
+├── frontend/                React + Vite
 │   ├── src/
-│   │   ├── pages/           # 페이지 컴포넌트
-│   │   ├── components/      # 공통 컴포넌트
-│   │   ├── auth/            # 인증 (useAuth, RequireAuth)
-│   │   ├── api/             # API 클라이언트 (apiFetch)
-│   │   └── assets/          # 이미지, 아이콘
+│   │   ├── main.tsx         라우트 정의
+│   │   ├── pages/           페이지와 CSS
+│   │   ├── components/      공통 컴포넌트
+│   │   ├── auth/            useAuth · RequireAuth
+│   │   └── api/             API 클라이언트
 │   ├── Dockerfile
 │   └── nginx.conf
-│
-├── backend/                 # Django + DRF
-│   ├── users/               # 사용자 모델, 인증, 이메일 인증
-│   ├── applications/        # 지원서 CRUD, 채점, 결과 알림
-│   ├── sessionsapp/         # 퀴즈, 과제, Q&A, 공지
-│   ├── projects/            # 프로젝트 포트폴리오
-│   ├── config/              # Django 설정
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── FIgma/                   # 디자인 목업 (Figma 시안)
+├── backend/                 Django + DRF
+│   ├── config/              설정 · 루트 URL
+│   ├── users/               사용자 모델 · 인증 · 메일 인증
+│   ├── applications/        지원서 · 채점 · 결과 · 모집 설정
+│   ├── sessionsapp/         퀴즈 · Q&A · 과제 · 출석 · 그룹 · 감상평
+│   ├── projects/            프로젝트 관리
+│   ├── roadmap/             로드맵 관리
+│   └── Dockerfile
+├── docs/screenshots/        README 이미지
+├── FIgma/                   디자인 시안
 ├── docker-compose.yml
-└── DEPLOY.md                # 배포 가이드
+└── DEPLOY.md
 ```
 
 ---
 
-## 로컬 개발
+## 라이선스
 
-### 사전 준비
-
-- Node.js 20+
-- Python 3.11+
-
-### Backend
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate    # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver   # http://127.0.0.1:8000
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev                  # http://localhost:5173
-```
-
-> 두 서버를 동시에 실행해야 합니다. Vite dev server가 `/api`, `/media` 요청을 Django로 프록시합니다.
-
----
-
-## Docker 배포
-
-```bash
-cp .env.example .env         # .env 파일 편집
-docker compose up -d --build
-docker compose exec backend python manage.py migrate
-```
-
-자세한 배포 가이드는 [DEPLOY.md](./DEPLOY.md)를 참고하세요.
-
----
-
-## 역할별 접근 권한
-
-| 역할 | 접근 가능 페이지 |
-|------|-----------------|
-| 비로그인 | 홈, 로그인, 회원가입, 운영진, 트랙 소개 |
-| **APPLICANT** (지원자) | 지원서 작성, 결과 확인 |
-| **STUDENT** (아기사자) | 세션 페이지 |
-| **INSTRUCTOR** (운영진) | 관리자 대시보드, 지원자 심사, 세션/프로젝트 관리 |
+[MIT License](LICENSE)
