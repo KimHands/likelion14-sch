@@ -212,23 +212,32 @@ python manage.py shell -c "from users.models import User; User.objects.create_su
 
 ### 4. Docker
 
-> [!WARNING]
-> 현재 `frontend/nginx.conf`는 1번째 줄의 `limit_req_zone`이 주석 처리되어 있어 프론트엔드 컨테이너가 시작되지 않습니다. 실행 전에 이 줄의 주석을 해제하세요.
-
 ```bash
 cp .env.example .env          # SECRET_KEY, ALLOWED_HOSTS 등을 실제 값으로 변경
 docker compose up -d --build
 docker compose exec backend python manage.py migrate
 ```
 
-Nginx Proxy Manager의 프록시 설정은 관리 화면(서버 로컬 81번 포트)에서 합니다.
-[`DEPLOY.md`](DEPLOY.md)에 운영 명령이 정리되어 있지만, Nginx Proxy Manager를 넣기 전 내용이 일부 남아 있습니다.
+프록시와 HTTPS 설정, 백업 방법은 [`DEPLOY.md`](DEPLOY.md)에 정리했습니다.
 
 ---
 
 ## 테스트
 
-현재 자동화 테스트와 CI는 없습니다. 각 앱의 `tests.py`는 비어 있습니다.
+```bash
+cd backend
+python manage.py test         # 백엔드 실행 단계의 .env가 필요합니다
+```
+
+핵심 흐름의 백엔드 API를 테스트합니다. 메일은 실제로 발송하지 않습니다.
+
+| 범위 | 확인하는 내용 |
+|------|--------------|
+| `users` | 메일 인증, 가입 조건과 유효시간, 로그인, CSRF, 비밀번호 재설정 |
+| `applications` | 임시저장·제출과 잠금, 관리자 API 권한, 채점, 서류·최종 확정, 결과 공개 |
+| `sessionsapp` | 과제 PDF 제출과 삭제 권한 |
+
+프론트엔드 테스트와 CI는 없습니다.
 
 ---
 
