@@ -93,7 +93,6 @@ export default function Session() {
 function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: string; role?: string }) {
   const dbTrack = TRACK_TO_DB[trackLabel];
   const isInstructor = role === "INSTRUCTOR";
-  const { me } = useAuth();
 
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
   const [qnaPosts, setQnaPosts] = useState<QnAPostItem[]>([]);
@@ -432,7 +431,7 @@ function QuizQnATab({ trackLabel, desc, role }: { trackLabel: string; desc: stri
         ) : (
           <div className="announcement-list">
             {classReviews.map((r) => {
-              const isMine = r.author_id === me?.id;
+              const isMine = r.is_mine;
               return (
                 <div key={r.id} className="announcement-item">
                   <div className="announcement-header">

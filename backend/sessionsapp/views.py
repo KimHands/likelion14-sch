@@ -409,12 +409,15 @@ def class_review_list_create(request):
         qs = ClassReview.objects.select_related("author")
         if track:
             qs = qs.filter(track=track)
-        return Response(ClassReviewSerializer(qs, many=True).data)
+        return Response(ClassReviewSerializer(qs, many=True, context={"request": request}).data)
 
     ser = ClassReviewWriteSerializer(data=request.data)
     ser.is_valid(raise_exception=True)
     review = ser.save(author=request.user)
-    return Response(ClassReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+    return Response(
+        ClassReviewSerializer(review, context={"request": request}).data,
+        status=status.HTTP_201_CREATED,
+    )
 
 
 @api_view(["DELETE"])
@@ -436,7 +439,7 @@ def class_review_delete(request, pk):
 def my_class_reviews(request):
     """GET /api/sessions/class-reviews/my/  — 내가 작성한 감상평 목록"""
     reviews = ClassReview.objects.filter(author=request.user).select_related("author")
-    return Response(ClassReviewSerializer(reviews, many=True).data)
+    return Response(ClassReviewSerializer(reviews, many=True, context={"request": request}).data)
 
 
 # ── HomeworkCategory (과제 갤러리 카테고리) ──────────────
@@ -487,6 +490,10 @@ def homework_submit(request, pk):
         category = HomeworkCategory.objects.get(pk=pk)
     except HomeworkCategory.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    if user.role != "STUDENT" or user.education_track != category.track:
+        return Response({"detail": "해당 트랙 학생만 제출할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
 
     pdf = request.FILES.get("pdf_file")
     if not pdf:
