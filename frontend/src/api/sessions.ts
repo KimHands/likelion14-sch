@@ -292,8 +292,9 @@ export function fetchTrackStudents(track: string) {
 
 export interface ClassReviewItem {
   id: number;
-  author_id: number;
-  author_name: string;
+  author_id?: number; // 운영진 응답에만 포함
+  author_name?: string; // 운영진 응답에만 포함
+  is_mine: boolean;
   track: string;
   content: string;
   created_at: string;

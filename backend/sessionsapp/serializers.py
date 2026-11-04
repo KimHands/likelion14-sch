@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from applications.permissions import IsInstructorOrStaff
 from .models import (
     Quiz, QuizAnswer, QnAPost, QnAComment,
     Assignment, AssignmentSubmission, Announcement,
@@ -244,10 +245,21 @@ class StudentGroupMembersSerializer(serializers.Serializer):
 
 class ClassReviewSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source="author.name", read_only=True)
+    is_mine = serializers.SerializerMethodField()
 
     class Meta:
         model = ClassReview
-        fields = ["id", "author_id", "author_name", "track", "content", "created_at", "updated_at"]
+        fields = ["id", "author_id", "author_name", "is_mine", "track", "content", "created_at", "updated_at"]
+
+    def get_is_mine(self, obj):
+        return obj.author_id == self.context["request"].user.id
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if not IsInstructorOrStaff().has_permission(self.context["request"], None):
+            data.pop("author_id")
+            data.pop("author_name")
+        return data
 
 
 class ClassReviewWriteSerializer(serializers.ModelSerializer):
